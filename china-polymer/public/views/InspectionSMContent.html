@@ -1,0 +1,2459 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="inspection-smcontent"> <template
+	id="my-tabs"> 
+	
+	<style include="button-style">
+</style>
+	<px-card icon="fa-suitcase"
+	header-text="计划维修内容" chevron> <px-tab-set
+	selected="{{selected}}"> <px-tab>操作工点检</px-tab> <px-tab>维修工点检</px-tab>
+<px-tab>QM</px-tab> <px-tab>PCM</px-tab> <px-tab>PM</px-tab> <px-tab>跟踪表</px-tab>
+</px-tab-set> <px-tab-pages selected="{{selected}}">
+<section>
+	<br>
+	<br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>工单种类/EQType:</b>
+			</label>
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipId"
+					url="http://localhost:8081/pmms-api/getEquipType"
+					params='{"Type":"equip_type"}' last-response="{{equipmentType}}"
+					auto></byutv-jsonp>
+				<px-dropdown id="cboEquipTypeMain1" name="equipType1"
+					display-value="Select" selected-key="{{equipment}}">
+				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentType}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipType" id="equipTypeMain1" />
+			</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>Equipment
+					Name:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="pxDropDownMain1"
+					url="http://localhost:8081/pmms-api/getDeviceName"
+					params='{{equipment}}' last-response="{{equipmentName1}}" auto></byutv-jsonp>
+				<px-dropdown id="equipNameMain1" display-value="--Select--"
+					selected-key="{{equipname}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentName1}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+		<input type="hidden" name="plantype" id="plantype" />
+
+	</div>
+    <br>
+    <br>
+	
+	<!------------------------------------------------------------- Add1 -------------------------------------------- -------->
+	
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="operatorInspectionAdd"
+			method="post">
+			<paper-button class="btn btn-large btn-primary"  raised
+				onclick="addOperatorInspection.open()">Add</button>
+			<paper-dialog id="addOperatorInspection"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Add"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Add1}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeAdd1" name="equipTypeAdd1"
+							display-value="--Select--" selected-key="{{equipment_Add1}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentType_Add1}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipType" id="equipTypeAddOne" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownAdd1"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Add1}}' last-response="{{equipmentNameAdd1}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameAdd1}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdAddOne"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planType1" value="IC" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintItemAdd1"	name="maintItem" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="standardAdd1"	name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintwayAdd1"	name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id=calibToolsAdd1"	name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Skill of the Technician:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="skillTechAdd1"	name="skillTech" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="spentTimeAdd1"	name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddOne"
+						value="{{frequency}}" />
+					</td>
+
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="remarkAdd1"	name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="saveOperationInspect">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+		<!-------------------------------------------------------------Edit1 -------------------------------------------- -------->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="operatorInspectionEdit"
+			method="post">
+			<paper-button class="btn btn-large btn-primary"  raised
+				onclick="editOperatorInspection.open()">Edit</button>
+			<paper-dialog id="editOperatorInspection"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Edit"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Edit1}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeEdit1" name="equipTypeEdit1"
+							display-value="--Select--" selected-key="{{equipment_Edit1}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentType_Edit1}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipType" id="equipTypeEditOne" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownEdit1"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Edit1}}' last-response="{{equipmentNameEdit1}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameEdit1}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdEditOne"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planTypeEdit1" value="IC" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintItemEdit1"	name="maintItem" style="width: 180px;"> </paper-input>					
+						
+						</td>
+				</tr>				
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="standardEdit1"	name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintwayEdit1"	name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="calibToolsEdit1"	name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Skill of the Technician:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="skillTechEdit1"	name="skillTech" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="spentTimeEdit1"	name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddOne"
+						value="{{frequency}}" />
+					</td>
+
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="remarkEdit1"name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+				
+				<input type="hidden" name="maintId"
+						id="maintIdEdit1"  />
+						
+					<input type="hidden" name="equipnameId"
+						id="equipnameIdEdit1"  />
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="editOperationInspect">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	<!------------------------------------------------------------delete 1  ----------------------------------------------->
+	<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="OperationInspectDelete" method="post">
+
+			<input type="hidden" id="deleteId1" name="deleteIC_Id"
+				value="{{deleteIC_Id}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deleteOperationInspect">Delete</paper-button>
+
+		</form>
+	</div>
+	
+	<!-- -------------------------------------------------Download 1------------------------------------------------------- -->
+
+   <div class="module-body pull-right">
+	<form content-type="application/xls" id="downloadICXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadICXl">Download</paper-button> 
+		</div>		
+		</form>
+	</div>
+	
+    <br>
+    <br>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="OperatorInspection"
+			url="http://localhost:8081/pmms-api/getOperatorInspectionContent"
+			params='{{getParams("IC",equipment,equipname)}}'
+			on-response="handleResponse"
+			last-response="{{operatorInspectionContent}}" debounce-duration="300"
+			auto="true"></byutv-jsonp>
+		<px-data-table id="operInsp"
+			table-data="{{operatorInspectionContent}}" selectable
+			on-px-row-click="rowSelectedOpertionIC"> <px-data-table-column
+			sortable name="equipNameId" label="Equipment Name"></px-data-table-column>
+		<px-data-table-column sortable name="planType" label="Plan Type"></px-data-table-column>	
+		<px-data-table-column sortable name="maintItem" label="Item Name"></px-data-table-column>
+		<px-data-table-column sortable name="standard" label="Standard"></px-data-table-column>
+		<px-data-table-column sortable name="maintway" label="Method"></px-data-table-column>
+		<px-data-table-column sortable name="frequency" label="Frequency"></px-data-table-column>
+		<px-data-table-column sortable name="remark" label="Remark"></px-data-table-column>
+		
+		<px-data-table-column sortable name="calibTools" label="CalibTools" hide></px-data-table-column>
+		<px-data-table-column sortable name="skillTech" label="Method" hide></px-data-table-column>		
+		<px-data-table-column sortable name="spentTime" label="Remark" hide></px-data-table-column>
+		<px-data-table-column sortable name="maintId" label="maintId" hide></px-data-table-column>
+		
+		</px-data-table>
+
+	</div>
+
+</section>
+
+<!-- 
+  -------------------------------------------  TAB-2 -------------------------------------------- -->
+<section>
+	<br>
+	<br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>工单种类/EQType:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipId"
+					url="http://localhost:8081/pmms-api/getEquipType"
+					params='{"Type":"equip_type"}' last-response="{{equipmentType}}"
+					auto></byutv-jsonp>
+				<px-dropdown id="cboEquipTypeMain2" display-value="Select"
+					selected-key="{{equipment2}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentType}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipType" id="equipTypeMain2" />
+			</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>Equipment
+					Name:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="pxDropDownMain2"
+					url="http://localhost:8081/pmms-api/getDeviceName"
+					params='{{equipment2}}' last-response="{{equipmentName2}}" auto></byutv-jsonp>
+				<px-dropdown id="equipNameMain1" display-value="--Select--"
+					selected-key="{{equipname2}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentName2}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+	<!-----------------------------------------------Add2  -- ---------------------------------- ------------------------>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="techInspectionAdd"
+			method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="addTechInspection.open()">Add</paper-button>
+			<paper-dialog id="addTechInspection"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Add2"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Add2}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeAdd2" display-value="--Select--"
+							selected-key="{{equipment_Add2}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Add2}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeAddTwo" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownAdd2"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Add2}}' last-response="{{equipmentNameAdd2}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameAdd2}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdAddTwo"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planType2" value="MC" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintItem" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Skill of the Technician:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="skillTech" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="saveTechInspect">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!------------------------------------------------------ Edit2 ------------------------------------------------------>
+	
+		<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="otechInspectionEdit"
+			method="post">
+			<paper-button class="btn btn-large btn-primary"  raised
+				onclick="editTechInspection.open()">Edit</button>
+			<paper-dialog id="editTechInspection"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Edit"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Edit2}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeEdit2" name="equipTypeEdit2"
+							display-value="--Select--" selected-key="{{equipment_Edit2}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentType_Edit2}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipType" id="equipTypeEditTwo" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownEdit2"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Edit2}}' last-response="{{equipmentNameEdit2}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameEdit2}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdEditTwo"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planTypeEdit2" value="IC" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintItemEdit2"	name="maintItem" style="width: 180px;"> </paper-input>
+					
+					<input type="hidden" name="maintId"
+						id="maintIdEdit2"  />	
+						
+						</td>
+				</tr>				
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="standardEdit2"	name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintwayEdit2"	name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="calibToolsEdit2"	name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Skill of the Technician:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="skillTechEdit2"	name="skillTech" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="spentTimeEdit2"	name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddOne"
+						value="{{frequency}}" />
+					</td>
+
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="remarkEdit2"name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+				
+				<input type="hidden" name="equipnameId"
+						id="equipnameIdEdit2"  />
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="editTechInspect">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	<!-------------------------------------------------Delete 2  ------------------------------------------------------->
+		<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="TechInspectDelete" method="post">
+
+			<input type="hidden" id="deleteid2" name="deleteIC_Id"
+				value="{{deleteIC_Id}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deleteTechInspect">Delete</paper-button>
+
+		</form>
+	</div>
+	<!-------------------------------------------------Download 2 ------------------------------------------------------->
+
+   <div class="module-body pull-right">
+	<form content-type="application/xls" id="downloadMCXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadMCXl">Download</paper-button> 
+		</div>		
+		</form>
+	</div>
+	
+	
+	<br>
+	<br>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="TechInspectionContent"
+			url="http://localhost:8081/pmms-api/getTechnicianInspectionContent"
+			params='{{getParams2("MC",equipment2,equipname2)}}'
+			on-response="handleResponse"
+			last-response="{{techInspectionContent}}" debounce-duration="300"
+			auto="true"></byutv-jsonp>
+		<px-data-table id="techInsp" table-data="{{techInspectionContent}}"
+			selectable on-px-row-click="rowSelectedtechInspection"> <px-data-table-column
+			sortable name="equipNameId" label="Equipment Name"></px-data-table-column>
+		<px-data-table-column sortable name="maintItem" label="Item Name"></px-data-table-column>
+		<px-data-table-column sortable name="standard" label="Standard"></px-data-table-column>
+		<px-data-table-column sortable name="maintway" label="Method"></px-data-table-column>
+		<px-data-table-column sortable name="frequency" label="Frequency"></px-data-table-column>
+		<px-data-table-column sortable name="remark" label="Remark"></px-data-table-column>
+		
+		<px-data-table-column sortable name="calibTools" label="CalibTools" hide></px-data-table-column>
+		<px-data-table-column sortable name="skillTech" label="skillTech" hide></px-data-table-column>		
+		<px-data-table-column sortable name="spentTime" label="spentTime" hide></px-data-table-column>
+		<px-data-table-column sortable name="maintId" label="maintId" hide></px-data-table-column>
+		</px-data-table>
+
+
+	</div>
+
+</section>
+<!--  ----------------------------------------------------  TAB-3-------------------------------------- -->
+<section>
+
+	<br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>工单种类/EQType:</b>
+			</label>
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipId"
+					url="http://localhost:8081/pmms-api/getEquipType"
+					params='{"Type":"equip_type"}' last-response="{{equipmentType}}"
+					auto></byutv-jsonp>
+				<px-dropdown id="cboEquipTypeMain3" display-value="Select"
+					selected-key="{{equipment3}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentType}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipType" id="equipTypeMain3" />
+			</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>Equipment
+					Name:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="pxDropDownMain3"
+					url="http://localhost:8081/pmms-api/getDeviceName"
+					params='{{equipment}}' last-response="{{equipmentName3}}" auto></byutv-jsonp>
+				<px-dropdown id="equipNameMain3" display-value="--Select--"
+					selected-key="{{equipname3}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentName3}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+<!-------------------------------------------------------------Add3-------------------------------------------------  -->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="QMAdd" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="addQMmaintanance.open()">Add</paper-button>
+			<paper-dialog id="addQMmaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Add3"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Add3}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeAdd3" display-value="--Select--"
+							selected-key="{{equipment_Add3}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Add3}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeAddThree" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownAdd3"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Add3}}' last-response="{{equipmentNameAdd3}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameAdd3}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdAddThree"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planType3" value="QM" /></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintItem" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Part_name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="location" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Dependent Resource:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="resoursdpnt" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="saveQM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!-----------------------------------------------------------Edit3 ------------------------------------------------------------------->
+   
+   	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="QMEdit" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="editQMmaintanance.open()">Edit</paper-button>
+			<paper-dialog id="editQMmaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Edit3"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Edit3}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeEdit3" display-value="--Select--"
+							selected-key="{{equipment_Edit3}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Edit3}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeEditThree" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownEdit3"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Edit3}}' last-response="{{equipmentNameEdit3}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameEdit3}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdEditThree"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planTypeEdit3" value="QM" /></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="maintItemEdit3"	name="maintItem" style="width: 180px;"> </paper-input>
+						
+						<input type="hidden" name="maintId"
+						id="maintIdEdit3"  />	
+						</td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Part_name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="locationEdit3"	name="location" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="standardEdit3"	name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="calibToolsEdit3"	name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Dependent Resource:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="resoursdpntEdit3"	name="resoursdpnt" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="spentTimeEdit3"	name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="remarkEdit3"	name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+               <input type="hidden" name="equipnameId"
+						id="equipnameIdEdit3"  />
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="editQM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	<!---------------------------------------------------Delecte 3  ----------------------------------------------------  -->
+	
+		<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="QMDelete" method="post">
+
+			<input type="hidden" id="deleteid3" name="deleteIC_Id"
+				value="{{deleteIC_Id}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deleteQM">Delete</paper-button>
+
+		</form>
+	</div>
+	
+	<!-------------------------------------------------Download 3------------------------------------------------------->
+	
+   <div class="module-body pull-right">
+	<form content-type="application/xls" id="downloadQMXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadQMXl">Download</paper-button> 
+		</div>		
+		</form>
+	</div>
+	
+   
+    <br>
+	<br>
+
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="QMMaintenance "
+			url="http://localhost:8081/pmms-api/getQMMaintenanceContent"
+			params='{{getParams3("QM",equipment3,equipname3)}}'
+			on-response="handleResponse" last-response="{{qmmaintanance}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+		<px-data-table id="qmMaint" table-data="{{qmmaintanance}}" selectable
+			on-px-row-click="rowSelectedQM"> <px-data-table-column
+			sortable name="equipNameId" label="Equipment Name"></px-data-table-column>
+		<px-data-table-column sortable name="planType" label="Plan Type"></px-data-table-column>
+		<px-data-table-column sortable name="maintItem" label="Item Name"></px-data-table-column>
+		<px-data-table-column sortable name="location" label="Part Type"></px-data-table-column>
+		<px-data-table-column sortable name="standard" label="Standard"></px-data-table-column>
+		<px-data-table-column sortable name="maintway" label="Method"></px-data-table-column>
+		<px-data-table-column sortable name="frequency" label="Frequency"></px-data-table-column>
+		<px-data-table-column sortable name="resoursdpnt"
+			label="Resource Dependent"></px-data-table-column> <px-data-table-column
+			sortable name="calibTools" label="Calibration Tools"></px-data-table-column>
+		<px-data-table-column sortable name="remark" label="Remark"></px-data-table-column>		
+		
+		<px-data-table-column sortable name="skillTech" label="skillTech" hide></px-data-table-column>		
+		<px-data-table-column sortable name="spentTime" label="spentTime" hide></px-data-table-column>
+		<px-data-table-column sortable name="maintId" label="maintId" hide></px-data-table-column>
+		</px-data-table>
+
+	</div>
+
+</section>
+
+<!--    
+    --------------------------------------------  TAB-4 ---------------------------------- -->
+<section>
+
+	<br> <br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>工单种类/EQType:</b>
+			</label>
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipId"
+					url="http://localhost:8081/pmms-api/getEquipType"
+					params='{"Type":"equip_type"}' last-response="{{equipmentType}}"
+					auto></byutv-jsonp>
+				<px-dropdown id="cboEquipTypeMain4" display-value="Select"
+					selected-key="{{equipment4}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentType}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipType" id="equipTypeMain4" />
+			</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>Equipment
+					Name:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="pxDropDownMain4"
+					url="http://localhost:8081/pmms-api/getDeviceName"
+					params='{{equipment}}' last-response="{{equipmentName4}}" auto></byutv-jsonp>
+				<px-dropdown id="equipNameMain4" display-value="--Select--"
+					selected-key="{{equipname4}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentName4}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+	<!-------------------------------------------------------Add 4 -------------------------------------------------------  -->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="PCMAdd" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="addPCMMaintanance.open()">Add</paper-button>
+			<paper-dialog id="addPCMMaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Add4"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Add4}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeAdd4" display-value="--Select--"
+							selected-key="{{equipment_Add4}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Add4}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeAddFour" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownAdd4"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Add4}}' last-response="{{equipmentNameAdd4}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameAdd4}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdAddFour"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planType4" value="PCM" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintItem" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Part_name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="location" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Dependent Resource:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="resoursdpnt" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="savePCM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!----------------------------------------------------Edit 4 -----------------------------------------------------  -->
+		<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="PCMEdit" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="editPCMMaintanance.open()">Edit</paper-button>
+			<paper-dialog id="editPCMMaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Edit4"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Edit4}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeEdit4" display-value="--Select--"
+							selected-key="{{equipment_Edit4}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Edit4}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeEditFour" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownEdit4"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Edit4}}' last-response="{{equipmentNameEdit4}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameEdit4}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdEditFour"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planTypeEdit4" value="PCM" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="maintItemEdit4"		name="maintItem" style="width: 180px;"> </paper-input>
+					
+					<input type="hidden" name="maintId"
+						id="maintIdEdit4"  />
+					</td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Part_name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="locationEdit4"	name="location" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="standardEdit4"	name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Tool:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="calibToolsEdit4"	name="calibTools" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Dependent Resource:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="resoursdpntEdit4"	name="resoursdpnt" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Spent_Time:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="spentTimeEdit4"	name="spentTime" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="remarkEdit4"	name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+				
+				<input type="hidden" name="equipnameId"
+						id="equipnameIdEdit4"  />
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="editPCM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!-----------------------------------------------Delete 4  ------------------------------------------------------>
+	<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="PCMDelete" method="post">
+
+			<input type="hidden" id="deleteid4" name="deleteIC_Id"
+				value="{{deleteIC_Id}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deletePCM">Delete</paper-button>
+
+		</form>
+	</div>
+	
+	<!-------------------------------------------------Download 4------------------------------------------------------->
+
+   <div class="module-body pull-right">
+	<form content-type="application/xls" id="downloadPCMXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadPCMXl">Download</paper-button> 
+		</div>		
+		</form>
+	</div>
+	
+
+	<br>
+	<br>
+
+
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="PCMmaintanance"
+			url="http://localhost:8081/pmms-api/getPCMMaintenanceContent"
+			params='{{getParams4("PCM",equipment4,equipname4)}}'
+			on-response="handleResponse" last-response="{{pcmmaintanance}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+		<px-data-table id="pcmMaint" table-data="{{pcmmaintanance}}"
+			selectable on-px-row-click="rowSelectedPCM"> <px-data-table-column
+			sortable name="equipNameId" label="Equipment Name"></px-data-table-column>
+		<px-data-table-column sortable name="planType" label="Plan Type"></px-data-table-column>
+		<px-data-table-column sortable name="maintItem" label="Item Name"></px-data-table-column>
+		<px-data-table-column sortable name="location" label="Part Type"></px-data-table-column>
+		<px-data-table-column sortable name="standard" label="Standard"></px-data-table-column>
+		<px-data-table-column sortable name="maintway" label="Method"></px-data-table-column>
+		<px-data-table-column sortable name="frequency" label="Frequency"></px-data-table-column>
+		<px-data-table-column sortable name="resoursdpnt"
+			label="Resource Dependent"></px-data-table-column> <px-data-table-column
+			sortable name="calibTools" label="Calibration Tools"></px-data-table-column>
+		<px-data-table-column sortable name="remark" label="Remark"></px-data-table-column>
+		
+	
+		<px-data-table-column sortable name="skillTech" label="skillTech" hide></px-data-table-column>		
+		<px-data-table-column sortable name="spentTime" label="spentTime" hide></px-data-table-column>
+		<px-data-table-column sortable name="maintId" label="maintId" hide></px-data-table-column>
+		</px-data-table>
+
+	</div>
+
+
+</section>
+<!--  ------------------------------------------ TAB-5---------------------------------------- -->
+
+<section>
+
+	<br> <br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>工单种类/EQType:</b>
+			</label>
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipId"
+					url="http://localhost:8081/pmms-api/getEquipType"
+					params='{"Type":"equip_type"}' last-response="{{equipmentType}}"
+					auto></byutv-jsonp>
+				<px-dropdown id="cboEquipTypeMain5" display-value="Select"
+					selected-key="{{equipment5}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentType}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipType" id="equipTypeMain5" />
+			</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>Equipment
+					Name:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="pxDropDownMain5"
+					url="http://localhost:8081/pmms-api/getDeviceName"
+					params='{{equipment}}' last-response="{{equipmentName5}}" auto></byutv-jsonp>
+				<px-dropdown id="equipNameMain5" display-value="--Select--"
+					selected-key="{{equipname5}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{equipmentName5}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+	
+	<!-------------------------------------------------------Add 5  -------------------------------------------------------------  -->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="PMAdd" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="addPMMaintanance.open()">Add</paper-button>
+			<paper-dialog id="addPMMaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Add5"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Add5}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeAdd5" display-value="--Select--"
+							selected-key="{{equipment_Add5}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Add5}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeAddFive" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownAdd5"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Add5}}' last-response="{{equipmentNameAdd5}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameAdd5}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdAddFive"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planType5" value="PM" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintItem" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="savePM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!------------------------------------------------Edit 5  ------------------------------------------------------------->
+		<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse" id="PMEdit" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="editPMMaintanance.open()">Edit</paper-button>
+			<paper-dialog id="editPMMaintanance"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Type:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="eqipId_Edit5"
+							url="http://localhost:8081/pmms-api/getEquipType"
+							params='{"Type":"equip_type"}'
+							last-response="{{equipmentType_Edit5}}" auto></byutv-jsonp> <px-dropdown
+							id="cboEquipTypeEdit5" display-value="--Select--"
+							selected-key="{{equipment_Edit5}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{equipmentType_Edit5}}">
+						</px-dropdown-content> </px-dropdown> <input type="hidden" name="equipType" id="equipTypeEditFive" /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Equipment Name:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="pxDropDownEdit5"
+							url="http://localhost:8081/pmms-api/getDeviceName"
+							params='{{equipment_Edit5}}' last-response="{{equipmentNameEdit5}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="--Select--" selected-key="{{equipnameId}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{equipmentNameEdit5}}"> </px-dropdown-content> </px-dropdown> <input
+						type="hidden" name="equipnameId" id="equipIdEditFive"
+						value="{{equipnameId}}" /> <input type="hidden" name="planType"
+						id="planTypeEdit5" value="PM" /></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Component Item name:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="maintItemEdit5"		name="maintItem" style="width: 180px;"> </paper-input>
+					
+					<input type="hidden" name="maintId"
+						id="maintIdEdit5"  />
+					</td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Standard:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="standardEdit5"		name="standard" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Method:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="maintwayEdit5"		name="maintway" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label class="control-label"
+						style="width: 100px;"> <b>Frequency/点检周期:</b>
+					</label></td>
+					<td align="left"><byutv-jsonp id="Frequency"
+							url="http://localhost:8081/pmms-api/getEquipmentName"
+							params='{"Type":"frequency"}' last-response="{{frequencylist}}"
+							auto></byutv-jsonp> <px-dropdown id="equiptDropDown"
+							display-value="Select" selected-key="{{frequency}}">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{frequencylist}}"> </px-dropdown-content> </px-dropdown></td>
+
+					<input type="hidden" name="frequency" id="frequencyAddTwo"
+						value="{{frequency}}" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+						id="remarkEdit5"	name="remark" style="width: 180px;"> </paper-input></td>
+				</tr>
+                  <input type="hidden" name="equipnameId"
+						id="equipnameIdEdit5"  />
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="editPM">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	
+	<!------------------------------------------------------ Delete 5  ---------------------------------------------------- -->
+	<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="PMDelete" method="post">
+
+			<input type="hidden" id="deleteid5" name="deleteIC_Id"
+				value="{{deleteIC_Id}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deletePM">Delete</paper-button>
+
+		</form>
+	</div>	
+	
+	<!-------------------------------------------------Download 5------------------------------------------------------->
+	
+   <div class="module-body pull-right">
+	<form content-type="application/xls" id="downloadPMXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadPMXl">Download</paper-button> 
+		</div>		
+		</form>
+	</div>
+	
+	<br>
+	<br>
+
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="PMMaintenance "
+			url="http://localhost:8081/pmms-api/getPMMaintenanceContent"
+			params='{{getParams5("PM",equipment5,equipname5)}}'
+			on-response="handleResponse" last-response="{{pmmaintenance}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+		<px-data-table id="pmMaint" table-data="{{pmmaintenance}}" selectable
+			on-px-row-click="rowSelectedPM"> <px-data-table-column
+			sortable name="equipNameId" label="Equipment Name"></px-data-table-column>
+		<px-data-table-column sortable name="planType" label="Plan Type"></px-data-table-column>
+		<px-data-table-column sortable name="maintItem" label="Item Name"></px-data-table-column>
+		<px-data-table-column sortable name="standard" label="Standard"></px-data-table-column>
+		<px-data-table-column sortable name="maintway" label="Method"></px-data-table-column>
+		<px-data-table-column sortable name="frequency" label="Frequency"></px-data-table-column>
+		<px-data-table-column sortable name="skillTech"
+			label="Skill of Technician"></px-data-table-column> <px-data-table-column
+			sortable name="remark" label="Remark"></px-data-table-column> </px-data-table>
+		
+		<px-data-table-column sortable name="calibTools" label="CalibTools" hide></px-data-table-column>		
+		<px-data-table-column sortable name="spentTime" label="spentTime" hide></px-data-table-column>
+		<px-data-table-column sortable name="maintId" label="maintId" hide></px-data-table-column>
+
+	</div>
+
+
+</section>
+<!--   ------------------------------------------ TAB-6---------------------------------------- -->
+
+<section>
+
+	<form is="iron-form" content-type="application/json"
+		id="searchOperationLog" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="handleResponseData" method="post">
+		<input type="hidden" id="searchData" name="searchData"
+			value="{{searchData}}"> </input> <br> <br>
+		<table>
+			<tr>
+				<td><label class="control-label"><b>SSO NO:</b></label></td>
+
+				<td><paper-input class="input-medium search-query span3"
+						id="creatorSSO" name="creatorSSO" style="width: 180px;" required
+						auto-validate error-message="{{localize('ssoid')}}">
+					</paper-input></td>
+
+			</tr>
+		</table>
+	</form>
+	<div class="pull-left" style="width: 1000px";>
+		<div class="control-group pull-left" style="width: 380px">
+			<label class="control-label" style="width: 80px;"> <b>Start
+					Date:</b>
+			</label>
+
+			<div class="controls"
+				style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+				name="startdate">
+				<paper-input id="startDateField" name="startDateField"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="startDate" id="startDate"
+					on-tap="triggerStartDate"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+
+		<div class="control-group pull-left" style="width: 380px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>End Date:</b>
+			</label>
+			<div class="controls"
+				style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;"
+				name="enddate">
+				<paper-input id="endDateField" name="endDateField"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="endDate" id="endDate"
+					on-tap="triggerEndDate"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 130px">
+			<button class="btn btn-icon" type="button"
+				style="display: inline-block; margin-top: 30px;"
+				on-click="searchWithDates">æŸ¥è¯¢/Search</button>
+		</div>
+	</div>
+	<br>
+	<br>
+	<br> <br>
+	<br>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="OperationLogReoprt"
+			url="http://localhost:8081/pmms-api/searchOperationLog"
+			last-response="{{operationLog}}" debounce-duration="300" auto="true"></byutv-jsonp>
+		<px-data-table id="OperationLog" table-data="{{operationLog}}"
+			selectable on-px-row-click="rowSelected"> <px-data-table-column
+			sortable name="createdBy" label="SSO"></px-data-table-column> <px-data-table-column
+			sortable name="operation" label="Operation"></px-data-table-column> <px-data-table-column
+			sortable name="oldVlue" label="Old value"></px-data-table-column> <px-data-table-column
+			sortable name="newValue" label="New value"></px-data-table-column> <px-data-table-column
+			sortable name="createDate" label="Creation Date"></px-data-table-column>
+		</px-data-table>
+
+	</div>
+
+</section>
+
+</px-tab-pages> </px-card> </template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'inspection-smcontent',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		searchKey : null,
+
+		startDate : {
+			type : String,
+			notify : true
+		},
+
+		endDate : {
+			type : String,
+			notify : true
+		},
+
+		startDateField : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+
+		endDateField : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+
+		triggerStartDate : function() {
+			console.log("Start date : " + this.$.startDate);
+			this.startDate = this.$.startDate.dateTime.substring(0,
+					this.$.startDate.dateTime.indexOf('T'));
+			this.startDateField = this.startDate;
+			document.getElementById("startDateField").value = this.startDateField;
+		},
+
+		triggerEndDate : function() {
+			console.log("End date : " + this.$.endDate);
+			this.endDate = this.$.endDate.dateTime.substring(0,
+					this.$.endDate.dateTime.indexOf('T'));
+			this.endDateField = this.endDate;
+			document.getElementById("endDateField").value = this.endDateField;
+		},
+
+		getParams : function(plantype, equipment, equipname) {
+			return {
+				plantype : "IC",
+				equipment : equipment,
+				equipname : equipname
+
+			};
+		},
+		getParams2 : function(plantype, equipment2, equipname2) {
+			return {
+				plantype : "MC",
+				equipment2 : equipment2,
+				equipname2 : equipname2
+
+			};
+		},
+
+		getParams3 : function(plantype, equipment3, equipname3) {
+			return {
+				plantype : "QM",
+				equipment3 : equipment3,
+				equipname3 : equipname3
+
+			};
+		},
+
+		getParams4 : function(plantype, equipment4, equipname4) {
+			return {
+				plantype : "PCM",
+				equipment4 : equipment4,
+				equipname4 : equipname4
+
+			};
+		},
+
+		getParams5 : function(plantype, equipment5, equipname5) {
+			return {
+				plantype : "PM",
+				equipment5 : equipment5,
+				equipname5 : equipname5
+
+			};
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		searchWithDates : function() {
+
+			if ((this.startDateField == undefined
+					|| this.startDateField == null || this.startDateField == "")
+					|| (this.endDateField == undefined
+							|| this.endDateField == null || this.endDateField == ""))
+				alert("Please select From Date and To Date to seach Equipment Issue List.");
+
+			else {
+				this.searchData = "{'endDate':" + this.endDateField
+						+ ",'startDate':" + this.startDateField + ",'ssono':"
+						+ document.getElementById("creatorSSO").value + "}";
+				document.getElementById('searchOperationLog').action = "http://localhost:8081/pmms-api/searchOperationLog";
+				document.getElementById('searchOperationLog').submit();
+			}
+
+		},
+
+		_refreshTable : function(tableId) {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+
+					}
+
+				}
+			}
+
+		},
+
+		handleResponseData : function(event) {
+			var details = event.detail;
+			console.log(details);
+			if (details.status == 200) {
+				this.operationLog = details.response;
+				this._refreshTable1("operationLog");
+			} else {
+				alert("error in searching Spare part list!!!!");
+
+			}
+		},
+
+		saveOperationInspect : function() {
+			document.getElementById('operatorInspectionAdd').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('operatorInspectionAdd').submit();
+		},
+
+		saveTechInspect : function() {
+			document.getElementById('techInspectionAdd').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('techInspectionAdd').submit();
+		},
+
+		saveQM : function() {
+			document.getElementById('QMAdd').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('QMAdd').submit();
+		},
+
+		savePCM : function() {
+			document.getElementById('PCMAdd').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('PCMAdd').submit();
+		},
+
+		savePM : function() {
+			document.getElementById('PMAdd').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('PMAdd').submit();
+		},
+		
+		
+		editOperationInspect : function() {
+			document.getElementById('operatorInspectionEdit').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('operatorInspectionEdit').submit();
+		},
+
+	    editTechInspect : function() {
+			document.getElementById('techInspectionEdit').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('techInspectionEdit').submit();
+		},
+
+		editQM : function() {
+			document.getElementById('QMEdit').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('QMEdit').submit();
+		},
+
+		editPCM : function() {
+			document.getElementById('PCMEdit').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('PCMEdit').submit();
+		},
+
+		editPM : function() {
+			document.getElementById('PMEdit').action = "http://localhost:8081/pmms-api/saveOperatorInspection";
+			document.getElementById('PMEdit').submit();
+		},
+		
+		deleteOperationInspect : function() {
+			
+				this.deleteIC_Id = this.ids.toString();
+				document.getElementById('OperationInspectDelete').action = "http://localhost:8081/pmms-api/deleteOperationInspect";
+				document.getElementById('OperationInspectDelete')
+						.submit();			
+
+		},		
+		
+		deleteTechInspect : function() {
+			
+			this.deleteIC_Id = this.ids.toString();
+			document.getElementById('TechInspectDelete').action = "http://localhost:8081/pmms-api/deleteOperationInspect";
+			document.getElementById('TechInspectDelete')
+					.submit();			
+
+	    },	
+
+           deleteQM : function() {
+			
+			this.deleteIC_Id = this.ids.toString();
+			document.getElementById('QMDelete').action = "http://localhost:8081/pmms-api/deleteOperationInspect";
+			document.getElementById('QMDelete')
+					.submit();			
+
+	      },	
+            deletePCM : function() {
+			
+			this.deleteIC_Id = this.ids.toString();
+			document.getElementById('PCMDelete').action = "http://localhost:8081/pmms-api/deleteOperationInspect";
+			document.getElementById('PCMDelete')
+					.submit();			
+
+	     },	
+          deletePM : function() {
+			
+			this.deleteIC_Id = this.ids.toString();
+			document.getElementById('PMDelete').action = "http://localhost:8081/pmms-api/deleteOperationInspect";
+			document.getElementById('PMDelete')
+					.submit();			
+
+	     },	
+	     
+	     downloadICXl: function()
+	     {
+	    	 //this.deleteIC_Id = this.ids.toString();
+				document.getElementById('downloadICXl').action = "http://localhost:8081/pmms-api/dowloadInspectionContent";
+				document.getElementById('downloadICXl')
+						.submit();		 
+	    	 
+	     },
+	     
+	     downloadMCXl: function()
+	     {
+	    	 //this.deleteIC_Id = this.ids.toString();
+				document.getElementById('downloadMCXl').action = "http://localhost:8081/pmms-api/downloadMC";
+				document.getElementById('downloadMCXl')
+						.submit();		 
+	    	 
+	     },
+	     
+	     downloadQMXl: function()
+	     {
+	    	 //this.deleteIC_Id = this.ids.toString();
+				document.getElementById('downloadQMXl').action = "http://localhost:8081/pmms-api/downloadQM";
+				document.getElementById('downloadQMXl')
+						.submit();		 
+	    	 
+	     },
+	     downloadPCMXl: function()
+	     {
+	    	 //this.deleteIC_Id = this.ids.toString();
+				document.getElementById('downloadPCMXl').action = "http://localhost:8081/pmms-api/downloadPCM";
+				document.getElementById('downloadPCMXl')
+						.submit();		 
+	    	 
+	     },
+	     
+	     downloadPMXl: function()
+	     {
+	    	 //this.deleteIC_Id = this.ids.toString();
+				document.getElementById('downloadPMXl').action = "http://localhost:8081/pmms-api/downloadPM";
+				document.getElementById('downloadPMXl')
+						.submit();		 
+	    	 
+	     }, 
+	     
+	     ironformresponse : function() {
+
+				document.querySelector('inspection-smcontent').refreshData();
+			},
+	     
+		
+		rowSelectedOpertionIC : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.maintId.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.maintId.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);			
+		    document.getElementById("equipnameIdEdit1").value = clickedRow.row.equipNameId.value;			
+			document.getElementById("maintIdEdit1").value = clickedRow.row.maintId.value;
+			document.getElementById("maintItemEdit1").value = clickedRow.row.standard.value;
+			document.getElementById("standardEdit1").value = clickedRow.row.standard.value;
+			document.getElementById("maintwayEdit1").value = clickedRow.row.maintway.value;
+			document.getElementById("calibToolsEdit1").value = clickedRow.row.calibTools.value;
+			document.getElementById("skillTechEdit1").value = clickedRow.row.skillTech.value;
+			document.getElementById("spentTimeEdit1").value = clickedRow.row.spentTime.value;
+			document.getElementById("remarkEdit1").value = clickedRow.row.remark.value;	
+			
+			document.getElementById("deleteid1").value = clickedRow.row.maintId.value;
+
+		},    
+		
+		rowSelectedtechInspection : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.maintId.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.maintId.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);			
+			 document.getElementById("equipnameIdEdit2").value = clickedRow.row.equipNameId.value;
+			document.getElementById("maintIdEdit2").value = clickedRow.row.maintId.value;
+			document.getElementById("maintItemEdit2").value = clickedRow.row.standard.value;
+			document.getElementById("standardEdit2").value = clickedRow.row.standard.value;
+			document.getElementById("maintwayEdit2").value = clickedRow.row.maintway.value;
+			document.getElementById("calibToolsEdit2").value = clickedRow.row.calibTools.value;
+			document.getElementById("skillTechEdit2").value = clickedRow.row.skillTech.value;
+			document.getElementById("spentTimeEdit2").value = clickedRow.row.spentTime.value;
+			document.getElementById("remarkEdit2").value = clickedRow.row.remark.value;	
+			
+			document.getElementById("deleteid2").value = clickedRow.row.maintId.value;
+
+		}, 
+		
+		rowSelectedQM : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.maintId.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.maintId.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);			
+			document.getElementById("equipnameIdEdit3").value = clickedRow.row.equipNameId.value;
+			document.getElementById("maintIdEdit3").value = clickedRow.row.maintId.value;
+			document.getElementById("maintItemEdit3").value = clickedRow.row.standard.value;
+			document.getElementById("standardEdit3").value = clickedRow.row.standard.value;
+			document.getElementById("maintwayEdit3").value = clickedRow.row.maintway.value;
+			document.getElementById("calibToolsEdit3").value = clickedRow.row.calibTools.value;
+			document.getElementById("skillTechEdit3").value = clickedRow.row.skillTech.value;
+			document.getElementById("spentTimeEdit3").value = clickedRow.row.spentTime.value;
+			document.getElementById("remarkEdit3").value = clickedRow.row.remark.value;	
+			
+			document.getElementById("deleteid3").value = clickedRow.row.maintId.value;
+
+		},
+		
+		rowSelectedPCM : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.maintId.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.maintId.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);			
+			document.getElementById("equipnameIdEdit4").value = clickedRow.row.equipNameId.value;
+			document.getElementById("maintIdEdit4").value = clickedRow.row.maintId.value;
+			document.getElementById("maintItemEdit4").value = clickedRow.row.standard.value;
+			document.getElementById("standardEdit4").value = clickedRow.row.standard.value;
+			document.getElementById("maintwayEdit4").value = clickedRow.row.maintway.value;
+			document.getElementById("calibToolsEdit4").value = clickedRow.row.calibTools.value;
+			document.getElementById("skillTechEdit4").value = clickedRow.row.skillTech.value;
+			document.getElementById("spentTimeEdit4").value = clickedRow.row.spentTime.value;
+			document.getElementById("remarkEdit4").value = clickedRow.row.remark.value;	
+			
+			document.getElementById("deleteid4").value = clickedRow.row.maintId.value;
+
+		},
+		
+		rowSelectedPM : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.maintId.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.maintId.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);			
+			document.getElementById("equipnameIdEdit5").value = clickedRow.row.equipNameId.value;
+			document.getElementById("maintIdEdit5").value = clickedRow.row.maintId.value;
+			document.getElementById("maintItemEdit5").value = clickedRow.row.standard.value;
+			document.getElementById("standardEdit5").value = clickedRow.row.standard.value;
+			document.getElementById("maintwayEdit5").value = clickedRow.row.maintway.value;
+			document.getElementById("calibToolsEdit5").value = clickedRow.row.calibTools.value;
+			document.getElementById("skillTechEdit5").value = clickedRow.row.skillTech.value;
+			document.getElementById("spentTimeEdit5").value = clickedRow.row.spentTime.value;
+			document.getElementById("remarkEdit5").value = clickedRow.row.remark.value;	
+			
+			document.getElementById("deleteid5").value = clickedRow.row.maintId.value;
+			
+
+		},
+		
+		
+	});
+
+	HTMLImports
+			.whenReady(function() {
+
+				var cboEquipTypeMain1 = document
+						.querySelector('#cboEquipTypeMain1');
+
+				var cboEquipTypeMain2 = document
+						.querySelector('#cboEquipTypeMain2');
+
+				var cboEquipTypeMain3 = document
+						.querySelector('#cboEquipTypeMain3');
+
+				var cboEquipTypeMain4 = document
+						.querySelector('#cboEquipTypeMain4');
+
+				var cboEquipTypeMain5 = document
+						.querySelector('#cboEquipTypeMain5');
+
+				cboEquipTypeMain1
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeMain1').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownMain1');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeMain2
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeMain2').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownMain2');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeMain3
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeMain3').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownMain3');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeMain4
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeMain4').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownMain4');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeMain5
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeMain5').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownMain5');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				var cboEquipTypeAdd1 = document
+						.querySelector('#cboEquipTypeAdd1');
+				var cboEquipTypeAdd2 = document
+						.querySelector('#cboEquipTypeAdd2');
+				var cboEquipTypeAdd3 = document
+						.querySelector('#cboEquipTypeAdd3');
+				var cboEquipTypeAdd4 = document
+						.querySelector('#cboEquipTypeAdd4');
+				var cboEquipTypeAdd5 = document
+						.querySelector('#cboEquipTypeAdd5');
+
+				cboEquipTypeAdd1
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeAddOne').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownAdd1');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeAdd2
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeAddTwo').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownAdd2');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeAdd3
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document
+											.getElementById('equipTypeAddThree').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownAdd3');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeAdd4
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeAddFour').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownAdd4');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboEquipTypeAdd5
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var addPaperDialog = document
+											.getElementById('addPaperDialog');
+									document.getElementById('equipTypeAddFive').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownAdd5');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+
+									}
+									deviceName1.generateRequest();
+								});
+				
+				
+				var cboEquipTypeEdit1 = document
+				.querySelector('#cboEquipTypeEdit1');
+		var cboEquipTypeEdit2 = document
+				.querySelector('#cboEquipTypeEdit2');
+		var cboEquipTypeEdit3 = document
+				.querySelector('#cboEquipTypeEdit3');
+		var cboEquipTypeEdit4 = document
+				.querySelector('#cboEquipTypeEdit4');
+		var cboEquipTypeEdit5 = document
+				.querySelector('#cboEquipTypeEdit5');
+		
+		
+		cboEquipTypeEdit1
+		.addEventListener(
+				'dropdown_content_value_changed',
+				function(e) {
+					var addPaperDialog = document
+							.getElementById('addPaperDialog');
+					document.getElementById('equipTypeEditOne').value = e.detail.key;
+					var deviceName1 = document
+							.getElementById('pxDropDownEdit1');
+					deviceName1.params = {
+						"nameId" : e.detail.key
+
+					}
+					deviceName1.generateRequest();
+				});
+
+cboEquipTypeEdit2
+		.addEventListener(
+				'dropdown_content_value_changed',
+				function(e) {
+					var addPaperDialog = document
+							.getElementById('addPaperDialog');
+					document.getElementById('equipTypeAddTwo').value = e.detail.key;
+					var deviceName1 = document
+							.getElementById('pxDropDownEdit2');
+					deviceName1.params = {
+						"nameId" : e.detail.key
+
+					}
+					deviceName1.generateRequest();
+				});
+
+cboEquipTypeEdit3
+		.addEventListener(
+				'dropdown_content_value_changed',
+				function(e) {
+					var addPaperDialog = document
+							.getElementById('addPaperDialog');
+					document
+							.getElementById('equipTypeEditThree').value = e.detail.key;
+					var deviceName1 = document
+							.getElementById('pxDropDownEdit3');
+					deviceName1.params = {
+						"nameId" : e.detail.key
+
+					}
+					deviceName1.generateRequest();
+				});
+
+cboEquipTypeEdit4
+		.addEventListener(
+				'dropdown_content_value_changed',
+				function(e) {
+					var addPaperDialog = document
+							.getElementById('addPaperDialog');
+					document.getElementById('equipTypeEditFour').value = e.detail.key;
+					var deviceName1 = document
+							.getElementById('pxDropDownEdit4');
+					deviceName1.params = {
+						"nameId" : e.detail.key
+
+					}
+					deviceName1.generateRequest();
+				});
+
+cboEquipTypeEdit5
+		.addEventListener(
+				'dropdown_content_value_changed',
+				function(e) {
+					var addPaperDialog = document
+							.getElementById('addPaperDialog');
+					document.getElementById('equipTypeEditFive').value = e.detail.key;
+					var deviceName1 = document
+							.getElementById('pxDropDownEdit5');
+					deviceName1.params = {
+						"nameId" : e.detail.key
+
+					}
+					deviceName1.generateRequest();
+				});
+
+
+
+				
+
+			});
+</script>

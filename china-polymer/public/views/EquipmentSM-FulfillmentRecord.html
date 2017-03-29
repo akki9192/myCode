@@ -1,0 +1,572 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ <link rel="import" href="/../css/button-style.html">
+<dom-module id="EquipmentSM-FulfillmentRecord">
+ <template>
+<px-card icon="fa-suitcase" header-text="" chevron>
+<br><br>
+<px-tab-set selected={{selected}}> <px-tab>Current Month
+</px-tab> <px-tab>Rolling Plan Current Year</px-tab> 
+ </px-tab-set> 
+<px-tab-pages selected={{selected}}> 
+
+<section>
+
+<!-- ***********************************************************ADD***************************************************************** -->
+
+<div class="legendmain mb10 pull-left"  style="margin-left: 40px;">
+	<form is="iron-form" content-type="application/json"id="ismAddForm" on-iron-form-response="ironformresponse"method="post">
+		
+	<paper-button raised onclick="AddIsm.open()" class="btn btn-large btn-primary">ADD</paper-button>
+		<paper-dialog id="AddIsm"> <paper-dialog-scrollable>
+	<table>
+	
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Month:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="month" id="month"></paper-input></td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Area:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipCategory" id="equipCategory"></paper-input></td>
+		</tr>		
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>WS:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="deptId" id="deptId"></paper-input></td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Machine:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipId" id="equipId"></paper-input></td>
+		</tr>		
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Plan Start Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="planStartDate">
+				<paper-input id="PlanStartDate" name="PlanStartDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="planStartDate" on-tap="trigger" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>			
+		</td>	
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Plan End Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="planEndDate">
+				<paper-input id="planEndDate" name="planEndDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="PlanEndDate" on-tap="triggerEndDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Actual Start Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="ActualStartDate">
+				<paper-input id="actualStartDate" name="actualStartDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="ActualStartDate" on-tap="triggerActualStartDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Actual End Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="ActualEndDate">
+				<paper-input id="actualEndDate" name="actualEndDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="ActualEndDate" on-tap="triggerActualEndDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>
+		</tr>		
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmType" id="pmType"></paper-input></td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmStop" id="pmStop"></paper-input></td>
+		</tr>		
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmNoStop" id="pmNoStop"></paper-input></td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmState" id="pmState"></paper-input></td>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmType" id="qmType"></paper-input></td>
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmStop" id="qmStop"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmNoStop" id="qmNoStop"></paper-input></td>
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmState" id="qmState"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmType" id="pcmType"></paper-input></td>
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmStop" id="pcmStop"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmNoStop" id="pcmNoStop"></paper-input></td>		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmState" id="pcmState"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Comments</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="Comments" id="Comments"></paper-input></td>
+		</tr>
+	</table>
+		</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss>Cancel</paper-button>
+			<paper-button dialog-confirm on-click="ISMAddRequest">OK</paper-button>
+		</div>
+		</paper-dialog>
+	</form>
+</div>
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Edit PopUp------------------------------------------------
+	****************************************************************************************************** -->
+<div class="legendmain mb10 pull-left"  style="margin-left: 40px;">
+	<form is="iron-form" content-type="application/json"id="ismEditForm" on-iron-form-response="ironformresponse"method="post">
+		
+	<paper-button raised onclick="EditISM.open()" class="btn btn-large btn-primary">Edit</paper-button>
+		<paper-dialog id="EditISM"> <paper-dialog-scrollable>
+	<table>
+	
+		<tr>
+		<td>
+		<input type="hidden" id="monthlyDataId" name="id"></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Month:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="month" id="ismmonth"></paper-input></td>		
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Area:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipCategory" id="ismequipCategory"></paper-input></td>
+		</tr>	
+			
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>WS:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="deptId" id="ismdeptId"></paper-input></td>		
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Machine:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipId" id="ismequipId"></paper-input></td>
+		</tr>	
+			
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Plan Start Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="planStartDate">
+				<paper-input id="PlanStartDate" name="PlanStartDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="planStartDate" on-tap="trigger" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>			
+		</td>	
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Plan End Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="planEndDate">
+				<paper-input id="planEndDate" name="planEndDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="PlanEndDate" on-tap="triggerEndDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>
+		</tr>
+		
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Actual Start Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="ActualStartDate">
+				<paper-input id="actualStartDate" name="actualStartDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="ActualStartDate" on-tap="triggerActualStartDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>	
+			
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Actual End Date:</b></label></td>
+		<td style="padding: 5px">
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="ActualEndDate">
+				<paper-input id="actualEndDate" name="actualEndDate" style="display: inline-block; width: 100px;"></paper-input>
+				<px-datetime-picker id="ActualEndDate" on-tap="triggerActualEndDate" style="display: inline-block; width: 80px;"></px-datetime-picker>
+			</div>
+		</td>
+		</tr>	
+			
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmType" id="ismpmType"></paper-input></td>	
+			
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmStop" id="ismpmStop"></paper-input></td>
+		</tr>
+				
+		<tr>		
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmNoStop" id="ismpmNoStop"></paper-input></td>
+				
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmState" id="ismpmState"></paper-input></td>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmType" id="ismqmType"></paper-input></td>
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmStop" id="ismqmStop"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmNoStop" id="ismqmNoStop"></paper-input></td>
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmState" id="ismqmState"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM Type:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmType" id="ismpcmType"></paper-input></td>
+		
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmStop" id="ismpcmStop"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM No Stop:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmNoStop" id="ismpcmNoStop"></paper-input></td>	
+			
+		<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM State:</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmState" id="ismpcmState"></paper-input></td>
+		</tr>
+		<tr>
+		<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Comments</b></label></td>
+		<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="Comments" id="ismComments"></paper-input></td>
+		</tr>
+	</table>
+		</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss>Cancel</paper-button>
+			<paper-button dialog-confirm on-click="EditISMRequest">OK</paper-button>
+		</div>
+		</paper-dialog>
+	</form>
+</div>	
+	<!--******************************************************DELETE****************************************************************************************-->
+	<div>
+		<form is="iron-form" content-type="application/json" id="CurrentDelete" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+			<input type="hidden" id="deleteISMRecordId" name="deleteISMRecordId" value="{{deleteISMRecordId}}" />
+			<paper-button class="btn btn-large btn-primary" raised on-click="deleteISM">Delete</paper-button>
+		</form>
+	</div>
+	
+	<!--****************************************VIEW******************************************************************************************-->
+	<div>
+	<form is="iron-form" content-type="application/json" id="CurrentDelete" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+	<input type="hidden" id="deleteId" name="deleteId" value="{{deleteId}}" />
+		<paper-button class="btn btn-large btn-primary" raised
+			on-click="deleteSaprePart">View</paper-button>
+			</form>
+	</div>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp url="http://localhost:8081/pmms-api/getInspectionRecord" last-response="{{ISMRecords}}" auto>
+		</byutv-jsonp>
+		<px-data-table id="editTable" enable-column-resize selectable selected-rows="{{ISMRecordsSelected}}"  table-data="{{ISMRecords}}" on-px-row-click="FirstTabRowClick" selectable>  
+		
+			<px-data-table-column name="id" label="ID" hide ></px-data-table-column>
+			<px-data-table-column name="equipCategory" label="Area" ></px-data-table-column> 
+			<px-data-table-column name="equipId" label="Machine"></px-data-table-column>
+		    <px-data-table-column name="deptId" label="WS"></px-data-table-column>
+		    <px-data-table-column name="planStartDate" label="Plan Start Date"></px-data-table-column>
+		    <px-data-table-column name="planEndDate" label="Plan End Date"></px-data-table-column>
+		    <px-data-table-column name="actualStartDate" label="Actual Start Date"></px-data-table-column> 
+			<px-data-table-column name="actualEndDate" label="Actual End Date"></px-data-table-column>
+		    <px-data-table-column name="pmType" label="PM Type" hide></px-data-table-column>
+		    <px-data-table-column name="pmStop" label="PM Stop" hide></px-data-table-column>
+		    <px-data-table-column name="pmNoStop" label="PM NoStop" hide></px-data-table-column>
+		    <px-data-table-column name="pmState" label="PM State" hide></px-data-table-column>
+		    <px-data-table-column name="qmType" label="QM Type" hide></px-data-table-column>
+		    <px-data-table-column name="qmStop" label="QM Stop" hide></px-data-table-column>
+		    <px-data-table-column name="qmNoStop" label="QM NoStop" hide></px-data-table-column>
+		    <px-data-table-column name="qmState" label="QM State" hide></px-data-table-column>
+		    <px-data-table-column name="pcmType" label="PCM Type" hide></px-data-table-column>
+		    <px-data-table-column name="pcmStop" label="PCM Stop" hide></px-data-table-column>
+		    <px-data-table-column name="pcmNoStop" label="PCM NoStop" hide></px-data-table-column>
+		    <px-data-table-column name="pcmState" label="PCM State" hide></px-data-table-column>
+		    <px-data-table-column name="Comments" label="Comments"></px-data-table-column>
+				 
+		</px-data-table>	
+	</div>
+</section>
+<!--**************************************************************************TAB-2**************************************************************************-->
+<section>
+	<br>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"id="AddRollingRecordForm" on-iron-form-response="ironformresponse"method="post">	
+			<paper-button raised onclick="addForm.open()" class="btn btn-large btn-primary">Add</paper-button>
+			<paper-dialog id="addForm">
+				 <paper-dialog-scrollable>
+					<table>	
+						<tr>
+							<td><label class="control-label" style="width: 100px;">
+								<b>Group:</b></label></td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="yearlyDeptId"></paper-input>   <!-- group = deptId -->
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>PMX-MC:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="pmxMc"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px;">
+								<b>Machine:</b></label></td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="yearlyEquipId"></paper-input>   <!-- machine = equipId -->
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Type:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="type"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Year:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="monthYear" placeholder="like : 1996"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Comments:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="comments"></paper-input>
+							</td>
+						</tr>
+					</table>
+     		 </paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="AddRollingRecord">Submit</paper-button>
+			</div>
+		</paper-dialog>
+	</form>
+	</div>	
+	
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"id="EditRollingRecordForm" on-iron-form-response="ironformresponse"method="post">	
+			<paper-button raised onclick="editTab2.open()" class="btn btn-large btn-primary">Edit</paper-button>
+			<paper-dialog id="editTab2">
+				 <paper-dialog-scrollable>
+					<table>	
+						<tr>
+							<td>
+							<input type="hidden" id="rollingRecordId" name="id"></td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px;">
+								<b>Group:</b></label></td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="yearlyDeptId" id="DeptId"></paper-input>   <!-- group = deptId -->
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>PMX-MC:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="pmxMc" id="PMXmC"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px;">
+								<b>Machine:</b></label></td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="yearlyEquipId" id="EquipId"></paper-input>   <!-- machine = equipId -->
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Type:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="type" id="Type"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Year:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="monthYear" id="Year"></paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+								<b>Comments:</b></label>
+							</td>
+							<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="comments" id="CommentsEdit"></paper-input>
+							</td>
+						</tr>
+					</table>
+     		 </paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="EditRollingRecord">submit</paper-button>
+			</div>
+		</paper-dialog>
+	</form>
+	</div>	
+	
+	<br>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp url="http://localhost:8081/pmms-api/getRollingRecord" last-response="{{RollingRecord}}" auto>
+		</byutv-jsonp>
+		<px-data-table enable-column-resize selectable selected-rows="{{ISMRecordsSelected}}"  table-data="{{RollingRecord}}" on-px-row-click="selectedRollingRow">  
+		
+			<px-data-table-column name="id" label="ID" hide ></px-data-table-column>	
+			 <px-data-table-column name="yearlyDeptId" label="Group"></px-data-table-column>	
+			 <px-data-table-column name="pmxMc" label="PMX MC"></px-data-table-column>	
+			<px-data-table-column name="yearlyEquipId" label="Machine"></px-data-table-column>
+			<px-data-table-column name="type" label="Type"></px-data-table-column>
+		    <px-data-table-column name="monthYear" label="year"></px-data-table-column>
+		    <px-data-table-column name="comments" label="Comments"></px-data-table-column>
+				 
+		</px-data-table>	
+	</div>
+	
+</section>
+
+</px-card> </template>
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'EquipmentSM-FulfillmentRecord',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+						}
+					},
+		/*  deleteISMRecords : {
+			type : String,
+			notify : true
+				}   */
+		},
+		
+		trigger : function() {
+			//console.log("date function is triggered");
+			//console.log("InstallationDate : " + this.$.InstallationDate);
+			this.planStartDate = this.$.planStartDate.dateTime.substring(
+					0, this.$.planStartDate.dateTime.indexOf('T'));
+			this.PlanStartDateField = this.planStartDate;
+			document.getElementById("PlanStartDate").value = this.PlanStartDateField;
+		},
+		
+		triggerEndDate : function() {
+			//console.log("date function is triggered");
+			//console.log("InstallationDate : " + this.$.InstallationDate);
+			this.PlanEndDate = this.$.PlanEndDate.dateTime.substring(
+					0, this.$.PlanEndDate.dateTime.indexOf('T'));
+			this.PlanEndDateField = this.PlanEndDate;
+			document.getElementById("planEndDate").value = this.PlanEndDateField;
+		},
+		triggerActualStartDate : function() {
+			//console.log("date function is triggered");
+			//console.log("InstallationDate : " + this.$.InstallationDate);
+			this.ActualStartDate = this.$.ActualStartDate.dateTime.substring(
+					0, this.$.ActualStartDate.dateTime.indexOf('T'));
+			this.ActualStartDateField = this.ActualStartDate;
+			document.getElementById("actualStartDate").value = this.ActualStartDateField;
+		},
+		triggerActualEndDate : function() {
+			//console.log("date function is triggered");
+			//console.log("InstallationDate : " + this.$.InstallationDate);
+			this.ActualEndDate = this.$.ActualEndDate.dateTime.substring(
+					0, this.$.ActualEndDate.dateTime.indexOf('T'));
+			this.ActualEndDateField = this.ActualEndDate;
+			document.getElementById("actualEndDate").value = this.ActualEndDateField;
+		},
+
+		
+		ISMAddRequest : function() {			    	
+	    	document.getElementById("ismAddForm").action = "http://localhost:8081/pmms-api/addInspectionRecord";
+			document.getElementById('ismAddForm').submit(); 
+			
+	    },
+	    
+	    
+	    FirstTabRowClick: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+			document.getElementById("deleteId").value=clickedRow.row.id.value;
+  	  		document.getElementById("monthlyDataId").value=clickedRow.row.id.value;
+  	 		document.getElementById("ismmonth").value=clickedRow.row.month.value;		  	 		
+  	 		document.getElementById("ismequipCategory").value=clickedRow.row.equipCategory.value;
+  	 		document.getElementById("ismequipId").value=clickedRow.row.equipId.value;
+  	 		document.getElementById("ismdeptId").value=clickedRow.row.deptId.value;
+  	 		//document.getElementById("ismplanStartDate").value=clickedRow.row.planStartDate.value;
+  	 		//document.getElementById("ismplanEndDate").value=clickedRow.row.planEndDate.value;
+  	 		//document.getElementById("ismactualStartDate").value=clickedRow.row.actualStartDate.value;
+  	 		//document.getElementById("ismactualEndDate").value=clickedRow.row.actualEndDate.value;
+  	 		//document.getElementById("ismcomments").value=clickedRow.row.Comments.value;
+  	 		document.getElementById("ismpmType").value=clickedRow.row.pmType.value;
+  	 		document.getElementById("ismpmStop").value=clickedRow.row.pmStop.value;
+  	 		document.getElementById("ismpmNoStop").value=clickedRow.row.pmNoStop.value;
+  	 		document.getElementById("ismpmState").value=clickedRow.row.pmState.value;
+  	 		document.getElementById("ismqmType").value=clickedRow.row.qmType.value;
+  	 		document.getElementById("ismqmStop").value=clickedRow.row.qmStop.value;
+  	 		document.getElementById("ismqmNoStop").value=clickedRow.row.qmNoStop.value;
+  	 		document.getElementById("ismqmState").value=clickedRow.row.qmState.value;
+  	 		document.getElementById("ismpcmType").value=clickedRow.row.pcmType.value;
+  	 		document.getElementById("ismpcmStop").value=clickedRow.row.pcmStop.value;
+  	 		document.getElementById("ismpcmNoStop").value=clickedRow.row.pcmNoStop.value;
+  	 		document.getElementById("ismpcmState").value=clickedRow.row.pcmState.value;
+		},
+	    
+		EditISMRequest : function() {			    	
+	    	document.getElementById("ismEditForm").action = "http://localhost:8081/pmms-api/addInspectionRecord";
+			document.getElementById('ismEditForm').submit(); 
+	    },
+	    
+	    
+
+	deleteISM : function() {
+		if (this.ids.length > 0) {
+			this.deleteISMRecords = this.ids.toString();
+			document.getElementById('CurrentDelete').action = "http://localhost:8081/pmms-api/deleteISMRecords";
+			document.getElementById('CurrentDelete').submit();
+		}
+
+	},
+	
+	/*********************************************************tab-2*************************************************************************************/
+	
+	AddRollingRecord : function(){
+		
+		document.getElementById("AddRollingRecordForm").action = "http://localhost:8081/pmms-api/addRollingRecord";
+		document.getElementById('AddRollingRecordForm').submit(); 
+    },
+    
+    
+    selectedRollingRow: function(e) {
+	        var clickedRow = e.detail.row;
+	  		 this.currentRow = clickedRow.row;
+	  		if(this.ids == undefined)
+			this.ids=[];
+		 var index = this.ids.indexOf((clickedRow.row.id.value));
+		 if(clickedRow._selected==false && index == -1)//not present in ids list
+			  this.ids.push(clickedRow.row.id.value);
+		  else if(index > -1) //already there
+			  this.ids.splice(index,1); 
+		 
+		 document.getElementById("rollingRecordId").value=clickedRow.row.id.value;
+		 document.getElementById("DeptId").value=clickedRow.row.yearlyDeptId.value;
+		 document.getElementById("PMXmC").value=clickedRow.row.pmxMc.value;
+		 document.getElementById("EquipId").value=clickedRow.row.yearlyEquipId.value;
+		 document.getElementById("Type").value=clickedRow.row.type.value;
+		 document.getElementById("Year").value=clickedRow.row.monthYear.value;
+		 document.getElementById("CommentsEdit").value=clickedRow.row.comments.value;
+    },
+		 
+    
+    EditRollingRecord : function(){
+    	document.getElementById("EditRollingRecordForm").action = "http://localhost:8081/pmms-api/addRollingRecord";
+		document.getElementById('EditRollingRecordForm').submit(); 
+    },
+    	
+	});
+</script> </dom-module> 
+

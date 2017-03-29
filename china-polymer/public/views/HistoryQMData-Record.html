@@ -1,0 +1,221 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="HistoryQMData-Record">
+<template>
+<px-card icon="fa-suitcase" header-text="" chevron>
+
+<br><br><br>
+<table>
+
+<tr>
+
+<td>
+<label class="control-label" style="width: 100px;"> <b>Year:*</b></label>
+<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+<byutv-jsonp url="http://localhost:8081/pmms-api/getMonthAndYear" params='{"Type":"Year"}' last-response="{{yearRES}}"auto></byutv-jsonp>
+<px-dropdown display-value="--Select --"selected-key="{{planYear}}"> <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{yearRES}}">
+</px-dropdown-content> </px-dropdown>
+</div>
+</td>
+
+<td>
+<label class="control-label" style="width: 100px;"> <b>Month:*</b></label>
+<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+<byutv-jsonp url="http://localhost:8081/pmms-api/getMonthAndYear" params='{"Type":"Month"}' last-response="{{monthRES}}"auto></byutv-jsonp>
+<px-dropdown display-value="--Select --"selected-key="{{month}}"> <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{monthRES}}">
+</px-dropdown-content> </px-dropdown>
+</div>
+</td>
+
+</tr>
+</table>
+
+
+   <!--  ******************************************************************************************************
+ ------------------------------------------------ViewAll PopUp------------------------------------------------
+	******************************************************************************************************  -->
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"id="EditRollingRecordForm" on-iron-form-response="ironformresponse"method="post"> 
+	<paper-button raised onclick="viewQM.open()" class="btn btn-large btn-primary">View</paper-button>
+	<paper-dialog id="viewQM">
+	<paper-dialog-scrollable>
+	<table> 
+	<tr>
+	<td>
+	<input type="hidden" id="QMDataId" name="id" disabled></td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Component Name</b></label></td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="componentName" id="componentName" disabled></paper-input>   <!-- group = deptId -->
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Month:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="month" id="month" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Plan Year</b></label></td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="planYear" id="planYear" disabled></paper-input>   <!-- machine = equipId -->
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+    <b>Id</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="hrdId1" id="hrdId1" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Standard:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="standard" id="standard" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Frequency :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="frequency" id="frequency" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Reason Of Tolerance :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="reason" id="reason" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Process</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="process" id="process" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Program</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="program" id="program" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Created By:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="CreatedDate" id="CreatedDate" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Last Updated Date :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="lastUpdate" id="lastUpdate" disabled></paper-input>
+	</td>
+	</tr>
+	
+	</table>
+     </paper-dialog-scrollable>
+	<div class="buttons">
+	<paper-button dialog-dismiss>Cancel</paper-button>
+	</div>
+	</paper-dialog>
+	</form>
+	</div> 
+
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%">
+
+<byutv-jsonp id="History1-2Data"
+ 		url="http://localhost:8081/pmms-api/getQMDataRecord" params='{{getParams(planYear,month)}}'  last-response="{{QMData}}"debounce-duration="300" auto="true"></byutv-jsonp>
+	    <px-data-table id="History2DataTable" table-data="{{QMData}}" on-px-row-click="SecondTabRowClick" selectable> 
+		<px-data-table-column name="id" label="ID" hide ></px-data-table-column>  
+		<px-data-table-column name="componentName" label="Component Name" id="group"> </px-data-table-column> 
+		<px-data-table-column name="month" label="Month"  ></px-data-table-column> 
+		<px-data-table-column name="hrdId1" label="Id"  ></px-data-table-column>
+		<px-data-table-column name="planYear" label="Year"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.standard" label="Standard"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.frequency" label="Frequency"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.reasonOfTolerance" label="Tolerance"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.processing" label="Processing"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.warningFlag" label="Safety"></px-data-table-column>
+	    <px-data-table-column name="qmDataRecordHdr.followUpProgram" label="Program"></px-data-table-column>
+	     <px-data-table-column name="createdBy" label="Created By" hide></px-data-table-column>
+	    <px-data-table-column name="lastUpdatedBy" label="Last Updated By" hide></px-data-table-column>
+	     <px-data-table-column name="createdDt" label="Created Date" hide></px-data-table-column>
+	      <px-data-table-column name="lastUpdatedDt" label="Last Updated Date" hide></px-data-table-column>
+	</px-data-table>
+</div>
+
+</px-card>
+
+
+</template>
+<script>
+
+Polymer({
+	/* this is the element's prototype */
+	is : 'HistoryQMData-Record',
+	behaviors: [
+	             PmmsBehaviors.LanguageBehavior             
+	           ],
+	searchKey : null,
+	 properties: {
+	
+	  currentRow: {
+		type: String,
+	 	notify: true
+			}
+	 },
+	 getParams : function(planYear,month) {
+			 /*  return  {
+				 month : month,
+				planYear:planYear
+				
+			};    */
+		},
+		
+		SecondTabRowClick: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+  	  		document.getElementById("QMDataId").value=clickedRow.row.id.value;
+  	 		document.getElementById("componentName").value=clickedRow.row.componentName.value;		  	 		
+  	 		document.getElementById("month").value=clickedRow.row.month.value;
+  	 		document.getElementById("hrdId1").value=clickedRow.row.hrdId1.value;
+  	 		document.getElementById("planYear").value=clickedRow.row.planYear.value;
+  	 		document.getElementById("standard").value=clickedRow.row.qmDataRecordHdr.standard.value;
+  	 		document.getElementById("frequency").value=clickedRow.row.qmDataRecordHdr.frequency.value;
+  	 		document.getElementById("reason").value=clickedRow.row.qmDataRecordHdr.reasonOfTolerance.value;
+  	 		document.getElementById("process").value=clickedRow.row.qmDataRecordHdr.processing.value;
+  	 		document.getElementById("program").value=clickedRow.row.qmDataRecordHdr.followUpProgram.value;
+  	 		document.getElementById("createdBy").value=clickedRow.row.createdBy.value;
+  	 		document.getElementById("lastUpdatedBy").value=clickedRow.row.lastUpdatedBy.value;
+  	 		document.getElementById("createdDt").value=clickedRow.row.createdDt.value;
+  	 		document.getElementById("lastUpdatedDt").value=clickedRow.row.lastUpdatedDt.value;
+  	 	
+		}
+		
+	 
+});
+
+</script></dom-module>

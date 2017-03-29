@@ -1,0 +1,27 @@
+<script>
+	PxHighlight = {
+		isPaused : function isPaused(value) {
+			
+			return ((value == "暂停") ? true : false); ////Cyan Color
+		},
+		isStart : function isStart(value) {
+			
+			return ((value == "进行中") ? true : false);////Yellow Color
+		},
+		
+		isCondClose : function isCondClose(value) {
+		
+			return ((value == "带遗留问题运行") ? true : false); ////Blue Color
+		},
+		isNotStarted : function isNotStarted(value) {
+			
+			return ((value == "未开始") ? true : false); ////Red Color
+		},
+		
+		isClosed : function isClosed(value) {
+			
+			return ((value == "关闭") ? true : false); ////White Color
+		}
+	
+	};
+</script>

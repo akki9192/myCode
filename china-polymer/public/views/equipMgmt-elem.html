@@ -1,0 +1,935 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../css/backend.css">
+<dom-module id="equip-mgmt"> 
+<template id="addPaperDialog">
+<px-card icon="fa-suitcase" header-text="Equipment Management" chevron>
+<table>
+	<tr>
+		<td><label class="control-label" style="width: 100px;"> <b>Category:*</b></label>
+
+		<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+        <byutv-jsonp url="http://localhost:8081/pmms-api/getEquipType"	params='{"Type":"equip_type"}' last-response="{{equipTypeRES}}"	auto></byutv-jsonp>
+ 		<px-dropdown display-value="--全部 Select --" selected-key="{{equipCategory}}">
+		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{equipTypeRES}}"></px-dropdown-content> </px-dropdown>
+		</div></td>
+	</tr>
+</table>
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Add PopUp------------------------------------------------
+	****************************************************************************************************** -->
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"id="equipmentManagementAdd" on-iron-form-invalid="ironforminvalid"on-iron-form-response="ironformresponse" method="post">
+	  <paper-button raised onclick="add.open()" class="btn btn-large btn-primary">Add</paper-button>
+	    <paper-dialog id="add"> <paper-dialog-scrollable>
+		  <table>
+			<tr>
+			<td><label class="control-label" style="width: 100px;">
+            <b>Equipment Category:</b>
+			</label></td>
+			<td>
+			<div style="width: 170px; height: 50px; display: inline-block; margin-left: 5px;margin-top:18px">
+            <byutv-jsonp id="firstdrpdwn" params='{"Type":"equip_type"}'url="http://localhost:8081/pmms-api/getEquipType"last-response="{{equipTypeResponse}}" auto> </byutv-jsonp>
+			<px-dropdown id="cboEquipType" display-value="--Select --">
+            <px-dropdown-content extend-dropdown="true"extend-dropdown-by="25" max-cont-character-width="5"items="{{equipTypeResponse}}"> </px-dropdown-content> </px-dropdown>
+		   
+		   <input type="hidden" name="equipType" id="equipType" />
+		    </div>
+		    </td>
+
+		    <td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Total Power Capacity:</b>
+		     </label></td>
+		     <td><paper-input class="span3" name="powerConsumption"style="margin-left:5px; width: 170px;margin-top:-14px" required auto-validate	error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+			<td><label class="control-label" style="width: 100px;">
+             <b>PMX-MC:</b></label></td><td>
+			<div style="width: 170px; height: 50px; display: inline-block; margin-left: 5px;margin-top:9px">
+			<byutv-jsonp id="pmx-mcdrpdwn" params='{"Type":"PMX-MC"}'url="http://localhost:8081/pmms-api/getPMXMC"last-response="{{Response}}" auto> </byutv-jsonp>
+			<px-dropdown id="cboPmxMc" display-value="--Select --">
+			<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{Response}}"> </px-dropdown-content> </px-dropdown>
+			<input type="hidden" name="pmxMc" id="pmxMc" />
+	     	</div>
+			</td>
+		 
+		   <td>
+		   <label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Installation Date:</b>
+		   </label></td>
+		   <td style="padding: 5px">
+		   <div class="controls"style="margin-left: 1px; display: inline-block; width: 200px;margin-top:-3px" name="InstallationDate">
+		   <paper-input id="installDates" name="installationDate" style="display: inline-block; width: 100px; margin-top:-21px"></paper-input>
+		   <px-datetime-picker id="InstallationDate" on-tap="trigger" style="display: inline-block; width: 80px;" hide-time="true" ></px-datetime-picker>
+		   </div>
+		   </td>
+			</tr>
+
+			<tr>
+			<td>
+			<label class="control-label" style="width: 100px;"><b>No. of fixed Asset:</b>
+			</label>
+			</td>
+			<td>
+			<paper-input class="span3"style="width: 170px; margin-left: 5px;margin-top:-21px" name="assetsID"></paper-input></td>
+			<td style="align: right">
+			<label class="control-label"style="width: 100px; margin-left: 5px;">
+            <b>Cost:</b></label>
+            </td>
+			<td><paper-input class="span3"	style="width: 170px; margin-left: 5px;margin-top:-12px;" name="originalPrice"></paper-input></td>
+			</tr>
+
+
+			<tr>
+				<td><label class="control-label" style="width: 100px;">
+				<b>Device Name:</b>	</label></td>
+				<td>
+				<div style="width: 170px; height: 50px; margin-left: 5px; display: inline-block; margin-top:18px">
+				<byutv-jsonp id="getDeviceNameData" url="http://localhost:8081/pmms-api/getDeviceName" last-response="{{deviceName}}" auto> </byutv-jsonp>
+	            <px-dropdown display-value="--Select --" id="cboDeviceName">
+				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{deviceName}}"> </px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="equipMainId2" id="equipMainId2" />
+				</div>
+				</td>
+				<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+				<b>Present Value:</b></label></td>
+	            <td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-17px" name="currentPrice"></paper-input></td>
+			</tr>
+			
+			<tr>
+				<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>supplier:</b></label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-21px"name="source"></paper-input></td>			
+				<td>
+				<label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Model No.:</b></label></td>
+				<td><paper-input class="span3"	style="width: 170px; margin-left:5px;margin-top:-18px"name="equipModel"></paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label" style="width: 100px;">	<b>Equipment Type:</b></label></td>
+				<td>
+				<div style="width: 170px; height: 50px; margin-left: 5px; display: inline-block;margin-top:24px">
+				<byutv-jsonp id="getPDcategoryData"	url="http://localhost:8081/pmms-api/getCategory"params='{"Type":"Category"}' last-response="{{category}}" auto></byutv-jsonp>
+				<px-dropdown display-value="--Select --" id="cboPDcategory">
+				<px-dropdown-content extend-dropdown="true"extend-dropdown-by="25" max-cont-character-width="5"items="{{category}}"> </px-dropdown-content> </px-dropdown>
+				<!-- <input type="hidden" name="equipCategory" id="equipCategory" /> -->
+				 
+				  <input type="hidden" name="equipCategory" id="equipCategory" />
+				</div>
+				</td>
+	
+				<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Size:</b>
+				</label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left: 05px;margin-top:-15px" name="size"></paper-input>
+				</td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label" style="width: 100px;"><b>Release Date:</b>
+				</label></td>
+				<td style="padding: 5px">
+				<div class="controls"style="margin-left: 5px; display: inline-block; width: 200px;"name="ReleaseDate">
+				<paper-input id="releaseDates" name="releaseDate"	style="display: inline-block; width: 100px;margin-top:-18px;margin-left:-4px"></paper-input>
+				<px-datetime-picker id="ReleaseDate" on-tap="triggerReleaseDate"style="display: inline-block;    width: 80px;" hide-time="true" ></px-datetime-picker>
+				</div>
+			    </td>
+			    <td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Weight:</b></label></td>
+			    <td><paper-input class="span3"style="width: 170px; margin-left: 4px;margin-top:-21px" name="weight"></paper-input></td>
+			</tr>
+
+
+			<tr>
+				<td><label class="control-label" style="width: 100px;">
+				<b>Factory No:</b>
+				</label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left: 5px;" name="factoryNo"></paper-input></td>
+				<td><label class="control-label" style="width: 200px;"><b>UseOrNot:</b>
+				</label></td>
+				<td><paper-checkbox id="inuse" name="inuse" style="margin:4px"></paper-checkbox></td></tr>
+				
+			<tr>			
+				<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Remark:</b></label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-16px"name="remark"></paper-input></td>
+				
+				<td><label class="control-label" style="width: 100px;">
+				<b>Device Id</b>
+				</label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left: 5px;" name="equipId"></paper-input>
+				</td>
+			</tr>
+			
+			<tr>
+				<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Use Sector:</b>
+				</label></td>
+				<td>
+				<div style="width: 177px; height: 50px; margin-left: 5px; display: inline-block;margin-top:13px">
+				<byutv-jsonp id="dropdpwncat"url="http://localhost:8081/pmms-api/getDeptName" last-response="{{deptName}}" auto></byutv-jsonp>
+				<px-dropdown display-value="-- Select --" id="cboPDdeptName"name="cboPDdeptName">
+			    <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{deptName}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="deptId2" id="deptId2" />
+				</div>
+				</td>
+				<td><label class="control-label" style="width: 100px;">
+				<b>Position No.</b>
+				</label></td>
+				<td><paper-input class="span3"style="width: 170px; margin-left: 5px;margin-top:-14px" name="positionNo"></paper-input>
+				</td>
+			</tr>
+			
+			<tr>
+				<td><label class="control-label" style="width: 100px;">
+				<b>Important:</b>
+				</label></td>
+				<td><paper-checkbox id="impFlag" name="impFlag" style="margin-left:5px"></paper-checkbox></td>			
+			</tr>
+			
+
+			
+		  </table>
+	    </paper-dialog-scrollable>
+	  <div class="buttons">
+	<paper-button dialog-dismiss on-click="resetEquipmentAdd" class="btn btn-large btn-primary">Cancel</paper-button>
+   <paper-button dialog-confirm autofocus on-click="addMeasuringTool" class="btn btn-large btn-primary">Save</paper-button>
+</div>
+</paper-dialog>
+</form>
+
+</div>
+
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Edit PopUp------------------------------------------------
+	****************************************************************************************************** -->
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json" on-iron-form-presubmit="_preSubmit" id="equipmentManagementEdit" on-iron-form-response="ironformresponse" method="post">
+		
+	<paper-button raised on-click="editFac" class="btn btn-large btn-primary">Edit</paper-button>
+	<paper-dialog id="edit"> <paper-dialog-scrollable>
+	
+	<table>
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Equipment Category</b>
+	</label></td>
+	<td><div style="width: 170px; height: 50px; display: inline-block; margin-left: 5px;margin-top:18px">
+	<byutv-jsonp id="pxdrpdownEdit1" params='{"Type":"equip_type"}'url="http://localhost:8081/pmms-api/getEquipType" last-response="{{equipTypeResponseEdit}}" auto></byutv-jsonp>
+	<px-dropdown id="cboCategoryEdit" name="equipCategory"	display-value="--Select --" selected-key="{{equip_type}}">
+	<px-dropdown-content  extend-dropdown="true"extend-dropdown-by="25" max-cont-character-width="5"items="{{equipTypeResponseEdit}}"> </px-dropdown-content> </px-dropdown>
+	</div>
+	<input type="hidden" name="equipCategory" id="equipCategoryEdit" />
+	
+    <td><label class="control-label" style="width: 100px; margin-left: 5px;"><b>Total Power Capacity:</b>
+    </label></td>
+    <td><paper-input class="span3" name="powerConsumption"id="powerConsumptionEdit" style="margin-left:5px; width: 170px;margin-top:-14px" 	required auto-validate error-message="This cannot be empty">
+	</paper-input></td>
+	</tr>
+
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+     <b>PMX-MC:</b></label></td>
+	<td>
+	<div style="width: 170px; height: 50px; display: inline-block; margin-left: 5px;margin-top:9px">
+	<byutv-jsonp id="pmx-mcdrpdwn" params='{"Type":"PMX-MC"}'url="http://localhost:8081/pmms-api/getPMXMC" last-response="{{Response}}" auto> </byutv-jsonp>
+	<px-dropdown id="cboPmxMcEdit" display-value="--Select --">
+	<px-dropdown-content extend-dropdown="true"extend-dropdown-by="25" max-cont-character-width="5"items="{{Response}}"> </px-dropdown-content> </px-dropdown>
+	<input type="hidden" name="pmxMc" id="pmxMcEdit" />
+	</div>
+					
+	</td>
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Installation Date:</b>
+	</label></td>
+	<td style="padding: 5px">
+	<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px; margin-top:-3px"" name="InstallationDateEdit">
+	<paper-input id="installDatesEdit" name="installationDate"	style="display: inline-block; width: 100px; margin-top:-21px"></paper-input>
+	<px-datetime-picker id="InstallationDateEdit" on-tap="triggerInstallDateEdit"style="display: inline-block; 	width: 80px;" hide-time="true" ></px-datetime-picker>
+	</div>
+	</td>				
+	</tr>
+
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>No. of fixed Asset:</b>
+	</label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left: 5px;margin-top:-21px" name="assetsID" id="assetsIDEdit"></paper-input></td>
+	<td style="align: right"><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Cost:</b>
+	</label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left: 5px;" name="originalPrice"id="originalPriceEdit"></paper-input></td>
+	</tr>
+
+	<tr>
+	<td><label class="control-label" style="width: 100px;">	<b>Device Name:</b>
+	</label></td>
+	<td>
+	<div style="width: 170px; height: 50px; margin-left: 5px; display: inline-block;margin-top:18px">
+	<byutv-jsonp id="pxDropDownEdit2"url="http://localhost:8081/pmms-api/getDeviceName"	params="{{equip_type}}" last-response="{{deviceName1}}" auto></byutv-jsonp>
+	<px-dropdown display-value="--Select --" id="cboDeviceNameEdit"> 
+	<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{deviceName1}}">
+	</px-dropdown-content>
+	</px-dropdown>
+<!-- 	<input type="hidden" name="cboDeviceNameValue" value="cboDeviceNameValue"> -->
+	<input type="hidden" name="equipMainId2" id="equipMainId2Edit" />
+	</div>
+					
+	</td>
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Present Value:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-17px" name="currentPrice"id="currentPriceEdit"></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>supplier</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-21px"name="source" id="sourceEdit"></paper-input></td>
+    <td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Model No.</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;margin-top:-18px"name="equipModel" id="equipModelEdit"></paper-input></td>
+	</tr>
+
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>EquipmentType:</b>
+	</label></td>
+	<td><div style="width: 170px; height: 50px; margin-left: 5px; display: inline-block;margin-top:24px">
+	<byutv-jsonp id="pxdrpdwnEdit3"url="http://localhost:8081/pmms-api/getCategory"params='{"Type":"Category"}' last-response="{{category}}" auto></byutv-jsonp>
+	<px-dropdown display-value="--Select --" id="cboEquipTypeEdit"> 
+	<px-dropdown-content extend-dropdown="true"  extend-dropdown-by="25"	max-cont-character-width="5" items="{{category}}">
+	</px-dropdown-content>
+	</px-dropdown>
+	</div>
+	<input type="hidden" name="equipType" id="equipTypeEdit" /></td>
+	</td>
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Size:</b>
+	</label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left: 05px;margin-top:-15px" name="size" id="sizeEdit"></paper-input>
+	</td>
+	</tr>
+
+	<tr>
+	<td><label class="control-label" style="width: 100px;">	<b>Release Date</b>
+	</label></td>
+    <td>
+	<div class="controls"style="margin-left: 5px; display: inline-block; width: 200px;"	name="ReleaseDateEdit">
+	<paper-input id="releaseDatesEdit" name="releaseDate"style="display: inline-block; width: 100px;margin-top:-18px;margin-left:-4px"></paper-input>
+    <px-datetime-picker id="ReleaseDateEdit" on-tap="triggerReleaseDateEdit"style="display: inline-block; 	width: 80px;" hide-time="true" ></px-datetime-picker>
+	</div>
+	</td>
+	<td>
+	<label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Weight:</b></label></td>
+	<td><paper-input class="span3"	style="width: 170px; margin-left: 4px;margin-top:-21px" name="weight" id="weightEdit"></paper-input></td>
+	</tr>
+
+
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Factory No:</b>
+	</label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left: 5px;" name="factoryNo"id="factoryNoEdit"></paper-input></td>
+	<td><label class="control-label" style="width: 200px;"><b>UseOrNot:</b>
+	</label></td>
+	<td><paper-checkbox  name="inuse" id="inuseEdit"></paper-checkbox></td>
+	</tr>
+
+    <tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Device Id</b>
+	</label></td>
+	<td><paper-input class="span3"	style="width: 170px; margin-left: 5px;" name="equipId"id="equipIdEdit"></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Remark:</b></label></td>
+	<td><paper-input class="span3" style="width: 170px; margin-left:5px;margin-top:-16px" id="remarkEdit" name="remark"></paper-input></td>
+	<!-- <td colspan="2"><input type="hidden" id="editEquipId"name="id" /></td> -->
+	</tr>
+		
+	<tr>
+    <td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Use Sector:</b>
+	</label></td>
+	<td>
+	<div style="width: 177px; height: 50px; margin-left: 5px; display: inline-block;margin-top:13px">
+	<byutv-jsonp id="pxdrpdwnedit4"url="http://localhost:8081/pmms-api/getDeptName"params='{"Type":"DEPT"}' last-response="{{deptName}}" auto></byutv-jsonp>
+	<px-dropdown display-value="-- Select --" id="cboDeptNameEdit"> 
+	<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{deptName}}">
+	</px-dropdown-content> </px-dropdown>
+	</div>
+	<input type="hidden" name="deptId2"	id="deptId2Edit" />
+	</td>
+	<td>
+	<label class="control-label" style="width: 100px;">
+	<b>Position No.</b>
+	</label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left: 5px;margin-top:-14px" name="positionNo" id="positionNoEdit"></paper-input>
+	</td>
+	</tr>
+			
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Important</b>
+	</label></td>
+	<td><paper-checkbox id="impFlagEdit" name="impFlag" style="margin-left:5px"></paper-checkbox></td>
+		
+	</tr>
+	<input type="hidden" name="id"	id="editEquipId" />
+			
+
+	</table>
+	</paper-dialog-scrollable>
+	<div class="buttons">
+	<paper-button dialog-dismiss raised on-click="resetEquipmentEdit" class="btn btn-large btn-primary">Cancel</paper-button>
+	<paper-button dialog-confirm autofocus on-click="editMeasuringTool" class="btn btn-large btn-primary">Update</paper-button>
+	</div>
+	</paper-dialog>
+	</form>
+</div>
+
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"
+		on-iron-form-response="ironformresponse"
+		id="equipmentManagementDelete" method="post">
+
+
+		<input type="hidden" id="deleteEquipmentId" name="deleteEquipmentId"
+			value="{{deleteEquipmentId}}" />
+		<paper-button class="btn btn-large btn-primary" raised
+			on-click="deleteEquipment">Delete</paper-button>
+
+	</form>
+</div>
+
+<!-- -----------------------------Download------------------------------------------------- -->
+	<form content-type="application/xls" id="downloadExcelEquipmentId" method="GET">
+			<div class="legendmain mb10 pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="callDownloadExcelEquipment">Download</paper-button> 
+		</div>		
+		</form>
+<!-- -----------------------------Search------------------------------------------------- -->
+<div class="input-append flR pull-right">
+	<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+		floatingLabel="Search" on-input="searchKeyChanged"
+		style="margin-left:500px;" ></paper-input>
+</div>
+
+<br>
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%"
+	data-ng-controller="equipmentCntrl">
+
+	<byutv-jsonp id="equipmentData"url="http://localhost:8081/pmms-api/getEquipmentDetails" params='{{getParams(equipCategory)}}' on-response="handleResponse" last-response="{{mydata}}" debounce-duration="300" auto="true"></byutv-jsonp>
+	<px-data-table id="equipmentManagementTable" table-data="{{filteredData}}" selected-rows="{{selectedRows6}}" on-px-row-click="selectedRow1" on-px-select-all-click="_allClick" selectable> 
+		<px-data-table-column name="id" label="ID" hide> </px-data-table-column> 
+		<px-data-table-column name="equipCategory" label="Category"> </px-data-table-column> 
+		<px-data-table-column name="equipType" label="Equipment Type"></px-data-table-column> 
+		<px-data-table-column name="equipId" label="DeviceId"></px-data-table-column>
+		<px-data-table-column name="assetsID" label="AssetNo"></px-data-table-column> 
+		<px-data-table-column name="deviceName" label="DeviceName"></px-data-table-column> 
+		<px-data-table-column name="equipModel" label="ModelNum"></px-data-table-column> 
+		<px-data-table-column name="source" label="Supplier"></px-data-table-column> 
+		<px-data-table-column name="powerConsumption" label="Power Consumption"></px-data-table-column>
+		<px-data-table-column name="installationDate" label="Installation Date"></px-data-table-column>
+		<px-data-table-column name="originalPrice" label="Cost"></px-data-table-column>
+		<px-data-table-column name="currentPrice" label="Present value"></px-data-table-column>
+		<px-data-table-column name="size" label="Measurement"></px-data-table-column>
+		<px-data-table-column name="weight" label="Weight"></px-data-table-column>
+		<px-data-table-column name="inuse" label="Use"></px-data-table-column>
+		<px-data-table-column name="releaseDate" label="Release Date"></px-data-table-column>
+		<px-data-table-column name="factoryNo" label="SerialNo"></px-data-table-column>
+		<px-data-table-column name="deptId2" label="Department Name"></px-data-table-column>
+		<px-data-table-column name="remark" label="Remark"></px-data-table-column>
+	 	<px-data-table-column name="pmxMc" label="PMX-MC" hide></px-data-table-column>
+	  	<px-data-table-column name="positionNo" label="Position" hide></px-data-table-column> 
+	  	<px-data-table-column name="impFlag" label="Isimportant" hide></px-data-table-column>
+	</px-data-table>
+</div>
+</px-card> </template> <!-- ********************Defining Polymer Element****************************************************** -->
+
+<script>
+var count=0;
+	Polymer({
+		/* this is the element's prototype */
+		is : 'equip-mgmt',
+		selected : 0,
+		
+		
+
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+		currentRow : {
+		type : Object,
+		notify : true,
+		value : function() {
+		return {};
+		
+		}
+		},
+		deleteEquipmentId : {
+		type : String,
+		notify : true
+			}
+		},
+
+		
+	deleteEquipment : function() {
+			if (count == 0 || this.isEmpty(this.ids)) {
+				alert("please select a row to delete");
+			} else {
+				var x = confirm("Are you sure you want to delete?");
+				if(x)
+					{
+				this.deleteEquipmentId = this.ids.toString();
+				document.getElementById('equipmentManagementDelete').action = "http://localhost:8081/pmms-api/deleteEquipmentInfo";
+				document.getElementById('equipmentManagementDelete').submit();
+				this.clearDatatableSelections();
+				this.ids = null;
+				return true;
+			}}
+		},
+
+		//----Edit Function-----------------------------------------------------/
+		selectedRow1 : function(e) {
+			console.log("event :" + e.detail.row._selected);
+			if (e.detail.row._selected == false)
+				count = count + 1;
+			if (e.detail.row._selected == true)
+				count = count - 1;
+			console.log("count:" + count);
+			if(count==0)
+				this.resetEquipmentEdit();
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.id.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.id.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);
+		},
+		
+		editFac : function editFac(e) {
+			//console.log("row count: "+);
+			var rowCount=this.$.equipmentManagementTable.selectedRows[0];
+			
+			if(typeof rowCount !== "undefined" && count != 0)
+			{
+				if(count>1)
+					{
+					alert("you have selected "+count+" rows"+" please select only one row");
+					}
+				else
+					{
+// 					document.getElementById("deleteEquipmentId").value = this.$.equipmentManagementTable.__data__.selectedRows["0"].id.value;
+					this.$.editEquipId.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.id.value;
+					this.$.equipIdEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipId.value;
+					this.$.assetsIDEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.assetsID.value;
+					this.$.powerConsumptionEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.powerConsumption.value;
+					this.$.originalPriceEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.originalPrice.value;
+					this.$.currentPriceEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.currentPrice.value;
+					this.$.sizeEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.size.value;
+					this.$.sourceEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.source.value;
+					this.$.equipModelEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipModel.value;
+					this.$.factoryNoEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.factoryNo.value;
+					this.$.remarkEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.remark.value;
+					this.$.weightEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.weight.value;
+					this.$.positionNoEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.positionNo.value;
+					this.$.installDatesEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.installationDate.value;
+					this.$.releaseDatesEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.releaseDate.value;
+					
+
+					//setting the display value of dropdown
+					this.$.cboCategoryEdit.displayValue = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipCategory.value;
+					this.$.cboPmxMcEdit.displayValue = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.pmxMc.value;
+					this.$.cboDeviceNameEdit.displayValue = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.deviceName.value;
+					this.$.cboEquipTypeEdit.displayValue = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipType.value;
+					this.$.cboDeptNameEdit.displayValue=this.$.equipmentManagementTable.__data__.selectedRows["0"].row.deptId2.value;
+
+					//setting the actual value of drop down attributes
+					this.$.equipCategoryEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipCategory.value;
+					this.$.pmxMcEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.pmxMc.value;
+					this.$.equipMainId2Edit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipMainId2.value;
+					this.$.equipTypeEdit.value = this.$.equipmentManagementTable.__data__.selectedRows["0"].row.equipType.value;
+					this.$.deptId2Edit.value=this.$.equipmentManagementTable.__data__.selectedRows["0"].row.deptId2.value;
+					
+					//document.getElementById("cboDeptNameEdit").displayValue=clickedRow.row.deptName.value;
+					if (this.$.equipmentManagementTable.__data__.selectedRows["0"].row.impFlag.value == 'Y')
+						this.$.impFlagEdit.checked = true;
+					if (this.$.equipmentManagementTable.__data__.selectedRows["0"].row.inuse.value == 'Y')
+						this.$.inuseEdit.checked = true;
+					edit.open();
+					
+					}
+			}
+			
+			else{
+				alert("please select a row to edit");
+			}},
+			
+		editMeasuringTool : function() {
+			document.getElementById('equipmentManagementEdit').action = "http://localhost:8081/pmms-api/saveEquipmentInformation";
+			document.getElementById('equipmentManagementEdit').submit();
+			document.querySelector('equip-mgmt').resetEquipmentEdit();
+			document.querySelector('equip-mgmt').clearDatatableSelections();
+			alert("data updated successfully");
+		},
+		resetEquipmentAdd : function(event) {
+			this.$.equipmentManagementAdd.reset();
+// 			this.refreshData1();
+					},
+		resetEquipmentEdit: function(event) {
+		this.$.equipmentManagementEdit.reset();
+//			 			this.refreshData1();
+					},
+
+		//---------Date Functionality---------------------------------------
+		trigger : function() {
+			console.log("date function is triggered");
+			console.log("InstallationDate : " + this.$.InstallationDate);
+			this.InstallationDate = this.$.InstallationDate.dateTime.substring(
+					0, this.$.InstallationDate.dateTime.indexOf('T'));
+			this.InstallDateField = this.InstallationDate;
+			document.getElementById("installDates").value = this.InstallDateField;
+		},
+
+		triggerReleaseDate : function() {
+			console.log("ReleaseDate : " + this.$.ReleaseDate);
+			this.ReleaseDate = this.$.ReleaseDate.dateTime.substring(0,
+					this.$.InstallationDate.dateTime.indexOf('T'));
+			this.ReleaseDateField = this.ReleaseDate;
+			document.getElementById("releaseDates").value = this.ReleaseDateField;
+		},
+
+		triggerInstallDateEdit : function() {
+			console.log("date function is triggered");
+			console
+					.log("InstallationDateEdit : "
+							+ this.$.InstallationDateEdit);
+			this.InstallationDateEdit = this.$.InstallationDateEdit.dateTime
+					.substring(0, this.$.InstallationDateEdit.dateTime
+							.indexOf('T'));
+			this.InstallDateFieldEdit = this.InstallationDateEdit;
+			document.getElementById("installDatesEdit").value = this.InstallDateFieldEdit;
+		},
+
+		triggerReleaseDateEdit : function() {
+			console.log("ReleaseDateEdit : " + this.$.ReleaseDateEdit);
+			this.ReleaseDateEdit = this.$.ReleaseDateEdit.dateTime.substring(0,
+					this.$.ReleaseDateEdit.dateTime.indexOf('T'));
+			this.ReleaseDateFieldEdit = this.ReleaseDateEdit;
+			document.getElementById("releaseDatesEdit").value = this.ReleaseDateFieldEdit;
+		},
+
+		//----------------------------------------------------------------------
+
+		getParams : function(equipCategory) {
+			return {
+				equipCategory : equipCategory
+			};
+		},
+		
+		clearDatatableSelections : function(){
+			var test = document.getElementById("equipmentManagementTable");
+			if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+				test.selectable=false;
+				test.selectedRows[0]._selected=false;
+				test.selectedRows=[];
+				test.selectable=true;
+				count=0;
+			}
+		},
+		
+		_allClick: function()
+		{
+			count=0;
+		},
+
+		ironformresponse : function() {
+
+			document.querySelector('equip-mgmt').refreshData();
+			
+		},
+
+		refreshData : function() {
+			count=0;
+			this.$.equipmentData.generateRequest();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+		//---------------------------Search Functionality----------------------------------
+
+		searchKey : null,
+
+		searchKeyChanged : function(event) {
+// 			console.log(this.equipType);
+			var test = document.getElementById("equipmentManagementTable");
+			if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+				test.selectable=false;
+				test.selectedRows[0]._selected=false;
+				test.selectedRows=[];
+				test.selectable=true;
+				count=0;
+			}
+			this.searchKey = event.target.value;
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+
+		isEmpty : function(obj) {
+
+			if (obj == null)
+				return true;
+
+			if (obj.length > 0)
+				return false;
+			if (obj.length === 0)
+				return true;
+
+			if (typeof obj !== "object")
+				return true;
+
+			for ( var key in obj) {
+				if (hasOwnProperty.call(obj, key))
+					return false;
+			}
+
+			return true;
+		},
+
+		validateForm : function() {
+
+			var isValid = true;
+			$('#equipmentManagementAdd tbody paper-input').each(function() {
+
+				if ($(this).val() === '') {
+					isValid = false;
+
+				}
+			});
+
+			$('#equipmentManagementAdd tbody  px-dropdown').each(function() {
+				if (this.value === '--Select --') {
+					isValid = false;
+				}
+
+			});
+
+			/*  $('#equipmentManagementAdd tbody paper-checkbox').each(function() {
+			 	if(this.checked==='false')
+			 		{
+			 		  isValid = false;
+			 		}
+			 	
+			 }); */
+			return isValid
+		},
+
+		//----------function for adding--------------------------
+		addMeasuringTool : function() {
+
+			var isValid = this.validateForm();
+			if (isValid) {
+				document.getElementById("equipmentManagementAdd").action = "http://localhost:8081/pmms-api/saveEquipmentInformation";
+				document.getElementById('equipmentManagementAdd').submit();
+				this.refreshData();
+				this.resetEquipmentAdd();
+				alert("Equipment Data saved !!!!!!");
+			} else {
+				alert("Please fill all fields");
+				event.preventDefault();
+				add.open();
+			}
+
+		},
+
+		_preSubmit : function(e) {
+			console.log(JSON
+					.stringify(this.$.equipmentManagementEdit.request.body));
+		},
+
+		//----------Equipment excel download--------------------------
+		callDownloadExcelEquipment : function() {
+
+			document.getElementById("downloadExcelEquipmentId").action = "http://localhost:8081/pmms-api/getEquipmentInformationDownlaod";
+			document.getElementById("downloadExcelEquipmentId").submit();
+
+		}
+
+	});
+
+	HTMLImports
+			.whenReady(function() {
+				console.log();
+				$('#InstallationDate .container__box.px-datetime-picker').css('margin-left','-200px');
+				$("#InstallationDate .dt-text-field.px-datetime-field").css('height','30px');
+				$("#InstallationDate .dt-text-field.px-datetime-field").css('margin-left','-3px');
+				$("#InstallationDate .dt-text-field.px-datetime-field").css('padding-top','6px');
+				//$("#InstallationDate .px-datetime-entry:after").css('display','none');
+				
+				 $('#ReleaseDate .container__box.px-datetime-picker').css('margin-left','-200px');
+				$("#ReleaseDate .dt-text-field.px-datetime-field").css('height','30px');
+				$("#ReleaseDate .dt-text-field.px-datetime-field").css('margin-left','-3px');
+				$("#ReleaseDate .dt-text-field.px-datetime-field").css('padding-top','6px'); 
+				
+				$('#InstallationDateEdit .container__box.px-datetime-picker').css('margin-left','-200px');
+				$("#InstallationDateEdit .dt-text-field.px-datetime-field").css('height','30px');
+				$("#InstallationDateEdit .dt-text-field.px-datetime-field").css('margin-left','-3px');
+				$("#InstallationDateEdit .dt-text-field.px-datetime-field").css('padding-top','6px');
+				//$("#InstallationDate .px-datetime-entry:after").css('display','none');
+				
+				 $('#ReleaseDateEdit .container__box.px-datetime-picker').css('margin-left','-200px');
+				$("#ReleaseDateEdit .dt-text-field.px-datetime-field").css('height','30px');
+				$("#ReleaseDateEdit .dt-text-field.px-datetime-field").css('margin-left','-3px');
+				$("#ReleaseDateEdit .dt-text-field.px-datetime-field").css('padding-top','6px');  
+
+				
+				
+
+				var cboEquipType = document.querySelector('#cboEquipType');
+				var cboPDdeptName = document.querySelector('#cboPDdeptName');
+				var cboPDcategory = document.querySelector('#cboPDcategory');
+				var cboDeviceName = document.querySelector('#cboDeviceName');
+				var cboPmxMc      = document.querySelector('#cboPmxMc');
+				cboEquipType
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 								var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('equipCategory').value = e.detail.key;
+									var deviceName = document
+											.getElementById('getDeviceNameData');
+									deviceName.params = {
+										"nameId" : e.detail.key
+									}
+									deviceName.generateRequest();
+
+								});
+
+				cboPDdeptName
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									//                          	var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('deptId2').value = e.detail.key;
+								});
+
+				cboPDcategory
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('equipType').value = e.detail.key;
+								});
+
+				cboDeviceName
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('equipMainId2').value = e.detail.key;
+								});
+
+				cboPmxMc
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('pmxMc').value = e.detail.key;
+								});
+
+				//-------------Edit----------------------------------------------------------------------------------
+				var cboEquipTypeEdit = document
+						.querySelector('#cboEquipTypeEdit');
+				var cboDeptNameEdit = document
+						.querySelector('#cboDeptNameEdit');
+				var cboPmxMcEdit = document.querySelector('#cboPmxMcEdit');
+				var cboCategoryEdit = document
+						.querySelector('#cboCategoryEdit');
+				var cboDeviceNameEdit = document
+						.querySelector('#cboDeviceNameEdit');
+
+				cboEquipTypeEdit
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 					var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('equipTypeEdit').value = e.detail.key;
+								});
+
+				cboCategoryEdit
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 						var addPaperDialog = document.getElementById('addPaperDialog');
+									document
+											.getElementById('equipCategoryEdit').value = e.detail.key;
+									var deviceName1 = document
+											.getElementById('pxDropDownEdit2');
+									deviceName1.params = {
+										"nameId" : e.detail.key
+									}
+									deviceName1.generateRequest();
+								});
+
+				cboDeptNameEdit
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('deptId2Edit').value = e.detail.key;
+								});
+
+				cboDeviceNameEdit
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('equipMainId2Edit').value = e.detail.key;
+								});
+
+				cboPmxMcEdit
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									// 							var addPaperDialog = document.getElementById('addPaperDialog');
+									document.getElementById('pmxMcEdit').value = e.detail.key;
+								});
+			});
+</script> </dom-module>
+
+
+
+
+
+

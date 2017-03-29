@@ -1,0 +1,1040 @@
+<meta charset="utf-8">
+<link  rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../validations/cats-only.html"/>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="planned-maintainance">
+  <template is="dom-bind">
+    <style include="button-style" >
+ 
+ </style>
+     <section> <br>
+	<br>
+	
+	
+	<px-tab-set id="tab-set1" selected="{{selected}}">
+	<px-tab>PM工单</px-tab>
+	<px-tab>PCM&QM工单</px-tab>
+	</px-tab-set> 
+	<px-tab-pages selected="{{selected}}">
+
+	<section> <br>
+	
+	<div class="pull-left" style="margin-bottom:20px;margin-top:20px">
+			<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+				</label>
+
+				<div class="controls" style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndeptTab1"	url="http://localhost:8081/pmms-api/getDepartmentName" last-response="{{department}}" auto>
+					</byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown" id="deptDropDownTab1" selected-key="{{deptId}}"> 
+					<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+
+<!------------------------------------------- Start 19 dec testing --------------------------------------------->
+			<div class="control-group pull-left"
+				style="width: 300px; margin-left: 40px">
+
+				<label class="control-label" style="width: 130px;"> <b>设备种类/EQType:</b>
+				</label>
+
+				<div style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="equipDropDwnTab1"  params='{"Type":"Category"}' url="http://localhost:8081/pmms-api/getDocumentTypeNames" last-response="{{doctyperesponse}}" auto></byutv-jsonp>					
+								   <px-dropdown id="equiptDropDown" selected-key="{{equipType}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown> 
+				</div>
+			</div>
+			
+			<div class="control-group pull-left" style="margin-top:-24px;margin-left:53px">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+
+	</div>
+		</div>
+		<!------------------------------------------- End 19 dec testing --------------------------------------------->
+	
+	<br><br>
+	
+		<div id="firstTime2" class="module-body pull-left" style="width: 100%">
+		
+	<byutv-jsonp id="preventiveMaintPlan" url="http://localhost:8081/pmms-api/getScheduleMaintWo" 	
+			params='{{getData("EQ",deptId,equipType)}}'  on-response="handleResponseFirstTable"
+			last-response="{{preventiveData}}" debounce-duration="300" auto="true" >  
+	</byutv-jsonp>
+		
+		<px-data-table id="preventiveTableData" selectable  selected-rows="{{selectedRows6}}" on-px-row-click="selectedData" table-data="{{filteredData}}">
+			<px-data-table-column   name="woId"  label="工单号"></px-data-table-column> 
+			<px-data-table-column	name="equipId"  label="设备编号"  ></px-data-table-column>
+			<px-data-table-column   name="equipNameId"  label="设备名称"></px-data-table-column>
+			<px-data-table-column   name="assetsId"  label="设备型号"></px-data-table-column>
+			<px-data-table-column	name="equipModel"  label="固定资产号"></px-data-table-column>
+			<px-data-table-column	name="shutDownFlag" label="是否需要停机"></px-data-table-column> 
+			<px-data-table-column	name="createdBy"  label="维修工"></px-data-table-column>
+			<px-data-table-column	name="maintStartDate" label="维修开始时间"></px-data-table-column> 
+			<px-data-table-column	name="maintEndDate" label="维修结束时间"></px-data-table-column>
+			<px-data-table-column	name="" label="维修计划开始月"></px-data-table-column> 
+		</px-data-table>
+		</div><br>
+	<br>
+	<form is="iron-form" id="Preventive" on-iron-form-response="ironformresponseTab1"  method="POST" content-type="application/json">
+		<figure class="code u-mb+"
+			style="background-color: white; color: black;"> <code>
+			<ol class=list-bare>
+				<li class=form-field>
+					<h3>PM工单明细</h3>
+					<table>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px"><b>工单号/WONO.*:</b></label>
+							</td>
+							<td > 
+							<paper-input  class="input-medium search-query span3"
+							id="WONO" name="workOrderNumber"  style="width: 200px;" 
+							 required auto-validate error-message="{{localize('ssoid')}}" >
+					 		</paper-input></td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px"><b>设备代码/EQSN*:</b></label>
+							</td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="EQSN" name="equipId"  style="width: 200px;"
+							required auto-validate error-message="{{localize('ssoid')}}" >
+					 </paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px">
+								<label
+								class="control-label" style="width: 200px;"><b>维修工编号/SSO*:</b>
+								</label>
+							</td>
+							<td>
+								<paper-input class="input-medium search-query span3"
+								id="SSOPM" name="creatorSSO"  style="width: 180px;"
+								required auto-validate error-message="{{localize('ssoid')}}" >
+						 		</paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px;"><b>关闭工单人SSO*:</b></label>
+							</td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="mechanic" name="updaterSSO"  style="width: 180px;"
+							required auto-validate error-message="{{localize('ssoid')}}">
+					 </paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px;"> <b>备注/Remark:</b>
+							</label></td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="remarks" name="remarks"  style="width: 180px;"
+							required auto-validate error-message="{{localize('ssoid')}}">
+					 </paper-input>
+							</td>
+						</tr>
+						<tr>
+						<td><label class="control-label"style="width: 200px;"> <b>是否需停机/Shutdown:</b></label></td>
+						<td><paper-checkbox noink id="shutdown" name="shutdownFlag"></paper-checkbox></td>
+							
+						</tr>
+						
+						<tr><td><paper-input class="input-medium search-query span3"
+							id="idPMTab1" name="idPMTab1"  hidden>
+					 		</paper-input>
+					 	</td>
+					 </tr>
+					 
+					 <tr> <td>
+					  
+					  
+					  <input type="hidden" id="privString" name="privString"
+					value="{{privString}}">
+					</td></tr>
+					</table>
+					
+					<br><br>
+					
+					<div id="pmPxDiv"  class="hide" style="width: 100%">
+				<byutv-jsonp url="http://localhost:8081/pmms-api/getScheduleMaintWoDtls"
+					params='{{getParams(workOrderNumber)}}'
+					on-response="handleResponse"
+					last-response="{{pmqmsData}}" debounce-duration="300" auto="true"></byutv-jsonp>
+					<px-data-table	id ="pmPxTable" enable-column-resize   hide-pagination-control	table-data="{{pmqmsData}}">
+					    <px-data-table-column name="seqNumber" label="Sequence Number"></px-data-table-column>
+						<px-data-table-column	name="maintainaceItem.maintId"   label="序号" hide></px-data-table-column> 
+						<px-data-table-column	name="maintainaceItem.maintItem" label="保养内容"></px-data-table-column> 
+						<px-data-table-column	name="maintainaceItem.standard"  label="方法"></px-data-table-column> 
+						<px-data-table-column   name="spendTime" 				 label="正常状态" editable></px-data-table-column>
+						<px-data-table-column	name="scanValue" 				 label="扫码"  editable></px-data-table-column>
+						 </px-data-table></div> <br>
+					<table>
+						<tr>
+									<td style="align: center">
+										<paper-button raised on-click="startPreventiveMaintainance" id="plannedMaintStartButton" class="btn btn-large btn-primary" disabled>									
+										开始维修/Start</paper-button>
+									</td> 
+									<td style="align: center">
+										<paper-button raised on-click="closePreventiveMaintainance" id="plannedMaintCloseButton" class="btn btn-large btn-primary" disabled>									
+										结束维修/Close</paper-button>
+									</td> 
+								</tr>
+					</table>
+				</li>
+			</ol>
+		</code> </figure>
+
+	</form>
+	
+	
+	
+	
+	
+	
+	<br>
+
+	</section> <section> <br>
+	<br>
+	<br>
+	<form is="iron-form" id="PCMQM" method="POST" on-iron-form-response="ironformresponseTab2" content-type="application/json">
+
+		<figure class="code u-mb+"
+			style="background-color: white; color: black;"> <code>
+			<h3>PM工单明细</h3>
+			<table>
+				<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px"><b>工单号/WONO.*:</b></label>
+							</td>
+							<td > 
+							<paper-input  class="input-medium search-query span3"
+							id="WONOSecondTab" name="workOrderNumber"  style="width: 200px;" 
+							 required auto-validate error-message="{{localize('ssoid')}}" 
+							 >
+					 		</paper-input></td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px"><b>设备代码/EQSN*:</b></label>
+							</td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="EQSNSecondTab" name="equipId"  style="width: 200px;"
+							required auto-validate error-message="{{localize('ssoid')}}" >
+					 </paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px">
+								<label
+								class="control-label" style="width: 200px;"><b>维修工编号/SSO*:</b>
+								</label>
+							</td>
+							<td>
+								<paper-input class="input-medium search-query span3"
+								id="SSOPMSecondTab" name="creatorSSO"  style="width: 180px;"
+								required auto-validate error-message="{{localize('ssoid')}}" >
+						 		</paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px;"><b>关闭工单人SSO*:</b></label>
+							</td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="repairerSSOSecondTab" name="updaterSSO"  style="width: 180px;"
+							required auto-validate error-message="{{localize('ssoid')}}">
+					 </paper-input>
+							</td>
+						</tr>
+						<tr>
+							<td style="align: right; padding: 5px"><label
+								class="control-label" style="width: 200px;"> <b>备注/Remark:</b>
+							</label></td>
+							<td>
+							<paper-input class="input-medium search-query span3"
+							id="remarkSecondTab" name="remarks"  style="width: 180px;">
+							<!-- required auto-validate error-message="{{localize('ssoid')}}"  -->
+					 		</paper-input>
+							</td>
+						</tr>
+						<tr>
+						<td><label class="control-label"style="width: 200px;"> <b>是否需停机/Shutdown:</b></label></td>
+						<td>
+						<paper-checkbox noink id="shutdownSecondTab" name="shutdownFlag">
+						</paper-checkbox></td>
+							
+						</tr>
+						<tr><td><paper-input class="input-medium search-query span3"
+							id="idPMTab2" name="idPMTab2"  hidden>
+					 		</paper-input>
+					 		<paper-input class="input-medium search-query span3"
+							id="pcmStatus" name="pcmStatus"  hidden>
+					 		</paper-input>
+					 	</td>
+					 </tr>
+					 
+					 <tr><td><paper-input class="input-medium search-query span3"
+							id="equipNameId" name="equipNameId"  hidden>
+					 		</paper-input>
+					 	</td>
+					 </tr>
+					 
+					 <tr><td><paper-input class="input-medium search-query span3"
+							id="equipCatId" name="equipCatId"  hidden>
+					 		</paper-input>
+					 	</td>
+					 </tr>
+					 
+					 <tr><td><paper-input class="input-medium search-query span3"
+							id="equipCatName" name="equipCatName"  hidden>
+					 		</paper-input>
+					 	</td>
+					 </tr>
+			</table>
+
+			<byutv-jsonp id="validateEquipID" url="http://localhost:8081/pmms-api/validateDailyWorkOrder" params='{{getParamsEq(repairerSSOSecondTab,creatorSSO)}}' on-response="handleEquipmentFaultResponse" last-response="{{equipData}}"
+							debounce-duration="300" auto="true"></byutv-jsonp>
+									
+
+			<table>
+				<tr>
+									<td style="align: center">
+										<paper-button raised on-click="startPreventiveSecond" id="pcmStartButton" class="btn btn-large btn-primary" disabled>									
+										开始维修/Start</paper-button>
+									</td> 
+									<td style="align: center">
+										<paper-button raised on-click="validateFaultEquipData" id="pcmCloseButton"class="btn btn-large btn-primary" disabled> 结束维修/Close</paper-button>
+									</td>
+									<td style="align: center">
+										<paper-button raised on-click="pausePreventiveSecond" id="pcmPauseResumeButton" class="btn btn-large btn-primary" disabled>									
+										中断/恢复/Pause/Resume</paper-button>
+										
+									</td>
+				</tr>
+			</table>
+		</code> </figure>
+
+	</form>
+	<br>
+	<div class="pull-left" style="margin-top:20px;margin-bottom:20px">
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+			</label>
+
+			<div class="controls" style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndeptTab2"	url="http://localhost:8081/pmms-api/getDepartmentName" last-response="{{department}}" auto>
+					</byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown" id="deptDropDownTab2" selected-key="{{deptId}}"> 
+					<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+		</div>
+
+<!------------------------------------------- Start 19 dec testing --------------------------------------------->
+		<div class="control-group pull-left" style="width: 300px;">
+
+			<label class="control-label"
+				style="width: 130px;; margin-left: 40px;"> <b>工单种类/EQType:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="equipDropDwnTab2"  params='{"Type":"Category"}' url="http://localhost:8081/pmms-api/getDocumentTypeNames" last-response="{{doctyperesponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Select" data-ng-model="fileType" id="fileType" selected-key="{{fileType}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doctyperesponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								   <px-dropdown id="equiptDropDownValue" selected-key="{{equipType}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown> 
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="margin-top:-25px;margin-left:50px;">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKeysecond}}"
+				floatingLabel="Search" on-input="searchKeyChangedsecond"></paper-input>
+		</div>
+
+	</div>
+	</div>
+	<!------------------------------------------- End 19 dec testing --------------------------------------------->
+	
+	<br><br>
+		<div id="firstTime" class="module-body pull-left" style="width: 100%">
+	<byutv-jsonp id="preventiveQualityMaint" url="http://localhost:8081/pmms-api/getScheduleMaintWoPCM"  params='{{getData("EQ",deptId,equipType)}}'
+		 on-response="handleResponseSecondTable"	last-response="{{preventiveDataSecond}}" 
+		 debounce-duration="300" auto="true" >  </byutv-jsonp>
+	<px-data-table id="planedDataTable"	enable-column-resize selectable table-data="{{filteredDataSecond}}" on-px-row-click="selectedDataSecondTab">
+	<px-data-table-column   name="woId"  label="工单号"></px-data-table-column> 
+			<px-data-table-column	name="equipId"  label="设备编号"  ></px-data-table-column>
+			<px-data-table-column   name="equipNameId"  label="设备名称"></px-data-table-column>
+			<px-data-table-column   name="assetsId"  label="设备型号"></px-data-table-column>
+			<px-data-table-column	name="equipModel"  label="固定资产号"></px-data-table-column>
+			<px-data-table-column	name="shutDownFlag" label="是否需要停机"></px-data-table-column> 
+			<px-data-table-column	name="createdBy"  label="维修工"></px-data-table-column>
+			<px-data-table-column	name="maintStartDate" label="维修开始时间"></px-data-table-column> 
+			<px-data-table-column	name="maintEndDate" label="维修结束时间"></px-data-table-column>
+			<px-data-table-column	name="" label="维修计划开始月"></px-data-table-column> 
+	</px-data-table> </div></section> </px-tab-pages>  </section>
+   
+   
+  <!-- <paper-dialog id="modal" modal>
+  <p>Your Status has changed to close.</p>
+  <div class="buttons">
+    <paper-button dialog-confirm autofocus>OK</paper-button>
+  </div>
+</paper-dialog> -->
+   
+  </template>
+  <script>
+    Polymer({
+      /* this is the element's prototype */
+       is: 'planned-maintainance',
+       searchKey : null,
+       searchKeysecond :null,
+      properties: {
+  		currentRow: {
+		  			type: Object,
+		  			notify: true,
+		  			value: function() {
+		  					return {};
+  				}
+  			},
+  			workOrderNumber: {
+	  			type: String,
+	  			notify: true
+				},
+				privString : {
+					type : Array,
+					notify : true
+				}
+        },
+        ready: function() {
+           			 this.selected = 0;
+          },
+          selectedData: function(e) {
+			        var clickedRow = e.detail.row;
+			  		this.currentRow = clickedRow.row;
+			  		this.workOrderNumber = clickedRow.row.woId.value;
+			  		document.getElementById("WONO").value=clickedRow.row.woId.value;
+			  		document.getElementById("EQSN").value=clickedRow.row.equipId.value;
+			  		document.getElementById("SSOPM").value=clickedRow.row.createdBy.value;
+			  		document.getElementById("idPMTab1").value=clickedRow.row.id.value;
+			  		if(clickedRow.row.shutDownFlag.value == "on" || clickedRow.row.shutDownFlag.value == "Y")
+			  			{
+				  			var shutdownCheckBox = document.querySelector("#shutdown");
+				  			shutdownCheckBox.checked = true;
+				  			this.$.shutdown.checked= true;
+			  				//document.getElementById("shutdown").checked= true;
+			  			}
+			  		else{
+				  			var shutdownCheckBox = document.querySelector("#shutdown");
+				  			shutdownCheckBox.checked = false;
+				  			this.$.shutdown.checked= false;
+				  			//document.getElementById("shutdown").checked= false;
+			  			}
+			  		if (!clickedRow._selected) {
+						document.getElementById("pmPxDiv").classList.remove('hide');
+					} else {
+						document.getElementById("pmPxDiv").classList.add('hide');
+					}
+			  
+			  		if(!clickedRow._selected){
+			  			/* document.getElementById("plannedMaintStartButton").disabled = false;
+				  		document.getElementById("plannedMaintCloseButton").disabled = false; */
+				  		
+				  		var statusOfPCWorkorder = clickedRow.row.woStatus.value;
+
+		  				if (statusOfPCWorkorder == null || statusOfPCWorkorder == "未开始" || statusOfPCWorkorder == "") {
+		  					document.getElementById("plannedMaintStartButton").disabled = false;
+		  				} else {
+		  					document.getElementById("plannedMaintStartButton").disabled = true;
+		  				}
+
+		  				if (statusOfPCWorkorder == "进行中") {
+		  					document.getElementById("plannedMaintCloseButton").disabled = false;
+		  				} else {
+		  					document.getElementById("plannedMaintCloseButton").disabled = true;
+
+		  				}
+		  				
+			  		}else{
+			  			document.getElementById("plannedMaintStartButton").disabled = true;
+				  		document.getElementById("plannedMaintCloseButton").disabled = true;
+
+				  		document.getElementById("WONO").value="";
+				  		document.getElementById("EQSN").value="";
+				  		document.getElementById("SSOPM").value="";
+			  		}
+			  		
+			  		
+        	},
+        	selectedDataSecondTab: function(e) {
+		        var clickedRow = e.detail.row;
+		  		this.currentRow = clickedRow.row;
+		  		document.getElementById("WONOSecondTab").value=clickedRow.row.woId.value;
+		  		document.getElementById("EQSNSecondTab").value=clickedRow.row.equipId.value;
+		  		document.getElementById("SSOPMSecondTab").value=clickedRow.row.createdBy.value;
+		  		document.getElementById("idPMTab2").value=clickedRow.row.id.value;
+		  		if(clickedRow.row.shutDownFlag.value == "on" || clickedRow.row.shutDownFlag.value == "Y")
+	  			{
+		  			var shutdownCheckBox = document.querySelector("#shutdown");
+		  			shutdownCheckBox.checked = true;
+		  			this.$.shutdownSecondTab.checked= true;
+	  			}
+	  		else{
+		  			var shutdownCheckBox = document.querySelector("#shutdown");
+		  			shutdownCheckBox.checked = false;
+		  			this.$.shutdownSecondTab.checked= false;
+	  			}
+		  		
+		  		
+		  		if( clickedRow.row.woStatus.value == "暂停")
+				{
+		  			document.getElementById("pcmStatus").value = "进行中";
+				}
+				else {
+					document.getElementById("pcmStatus").value = "暂停";
+				}
+		  		
+		  		if (!clickedRow._selected) {
+					document.getElementById("pmPxDiv").classList.remove('hide');
+				} else {
+					document.getElementById("pmPxDiv").classList.add('hide');
+				}
+		  		
+		  		if(!clickedRow._selected){
+		  			/* document.getElementById("pcmStartButton").disabled = false;
+			  		document.getElementById("pcmCloseButton").disabled = false;
+			  		document.getElementById("pcmPauseResumeButton").disabled = false; */
+			  		
+			  		var statusOfPCMWorkorder = clickedRow.row.woStatus.value;
+
+	  				if (statusOfPCMWorkorder == null || statusOfPCMWorkorder == "未开始" || statusOfPCMWorkorder == "") {
+	  					document.getElementById("pcmStartButton").disabled = false;
+	  				} else {
+	  					document.getElementById("pcmStartButton").disabled = true;
+	  				}
+
+	  				if (statusOfPCMWorkorder == "进行中") {
+	  					document.getElementById("pcmCloseButton").disabled = false;
+	  				} else {
+	  					document.getElementById("pcmCloseButton").disabled = true;
+
+	  				}
+	  				if (statusOfPCMWorkorder == "进行中" || statusOfPCMWorkorder == "暂停") {
+	  					document.getElementById("pcmPauseResumeButton").disabled = false;
+	  				} else {
+	  					document.getElementById("pcmPauseResumeButton").disabled = true;
+	  				}
+		  		}else{
+		  			document.getElementById("pcmStartButton").disabled = true;
+			  		document.getElementById("pcmCloseButton").disabled = true;
+			  		document.getElementById("pcmPauseResumeButton").disabled = true;
+			  		
+			  		document.getElementById("WONOSecondTab").value="";
+			  		document.getElementById("EQSNSecondTab").value="";
+			  		document.getElementById("SSOPMSecondTab").value="";
+		  			this.$.shutdownSecondTab.checked= false;
+		  		}
+    	},
+    	 getParams : function(workOrderNumber) {
+   	       return {
+   	    	workOrderNumber : workOrderNumber
+   	       };
+ 		},
+ 		
+ 		getParamsEq : function(repairerSSOSecondTab,creatorSSO) {
+			return {
+				updaterSSO: repairerSSOSecondTab,
+				creatorSSOVal: creatorSSO
+			};
+		},
+ 		
+ 		 getData :  function(workOrderType, deptId, equipType) {
+			return {
+				workOrderType : "EQ",
+				deptId : deptId,
+				equipType : equipType
+			};
+  		},
+  		/* ---------------------------------12/15/2016 search start----------------------------- */
+  		/* ---------------------------------FirstTab Search----------------------------- */
+       searchKeyChanged : function(event) {
+			this.searchKey = event.target.value;
+			this._refreshTable1();
+		},
+
+		handleResponseFirstTable : function(event) {
+			this._refreshTable1();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable1 : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.preventiveData;
+			} else {
+				for ( var i in this.preventiveData) {
+					var jsonObject = this.preventiveData[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+ /* -------------------------------------Second Tab Search---------------------------------------------- */
+ 
+ searchKeyChangedsecond : function(event) {
+			this.searchKeysecond = event.target.value;
+			this._refreshTable();
+		},
+
+		handleResponseSecondTable : function(event) {
+			this._refreshTable();
+		},
+
+		_matches1 : function(jsonObject, searchKeysecond) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches1(fieldValue, searchKeysecond)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKeysecond) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKeysecond) {
+				array = this.preventiveDataSecond;
+			} else {
+				for ( var i in this.preventiveDataSecond) {
+					var jsonObject = this.preventiveDataSecond[i];
+					if (this._matches1(jsonObject, this.searchKeysecond)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredDataSecond = [];
+			this.filteredDataSecond = array;
+		},
+		/* ---------------------------------12/15/2016 search End----------------------------- */
+  		/* From the submit wala function, this will be called */
+		validateEquipmentFaultData:function(){
+			var selectedRowArray = document.getElementById("planedDataTable").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			this.repairerSSOSecondTab=document.getElementById('repairerSSOSecondTab').value;	
+			//var creatorSSO = document.getElementById('SSOPMSecondTab').value;	
+			this.creatorSSO = document.getElementById('SSOPMSecondTab').value;	
+			
+			
+			
+			alertData="Please provide mandatory data";
+			if(!this.repairerSSOSecondTab)
+				alertData = alertData+" SSO";
+			if(alertData.indexOf("SSO")>-1) {
+				alert(alertData);
+				return;
+			}
+			if(this.repairerSSOSecondTab != undefined && this.repairerSSOSecondTab!=null && this.repairerSSOSecondTab != "")
+			{
+				console.log("Value of repairerSSOSecondTab id is:"+repairerSSOSecondTab);				
+			}	
+			/* var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+			
+			
+			 if(!isCreatorValid){
+				return false;
+			}  */
+		
+		},
+		/* On Submit this function will be called */
+		validateFaultEquipData:function() {
+			document.querySelector('planned-maintainance').validateEquipmentFaultData();
+		},
+		handleEquipmentFaultResponse :function(e){
+			var details=e.detail;
+			//check the details, on the basis of response proceed for form submit 
+			if(details.data=="SUCCESS")
+				{ 
+				document.getElementById("PCMQM").action = "http://localhost:8081/pmms-api/closePreventiveMaintainanceQM";
+    		    document.getElementById('PCMQM').submit();
+				}
+			else{			
+				var data = details.data;
+				var mandatoryFields="";								
+				/* if(details.data.indexOf("updaterSSO") > -1)
+					mandatoryFields=mandatoryFields+"SSO "; */
+				if(data=="FailCreatorSSO"){
+					alert("Please enter valid Creator SSO");					
+					document.getElementById('SSOPMSecondTab').value="";
+					return;
+				}	
+				else if(data=="FailUpdatorSSO")
+				{
+					alert("Please enter valid Updator SSO");					
+					document.getElementById('repairerSSOSecondTab').value="";
+					return;
+				}
+				else if(data=="FAIL")
+				{
+					alert("Please fill the daily work!!");					
+					document.getElementById('repairerSSOSecondTab').value="";
+					return;
+				}
+				else{
+					
+					alert("WorkOrder is closed!!!!!")
+				}
+			
+				}
+			},	
+			
+        	startPreventiveMaintainance:function(){
+        		var selectedRowArray = document.getElementById("preventiveTableData").selectedRows;
+    			
+    			if(selectedRowArray.length > 1)
+    			{
+    				alert("Please select only one work order for operation.");
+    				return;
+    			}
+        		var creatorSSO = document.getElementById("SSOPM").value;
+    			//var mechanicSSO = document.getElementById("mechanic").value; 
+    			
+    			
+    			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+    		
+    			if(isCreatorValid){
+    				//var isUpdatorValid = this.isValidUpdatorSSO(mechanicSSO);
+    					//if(isUpdatorValid){
+        					var preventiveDataTable=document.getElementById("pmPxTable");
+        					var length = preventiveDataTable.__data__.tableData.length;
+    						var preveArr = [];
+
+    						for (var i = 0; i < length; i++) {
+    							var preventiveArr = [
+    							this.scanValue = preventiveDataTable.__data__.tableData[i]['scanValue'],
+    							this.spendTime = preventiveDataTable.__data__.tableData[i]['spendTime'],
+    							this.id = preventiveDataTable.__data__.tableData[i]['id'],
+    							];
+    							preveArr.push(preventiveArr);
+							}
+    						this.privString=preveArr;
+        					document.getElementById("Preventive").action = "http://localhost:8081/pmms-api/startPrevMaintainance";
+    		   			    document.getElementById("Preventive").submit();    		    
+    		   				alert("You have successfully Started Maintainance");
+    					/* }
+    					else{
+        					document.getElementById("mechanic").value="";
+        				} */
+    			}
+    			else{
+    				document.getElementById("SSOPM").value="";
+    			}
+      
+    		},
+    		closePreventiveMaintainance:function(){
+				var selectedRowArray = document.getElementById("preventiveTableData").selectedRows;
+    			
+    			if(selectedRowArray.length > 1)
+    			{
+    				alert("Please select only one work order for operation.");
+    				return;
+    			}
+    			var creatorSSO = document.getElementById("SSOPM").value;
+    			var mechanicSSO = document.getElementById("mechanic").value; 
+    			
+    			
+    			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+    		
+    			if(isCreatorValid){
+    				
+    				var isUpdatorValid = this.isValidUpdatorSSO(mechanicSSO);
+    				if(isUpdatorValid){
+    				var preventiveDataTable=document.getElementById("pmPxTable");
+            		var length = preventiveDataTable.__data__.tableData.length;
+        			var preveArr = [];
+
+        			for (var i = 0; i < length; i++) {
+        				var preventiveArr = [
+        						
+        						this.scanValue = preventiveDataTable.__data__.tableData[i]['scanValue'],
+        						this.spendTime = preventiveDataTable.__data__.tableData[i]['spendTime'],
+        						this.id = preventiveDataTable.__data__.tableData[i]['id'],
+        						];
+        				preveArr.push(preventiveArr);
+        				
+        			}
+        			this.privString=preveArr;
+        			document.getElementById("Preventive").action = "http://localhost:8081/pmms-api/closePrevMaintainance";
+        		    document.getElementById("Preventive").submit();
+        		    alert("You have successfully Closed Maintainance");
+    			} 
+    				else{
+    					document.getElementById("mechanic").value="";
+    				}
+    			}
+    			else{
+    				document.getElementById("SSOPM").value="";
+    			}
+    		
+   			
+    			
+        		/* document.getElementById("Preventive").action = "http://localhost:8081/pmms-api/closePrevMaintainance";
+    		    document.getElementById("Preventive").submit();
+    		    alert("You have successfully Closed Maintainance"); */
+    		   /*  modal.open(); */
+    		},
+    		
+    		isValidCreatorSSO : function (ssoValue){
+    			var resp = false;
+    			$.ajax({
+    				method  : 'GET',
+    				url     : 'http://localhost:8081/pmms-api/isValidSSO',
+    				dataType : 'json',
+				    data: {"sso" : ssoValue}, 
+    				async: false,
+    				error : function (status) {
+    					alert("Your operation failed");
+    					resp= false;
+    				},
+    				success: function(data) {
+    					if(data.data=="SUCCESS")
+    						{
+    							resp= true;
+    						}
+    					else if(data.data=="FAIL")
+    						{
+    							alert("Creator SSO is invalid.Please provide valid Creator SSO");
+    							resp= false;
+    						}
+    				}
+    			});
+    			return resp;
+    		},
+    		
+    		isValidUpdatorSSO : function (ssoValue){
+    			var resp = false;
+    			$.ajax({
+    				method  : 'GET',
+    				url     : 'http://localhost:8081/pmms-api/validateMantainTechSSO',
+    				dataType : 'json',
+				   // data: {"sso" : ssoValue}, 
+				     //data: {"updaterSSO" : ssoValue}, 
+				    data    :   {"sso" : ssoValue}, 
+    				async: false,
+    				error : function (status) {
+    					alert("Your operation failed");
+    					resp= false;
+    				},
+    				success: function(data) {
+    					if(data.data=="SUCCESS")
+    						{
+    							resp= true;
+    						}
+    					else if(data.data=="FAIL")
+    						{
+    							alert("Technician SSO is invalid.Please provide calid Technician SSO");
+    							resp= false;
+    						}
+    				}
+    			});
+    			return resp;
+    		},
+    		startPreventiveSecond:function(){
+				var selectedRowArray = document.getElementById("planedDataTable").selectedRows;
+    			
+    			if(selectedRowArray.length > 1)
+    			{
+    				alert("Please select only one work order for operation.");
+    				return;
+    			}
+    				var creatorSSO = document.getElementById("SSOPMSecondTab").value;
+    			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+        		
+    			if(isCreatorValid){
+			
+        		document.getElementById("PCMQM").action = "http://localhost:8081/pmms-api/StartPrevMaintainanceQM";
+    		    document.getElementById('PCMQM').submit();
+    			 
+    		    alert("You have successfully Started Maintainance");
+    			this.$.preventiveQualityMaint.generateRequest();
+      	}
+    			else{
+    				document.getElementById("SSOPMSecondTab").value="";
+    			}
+    		},
+    		refreshData : function() {
+    			this.$.preventiveQualityMaint.generateRequest();
+    		},
+
+    		
+    		/* closePreventiveSecond:function(){
+
+        		document.getElementById("PCMQM").action = "http://localhost:8081/pmms-api/closePreventiveMaintainanceQM";
+    		    document.getElementById('PCMQM').submit();
+    			 
+      
+    		}, */
+    		
+    		
+    		pausePreventiveSecond:function(e){
+			var selectedRowArray = document.getElementById("planedDataTable").selectedRows;
+    			
+    			if(selectedRowArray.length > 1)
+    			{
+    				alert("Please select only one work order for operation.");
+    				return;
+    			}
+				var creatorSSO = document.getElementById("SSOPMSecondTab").value;
+    			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+        		
+    			if(isCreatorValid){
+				var pcmRequestStatus = document.getElementById("pcmStatus").value;
+        		document.getElementById("PCMQM").action = "http://localhost:8081/pmms-api/pausePreventiveMaintainanceQM";
+    		    document.getElementById('PCMQM').submit();
+    		    if( pcmRequestStatus == "暂停")
+				{
+    		    	alert("You have successfully resumed Maintainance.");
+				}
+				else {
+					alert("You have successfully paused Maintainance.");
+				}
+      				}
+    			else{
+    				document.getElementById("SSOPMSecondTab").value="";
+        			}
+    		},
+    		
+    		
+    		ironformresponseTab1:function(e) {
+    			
+    			
+    			var equipIssueObject = {};
+    			var pcResultsData = document.getElementById("pmPxTable");
+    			var length = pcResultsData.__data__.tableData.length;
+    			var notOK_Flag = false;
+    			equipIssueObject.requestorSSO = e.srcElement[2].__data__.bindValue;
+    			equipIssueObject.inspectionWoId = e.currentTarget["0"].__data__.bindValue;
+    			equipIssueObject.inspectionSSO = e.currentTarget[3].__data__.bindValue;
+    			equipIssueObject.inspectionEquipId = e.currentTarget[1].__data__.bindValue;
+    			equipIssueObject.inspectionStatus = "未开始";
+    			
+    			for (var i = 0; i < length; i++) {
+    				var scanValue = pcResultsData.__data__.tableData[i]['scanValue'];
+    				if(scanValue!= null){
+    				if(!notOK_Flag && scanValue.substring(scanValue.length-2) == "01")
+    					{
+    						notOK_Flag =true;
+    						break;
+    					}
+    				}
+    			}
+    			 if(notOK_Flag)
+    				{
+    				
+    				  $.ajax({
+    				      type: "POST",
+    				      contentType : 'application/json; charset=utf-8',
+    				      dataType : 'json',
+    				      url: "http://localhost:8081/pmms-api/autoEquipmentIssueCreation",
+    				      data: JSON.stringify(equipIssueObject), // Note it is important
+    				      success :function(result) {
+    				    	 if(result.status == true){
+    				    		 alert(result.data);
+    				    		 return;
+    						}
+    				    }
+    				  }); 
+    				
+    				} 
+
+    			if(e.detail.__data__.response.status)
+    				{
+    					alert("Your data saved successfully.");
+    					this.$.preventiveMaintPlan.generateRequest();
+    					this.$.preventiveQualityMaint.generateRequest();
+    					 document.getElementById("Preventive").reset();
+    				}
+    			else
+    				{
+    					alert("There was an issue in processing your data. Please try again with valid data.");
+    				}
+
+    		},
+    		ironformresponseTab2:function(e) {
+
+    			if(e.detail.__data__.response.status)
+    				{
+    					alert("Your data saved successfully.");
+    					this.$.preventiveMaintPlan.generateRequest();
+    					this.$.preventiveQualityMaint.generateRequest();
+    					document.getElementById("PCMQM").reset();
+    				}
+    			else
+    				{
+    					alert("There was an issue in processing your data. Please try again with valid data.");
+    				}
+
+    		}
+    		
+    		
+    });
+    
+    
+  </script>
+</dom-module>

@@ -1,0 +1,281 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="TopNEquipmentBreakDownCount-Rpt"> <template id=addPaperDialog>
+<px-card icon="fa-suitcase"
+	header-text="Inspection & SM Recording and Tracking" chevron>
+<px-tab-set selected={{selected}}> <px-tab>TopNEquipmentBreakDownCount</px-tab>
+</px-tab-set>
+<style include="button-style">
+</style>
+<!-- local DOM goes here --> <px-tab-pages selected="{{selected}}">
+<section>
+	<form is="iron-form" content-type="application/json"id="equipmentBreakdownTime" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+		  <!-- <input type="hidden" id="TopNsearchData" name="TopNsearchData" value="{{TopNsearchData}}"> </input>   -->
+
+		 <br>		 	
+				<table>
+				<tr>
+				<td>
+					<label class="control-label" style="width: 130px;"><b>No of Equipment:</b></label>
+			         <px-dropdown  id ="cbxEquipNo" display-value="--全部 Select --">
+				        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+				          items='[{"key":"1", "val":"1"}, 
+				          {"key":"2", "val":"2"},
+				          {"key": "3", "val":"3"},
+				          {"key":"4","val":"4"},
+				          {"key":"5","val":"5"},
+				          {"key":"6","val":"6"},
+				          {"key":"7","val":"7"},
+				          {"key":"8","val":"8"},
+				          {"key":"9","val":"9"},
+				          {"key":"10","val":"10"},
+				          {"key":"11","val":"11"},
+				          {"key":"12","val":"12"},
+				          {"key":"13","val":"13"},
+				          {"key":"14","val":"14"},
+				          {"key":"15","val":"15"},
+				          {"key":"16","val":"16"},
+				          {"key":"17","val":"17"},
+				          {"key":"18","val":"18"},
+				          {"key":"19","val":"19"},
+				          {"key":"20","val":"20"}]'> 
+				          </px-dropdown-content>
+				          </px-dropdown>
+				          <paper-input id="limit" name="limit" hidden></paper-input>
+				        </td>
+		</tr>
+		</table>
+		
+		<br>
+		<br>
+		<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 400px">
+				<label class="control-label" style="width: 80px;"> <b>Start
+						Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="FacilityFromDate">
+				<paper-input id="FacilityFromDateFields" name="FacilityFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityFromDate" on-tap="triggerFacilityFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 400px;">
+				<label class="control-label" style="width: 80px; margin-left:20px;">
+					<b>End Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="FacilityToDate">
+				<paper-input id="FacilityToDateFields" name="FacilityToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityToDate" on-tap="triggerFacilityToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;margin-top: 30px;" on-click="TopNsearch">Search</paper-button>
+				<!-- <button class="btn btn-icon" type="button" style="display: inline-block;margin-top: 30px;"on-click="search">Search</button> -->
+			</div>
+		</div>
+		
+		<br>
+		<div id="container1" style="width: 100%; height: 400px;"></div>
+		<br><br>
+			<div id="table1" style="display:none">
+				<px-data-table id="DtlsTableData1" 	 table-data="{{resultData}}">
+			<px-data-table-column sortable name="equipId" label="Equipment No."></px-data-table-column>
+			<px-data-table-column sortable name="1" label="Jan"></px-data-table-column>
+			<px-data-table-column sortable name="2" label="Feb"></px-data-table-column>
+			<px-data-table-column sortable name="3" label="Mar"></px-data-table-column>
+			<px-data-table-column sortable name="4" label="Apr"></px-data-table-column>
+			<px-data-table-column sortable name="5" label="May"></px-data-table-column>
+			<px-data-table-column sortable name="6" label="Jun"></px-data-table-column>
+			<px-data-table-column sortable name="7" label="Jul"></px-data-table-column>
+			<px-data-table-column sortable name="8" label="Aug"></px-data-table-column>
+			<px-data-table-column sortable name="9" label="Sep"></px-data-table-column>
+			<px-data-table-column sortable name="10" label="Oct"></px-data-table-column>
+			<px-data-table-column sortable name="11" label="Nov"></px-data-table-column>
+			<px-data-table-column sortable name="12" label="Dec"></px-data-table-column>
+			
+
+		</div>
+</form>
+</section>
+</px-tab-pages> </px-card> </template> <script>
+
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'TopNEquipmentBreakDownCount-Rpt',
+			    
+			    behaviors: [
+				             PmmsBehaviors.LanguageBehavior
+				           ],
+				searchKey : null, 
+				
+				 FacilityFromDateField : {
+						type : String,
+						notify : true,
+						value : ""
+					},
+				FacilityToDateField : {
+						type : String,
+						notify : true,
+						value : ""
+					}, 
+				TopNsearchData: {
+					type: String,
+		  			notify: true,
+		  			value : ""
+				},
+				
+		  		limit:{
+		  			type: String,
+		  			notify: true,
+		  			value:""
+		  		},
+				  		
+		  		
+				refreshTable : function() {
+					var array = [];
+					array = this.operationLog;
+					this.operationLog = array;
+				},		  		
+		  		
+				triggerFacilityFromDateField : function() {
+					//console.log("calibrationdate : " + this.$.StockFromDate);
+					this.FacilityFromDate = this.$.FacilityFromDate.dateTime.substring(0,
+							this.$.FacilityFromDate.dateTime.indexOf('T'));
+					this.FacilityFromDateField = this.FacilityFromDate;
+					document.getElementById("FacilityFromDateFields").value = this.FacilityFromDateField;
+				},
+				triggerFacilityToDate : function() {
+					//console.log("calibrationdate : " + this.$.StockToDate);
+					this.FacilityToDate = this.$.FacilityToDate.dateTime.substring(0,
+							this.$.FacilityToDate.dateTime.indexOf('T'));
+					this.FacilityToDateField = this.FacilityToDate;
+					document.getElementById("FacilityToDateFields").value = this.FacilityToDateField;
+				},
+			
+		TopNsearch : function()
+		 {
+				if ((this.FacilityToDateField == undefined
+						|| this.FacilityToDateField == null || this.FacilityToDateField == "")
+						|| (this.FacilityFromDateField == undefined
+								|| this.FacilityFromDateField == null || this.FacilityFromDateField == "") ||
+								(this.limit == undefined
+										|| this.limit == null || this.limit == ""))
+					
+					alert("Please select From Date and To Date to search.");
+				else {
+					document.getElementById("equipmentBreakdownTime").action = "http://localhost:8081/pmms-api/getTopNEquipmentRptDetail";
+					document.getElementById('equipmentBreakdownTime').submit();
+				}
+
+		
+	},
+	
+				ironformresponse : function(e) {
+					var details = e.detail;
+					var responseData = e.detail.response;
+					var backData = responseData;
+					
+					this.resultData = responseData[0];
+					//var EqNo = document.getElementById("equipId").value;
+					if (details.status == 200) {
+						var container = "container1";
+						
+						//全局详细数据
+						
+						//全局设置highchart
+						
+						var options = {
+								chart : {
+									renderTo : container
+								},
+								credits:{
+									enabled:false                  //版权信息
+								},	
+								title : {
+									text : '',
+									x : -20
+								//center
+								},
+								subtitle : {
+									text : '无数据',
+									x : -20
+								},
+								xAxis : {
+									categories : [ '1月', '2月', '3月', '4月' , '5月' , '6月' , '7月' , '8月' , '9月' , '10月' , '11月' , '12月' ]
+								},
+								yAxis : {
+									title : {
+										text : '维修配件使用数量（个）/月'
+									},
+									plotLines : [ {
+										value : 0,
+										width : 1,
+										color : '#808080'
+									} ]
+								},
+								tooltip : {
+									valueSuffix : ''
+								},
+								tooltip : {
+									headerFormat : '<span style="font-size:15px">{point.key}配件使用数量</span><table>',
+									pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+											+ '<td style="padding:0"><b>{point.y:.2f} 个</b></td></tr>',
+									footerFormat : '</table>',
+									shared : true,
+									useHTML : true
+								},
+								plotOptions: {
+								    series: {
+								        step: 'left' 
+								    }
+								},
+								legend : {//图示说明 配置
+									layout : 'vertical',
+									align : 'right',
+									verticalAlign : 'middle',
+									borderWidth : 0
+								},
+								series : [{"name":"无数据","data":[null,null,null,null,null,null,null,null,null,null,null,null]}]
+							};
+
+						if(backData.length==1){//单个备件
+							if(backData[0]==null){
+								backData[0] = [null,null,null,null,null,null,null,null,null,null,null,null];
+							}
+						}else{//几大部门
+							for(var i=0;i<backData.length;i++){
+								if(backData[i]==null){
+									backData[i] = [null,null,null,null,null,null,null,null,null,null,null,null];
+								}
+							}
+						}
+						
+
+						
+							options.series = backData;
+							var chart = new Highcharts.Chart(options);
+
+				// 										var table = document.getElementById("DtlsTableData2");
+			} else {
+				alert("error in searching equipment issues list!!!!");
+			}
+		}
+	});
+
+	HTMLImports.whenReady(function() {
+
+		var cbxEquipNo = document.querySelector('#cbxEquipNo');
+		cbxEquipNo.addEventListener('dropdown_content_value_changed', function(
+				e) {
+			var addPaperDialog = document.getElementById('addPaperDialog');
+			document.getElementById('limit').value = e.detail.textValue;
+
+		});
+	});
+</script></dom-module>

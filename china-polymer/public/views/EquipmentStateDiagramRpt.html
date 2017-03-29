@@ -1,0 +1,178 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module id="EquipmentStateDiagram-Report"> <template>
+<px-card icon="fa-suitcase"
+	header-text="Equipment State Diagram Report" chevron>
+	
+ <style is="custom-style">
+  .flex {
+    @apply(--layout-horizontal);
+    width: 500px;
+  } 
+</style> 
+
+<style is="custom-style" include="iron-flex"></style>
+<div class="tabs-container__nav flex style-scope px-tab-set">
+         
+      <div id="tabtitle" >
+       <span> Normal   <span style="color:blue;margin-right: 20px;background: blue">Normallll</span></span> 
+       <span> Down   <span style="color:pink;margin-right: 20px;background: pink">Orangeeee</span></span>
+      </div>
+ </div>
+        
+        <br><br>
+<section>
+
+<form is="iron-form" content-type="application/json"
+		id="EquipmentStateDiagram" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="ironformresponse" method="post">
+<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>Key Importance:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">				
+
+					<px-dropdown display-value="--全部 Select --" data-ng-model="importenceDropDown"
+
+						id="importence" selected-key="{{imp}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25" 	on-tap="getReport"
+						max-cont-character-width="5" items='[{"key":"Y", "val": "Importance"}, {"key":"N", "val": "UnImportance"}]'>						
+					</px-dropdown-content> </px-dropdown>
+                <input type="hidden" name="importance" id="importance" value="{{imp}}" />
+				</div><br><br>
+
+         <div id="report" style="display: none">
+            <div id="dept1" style="display: none"><b>F1</b></div>
+				<div class="container flex">
+					<template is="dom-repeat" id="menu" items="{{menuItems1}}">					  
+					  
+					<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>
+					
+					</template>
+				</div><br>
+				<div id="dept2" style="display: none"> <b>F2</b></div>
+			<div class="container flex">
+				<template is="dom-repeat" id="menu" items="{{menuItems2}}">				
+				<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>			 
+				</template>
+			</div><br>
+			<div id="dept3" style="display: none"><b>F3</b></div>
+			<div class="container flex">
+				<template is="dom-repeat" id="menu" items="{{menuItems3}}">
+				<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>
+
+				</template>
+			</div><br>
+            <div id="dept4" style="display: none"><b>F4</b></div>
+			<div class="container flex">
+				<template is="dom-repeat" id="menu" items="{{menuItems4}}">
+				<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>
+				</template>
+			</div><br>
+			 <div id="dept5" style="display: none"><b>F5</b></div>
+			<div class="container flex">
+				<template is="dom-repeat" id="menu" items="{{menuItems5}}">
+				<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>
+				</template>
+			</div><br>
+			 <div id="dept6" style="display: none"><b>F6</b></div>
+			<div class="container flex">
+				<template is="dom-repeat" id="menu" items="{{menuItems6}}">
+				<div style="color:white;margin-right: 20px;background: {{item.color}};">{{item.equipId}}</div>
+				</template>
+			</div>
+			</div>
+			
+			</form>
+	
+</section>
+ </px-card> </template> <script>
+
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'EquipmentStateDiagram-Report',
+			    
+			    behaviors: [
+				             PmmsBehaviors.LanguageBehavior
+				           ],
+				searchKey : null, 					
+			
+			
+				getReport : function() {						
+						 document.getElementById("EquipmentStateDiagram").action = "http://localhost:8081/pmms-api/getEquipmentStateDiagramRpt";
+						 document.getElementById("EquipmentStateDiagram").submit();					
+					
+				},		
+				
+				
+				refreshTable : function() {
+					var array = [];
+					array = this.resultData;
+					this.resultData = array;
+				},
+				 
+		ironformresponse : function(e) {			
+				
+			    var details = e.detail;				
+				var Alldata = e.detail.response;
+				console.log(JSON.stringify(Alldata))
+				this.menuItems1=Alldata.F1;
+				
+				this.menuItems2=Alldata.F2;
+				
+				this.menuItems3=Alldata.F3;
+				
+				this.menuItems4=Alldata.F4;
+				
+				this.menuItems5=Alldata.F5;
+					
+				this.menuItems6=Alldata.dept0006;
+				
+			
+				
+		document.getElementById("report").style.display = "block";
+				if (this.menuItems1.length != 0) {
+					document.getElementById("dept1").style.display = "block";
+				} else {
+					document.getElementById("dept1").style.display = "none";
+				}
+
+				if (this.menuItems2.length != 0) {
+					document.getElementById("dept2").style.display = "block";
+				} else {
+					document.getElementById("dept2").style.display = "none";
+				}
+				
+				if (this.menuItems3.length != 0) {
+					document.getElementById("dept3").style.display = "block";
+				} else {
+					document.getElementById("dept3").style.display = "none";
+				}
+
+				if (this.menuItems4.length != 0) {
+					document.getElementById("dept4").style.display = "block";
+				} else {
+					document.getElementById("dept4").style.display = "none";
+
+				}
+				
+				if (this.menuItems5.length != 0) {
+					document.getElementById("dept5").style.display = "block";
+				} else {
+					document.getElementById("dept5").style.display = "none";
+
+				}
+				
+				if (this.menuItems6.length != 0) {
+					document.getElementById("dept6").style.display = "block";
+				} else {
+					document.getElementById("dept6").style.display = "none";
+
+				}
+
+			},
+
+		});
+	</script></dom-module>

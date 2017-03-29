@@ -1,0 +1,591 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="scheduled-maint"> 
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<template id="">
+<px-card icon="fa-suitcase" header-text="Scheduled Maintenance" chevron>
+	<px-tab-set selected="{{selected}}">
+    <px-tab>å½“å‰�å·¥å�•</px-tab>
+    <px-tab>åŽ†å�²è®¡åˆ’å·¥å�•</px-tab>
+  </px-tab-set>
+	<px-tab-pages selected="{{selected}}">
+    <section>
+        <br>
+        <br>
+       
+      	<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>ä»Žæ—¥æœŸ/From Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>è‡³ä»Š/To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+		</div>
+		<br><br>
+		<br><br>
+		<div class="controls" style="width: 800px";>
+			 <label class="control-label" style="width:100px;">
+                <b>åŒºåŸŸ/Department:</b>
+              </label>
+			<div class="controls" style="width: 200px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="dropdpwndept" 
+	                 url="http://localhost:8081/pmms-api/getDepartmentName"
+	                 last-response="{{department}}" auto></byutv-jsonp>
+	                        <px-dropdown id="pxDdept" selected-key="{{deptId}}" display-value="--å…¨éƒ¨ Select --"> <px-dropdown-content
+	                               extend-dropdown="true" extend-dropdown-by="25"
+	                               max-cont-character-width="5"
+	                               items="{{department}}">
+	                        </px-dropdown-content> </px-dropdown>
+				</div>
+				<div class="controls" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchWithDates">æŸ¥è¯¢/Search</button>
+			</div>
+			</div>
+		<br> <br>
+		<table>
+			<tr>
+				<!-- <td style="align: center;">
+					<paper-button raised on-click="startScheduledMaintenance" class="btn btn-large btn-primary">å¼€å§‹ç»´ä¿®/Start</paper-button>
+				</td>
+				 -->
+				<td style="align: center;">
+					<paper-button raised on-click="closeScheduledMaintenance" class="btn btn-large btn-primary">ç»“æ�Ÿç»´ä¿®/Close</paper-button>
+				</td>		
+			</tr>
+		</table>
+		<br> <br>
+	
+		<div class="input-append flR pull-right">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}" floatingLabel="Search"
+				on-input="searchKeyChanged"></paper-input>
+			
+		</div>
+		<form is="iron-form" content-type="application/json"
+			id="startAndCloseScheduledMaint" on-iron-form-invalid="ironforminvalid"
+			on-iron-form-response="handlestartAndCloseScheduledMaint" method="post">
+			
+				<input type="hidden" id="workOrderIds" name="workOrderIds"
+					value="{{workOrderIds}}">
+				</input>
+				
+			</form>
+		<form is="iron-form" content-type="application/json"
+			id="searchWorkOrders" on-iron-form-invalid="ironforminvalid"
+			on-iron-form-response="handleSeachedData" method="post">
+			
+				<input type="hidden" id="searchData" name="searchData"
+					value="{{searchData}}">
+				</input>
+				
+			</form>
+			<form is="iron-form" content-type="application/json"
+			id="searchClosedWorkOrders" on-iron-form-invalid="ironforminvalid"
+			on-iron-form-response="handleSeachedData1" method="post">
+			
+				<input type="hidden" id="searchData1" name="searchData1"
+					value="{{searchData}}">
+				</input>
+				
+			</form>
+		<br> <br>
+		
+		<div id="firstTime" class="module-body pull-left" style="width: 100%">
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getSMDetails"
+			params='{{getParams("EQ","open")}}'
+			on-response="handleResponse" last-response="{{mydata}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+
+		<px-data-table id="openWorkOrdersTable" selectable on-px-row-click="rowSelected"
+			selected-rows="{{selectedRows6}}" table-data="{{filteredData}}">
+			<px-data-table-column name="ID" label="ID" hide></px-data-table-column>
+		<px-data-table-column name="widsequence" label="work order sequence" hide></px-data-table-column> 
+		<px-data-table-column name="equipmentInfo.equipTypeDesc" label="Equipment Type" hide></px-data-table-column>
+		<px-data-table-column name="workOrderNumber" label="å·¥å�•å�·/WOSN"></px-data-table-column>
+		<px-data-table-column name="wordOrderStatus" label="WorkOrderStatus">
+		<px-data-table-highlight highlight-type="row" highlight-value="paused"
+			highlight-method="isPaused"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="start"
+			highlight-method="isStart"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row"
+			highlight-value="condclose" highlight-method="isCondClose"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row"
+			highlight-value="notstart" highlight-method="isNotStarted"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		</px-data-table-column> 
+		<px-data-table-column name="equipmentInfo.equipId" label="è®¾æ–½ä»£ç �/EQSN"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.equipNameId"
+			label="è®¾æ–½å��ç§°/EQNM"></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.equipModel" label="è®¾æ–½åž‹å�·/ EQModel"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.assetsID"
+			label="å›ºå®šèµ„äº§å�·/AssetSN"></px-data-table-column> <px-data-table-column
+			name="faultDescription" label="éœ€æ±‚æ��è¿°/Fault Description"></px-data-table-column>
+		<px-data-table-column name="creatorSSO" label="ç”³æŠ¥äºº/Requestor"></px-data-table-column>
+		<px-data-table-column name="createdDate" label="ç”³æŠ¥æ—¶é—´/ReqTime"></px-data-table-column>
+		<px-data-table-column name="safetyInvolved" label="æ¶‰å�Šå®‰å…¨éš�æ‚£/Safety"></px-data-table-column>
+		<px-data-table-column name="shutdownFlag" label="æ˜¯å�¦éœ€å�œæœº/Shutdown"></px-data-table-column>
+		<px-data-table-column name="updaterSSO" label="ç»´ä¿®å·¥/Maintainer"></px-data-table-column>
+		</px-data-table>
+	</div>
+	
+	<div class="legendmain mb10 pull-center"
+		style="text-align: center; font-size: 12px; width: 285px">
+		<span class="label"
+			style="width: 100px; background-color: blue; color: white; float: right;">
+			<h5>å¸¦é�—ç•™é—®é¢˜è¿�è¡Œ</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: #00FFFF; float: right;">
+			<h5>ç»´ä¿®ä¸­æ–­ä¸­</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: yellow; float: right;">
+			<h5>æ­£åœ¨ç»´ä¿®ä¸­</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: red; float: right;">
+			<h5>æœªå¼€å§‹ç»´ä¿®</h5>
+		</span>
+	</div>
+    </section>
+    
+    <section>
+    <br>
+        <br>
+         	<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>ä»Žæ—¥æœŸ/From Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField1" name="fromDateField1" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate1" on-tap="triggerFromDate1" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>è‡³ä»Š/To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField1" name="toDateField1" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate1" on-tap="triggerToDate1" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+		</div>
+		<br><br>
+		<br><br>
+		<div class="controls" style="width: 800px";>
+			 <label class="control-label" style="width:100px;">
+                <b>åŒºåŸŸ/Department:</b>
+              </label>
+			<div class="controls" style="width: 200px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="dropdpwndept" 
+	                 url="http://localhost:8081/pmms-api/getDepartmentName"
+	                 last-response="{{department}}" auto></byutv-jsonp>
+	                        <px-dropdown id="pxDdept1" selected-key="{{deptId}}" display-value="--å…¨éƒ¨ Select --"> <px-dropdown-content
+	                               extend-dropdown="true" extend-dropdown-by="25"
+	                               max-cont-character-width="5"
+	                               items="{{department}}">
+	                        </px-dropdown-content> </px-dropdown>
+				</div>
+				<div class="controls" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchWithDates1">æŸ¥è¯¢/Search</button>
+			</div>
+			</div>
+		<br> <br>
+			<!-- 
+			-----------------------------Download--------------------------------------------------->
+	<form content-type="application/xls" id="downloadExcel" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="callDownlaodExcelWoHistory">Download</paper-button> 
+		</div>		
+		</form>
+			<!-- -----------------------------Print---------------------------------------------------->
+			
+		
+		<form  content-type="application/pdf" id="printTable" method="GET">
+		<div class="control-group pull-left" style="width: 130px">
+		<paper-button class="btn btn-large btn-primary" raised on-click="printDataWOHistory">Print</paper-button>
+		</div>		
+		</form> 
+		<div class="input-append flR pull-right">
+			<paper-input floatingLabel id="searchId1" value="{{searchKey}}" floatingLabel="Search"
+				on-input="searchKeyChanged"></paper-input>
+			
+		</div>
+		<br> <br>
+       
+     <div id="firstTime" class="module-body pull-left" style="width: 100%">
+
+		<byutv-jsonp id="test1"
+			url="http://localhost:8081/pmms-api/getSMDetails"
+			params='{{getParams("EQ","closed")}}'
+			on-response="handleResponse1" last-response="{{mydata}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+
+		<px-data-table id="closedWorkOrdersTable" table-data="{{filteredData1}}">
+		<px-data-table-column name="widsequence" label="work order sequence"
+			hide></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.equipTypeDesc" label="Equipment Type" hide></px-data-table-column>
+
+		<px-data-table-column name="workOrderNumber" label="å·¥å�•å�·/WOSN"></px-data-table-column>
+		<px-data-table-column name="wordOrderStatus" label="WorkOrderStatus">
+		<px-data-table-highlight highlight-type="row" highlight-value="paused"
+			highlight-method="isPaused"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="start"
+			highlight-method="isStart"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row"
+			highlight-value="condclose" highlight-method="isCondClose"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row"
+			highlight-value="notstart" highlight-method="isNotStarted"
+			import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		</px-data-table-column> 
+	<px-data-table-column name="equipmentInfo.equipId" label="è®¾æ–½ä»£ç �/EQSN"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.equipNameId"
+			label="è®¾æ–½å��ç§°/EQNM"></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.equipModel" label="è®¾æ–½åž‹å�·/ EQModel"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.assetsID"
+			label="å›ºå®šèµ„äº§å�·/AssetSN"></px-data-table-column> <px-data-table-column
+			name="faultDescription" label="éœ€æ±‚æ��è¿°/Fault Description"></px-data-table-column>
+		<px-data-table-column name="creatorSSO" label="ç”³æŠ¥äºº/Requestor"></px-data-table-column>
+		<px-data-table-column name="createdDate" label="ç”³æŠ¥æ—¶é—´/ReqTime"></px-data-table-column>
+		<px-data-table-column name="safetyInvolved" label="æ¶‰å�Šå®‰å…¨éš�æ‚£/Safety"></px-data-table-column>
+		<px-data-table-column name="shutdownFlag" label="æ˜¯å�¦éœ€å�œæœº/Shutdown"></px-data-table-column>
+		<px-data-table-column name="updaterSSO" label="ç»´ä¿®å·¥/Maintainer"></px-data-table-column>
+		</px-data-table>
+	</div>
+	
+	<div class="legendmain mb10 pull-center"
+		style="text-align: center; font-size: 12px; width: 285px">
+		<span class="label"
+			style="width: 100px; background-color: blue; color: white; float: right;">
+			<h5>å¸¦é�—ç•™é—®é¢˜è¿�è¡Œ</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: #00FFFF; float: right;">
+			<h5>ç»´ä¿®ä¸­æ–­ä¸­</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: yellow; float: right;">
+			<h5>æ­£åœ¨ç»´ä¿®ä¸­</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: red; float: right;">
+			<h5>æœªå¼€å§‹ç»´ä¿®</h5>
+		</span>
+	</div>
+      <br>
+          </section>    
+  </px-tab-pages>
+</px-card>
+ </template> 
+
+<script>
+Polymer({
+	/* this is the element's prototype */
+	is : 'scheduled-maint',
+	
+	 behaviors: [
+	             PmmsBehaviors.LanguageBehavior
+	           ],
+
+	searchKey : null,
+	deptDropDown: {
+		type: String,
+			notify: true
+	},
+	fromDate: {
+		type: String,
+			notify: true
+	},
+	toDate: {
+		type: String,
+			notify: true
+	},
+	toDateField: {
+			type: String,
+			notify: true,
+			value:""
+		},
+	fromDateField: {
+			type: String,
+			notify: true,
+			value:""
+		},
+	fromDate1: {
+		type: String,
+			notify: true
+	},
+	toDate1: {
+		type: String,
+			notify: true
+	},
+	toDateField1: {
+			type: String,
+			notify: true,
+			value:""
+		},
+	fromDateField1: {
+			type: String,
+			notify: true,
+			value:""
+		},
+	currentRow: {
+		type: Object,
+		notify: true,
+		value: function() {
+			return {};
+		}
+	}, 
+	workOrderIds: {
+		type: String,
+			notify: true
+	},  
+	searchData: {
+		type: String,
+			notify: true
+	},  
+	
+	
+	listeners: {
+		'pxDdept.dropdown_content_value_changed': 'dropdeptDropDown'			
+		
+		},
+		dropdeptDropDown: function (event) {			
+			/* alert(' dropdeptDropDown key is:'+event.detail.key);
+			alert('dropdeptDropDown value is:'+event.detail.textValue);
+			alert("this.deptId"+this.deptId); */
+			this.deptDropDown=event.detail.textValue;
+			alert("this.deptId"+this.deptDropDown);
+		},
+		
+		triggerToDate: function(){
+		this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+		this.toDateField=this.toDate;// to pass it to server side
+		document.getElementById("toDateField").value=this.toDateField;// To show it in input field
+	},
+	
+	triggerFromDate: function(){
+		this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+		this.fromDateField=this.fromDate;
+		document.getElementById("fromDateField").value=this.fromDateField;
+	},
+	searchWithDates : function(){
+		if((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+			alert("Please select From Date and To Date to search Work Orders.");
+		else {
+			if(this.deptDropDown.toString() == "[object Object]")
+				this.deptDropDown="--å…¨éƒ¨ Select --";
+			this.searchData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+",'type':"+"openWorkOrders"+",'deptId':"+this.deptDropDown+"}";
+			document.getElementById("searchWorkOrders").action = "http://localhost:8081/pmms-api/getOpenWorkOrders";
+			 document.getElementById('searchWorkOrders').submit();
+		}	
+	},
+	
+	triggerToDate1: function(){
+		this.toDate1 = this.$.toDate1.dateTime.substring(0,this.$.toDate1.dateTime.indexOf('T'));
+		this.toDateField1=this.toDate1;// to pass it to server side
+		document.getElementById("toDateField1").value=this.toDateField1;// To show it in input field
+	},
+	
+	triggerFromDate1: function(){
+		this.fromDate1 = this.$.fromDate1.dateTime.substring(0,this.$.fromDate1.dateTime.indexOf('T'));
+		this.fromDateField1=this.fromDate1;
+		document.getElementById("fromDateField1").value=this.fromDateField1;
+	},
+	
+	searchWithDates1 : function(){
+		if((this.toDateField1==undefined || this.toDateField1==null || this.toDateField1=="") || (this.fromDateField1==undefined || this.fromDateField1==null || this.fromDateField1=="") )
+			alert("Please select From Date and To Date to search Work Orders.");
+		else {
+			this.searchData="{'fromDate':"+this.fromDateField1+",'toDate':"+this.toDateField1+",'type':"+"closedWorkOrders"+",'deptId':"+this.deptDropDown+"}";
+			document.getElementById("searchClosedWorkOrders").action = "http://localhost:8081/pmms-api/getOpenWorkOrders";
+			 document.getElementById('searchClosedWorkOrders').submit();
+		}	
+	},
+	handleSeachedData : function(e) {
+		var details=e.detail;
+		//this.searchKey = e.target.value.toLowerCase();
+		
+		var tableid="openWorkOrdersTable";
+		/* if(e.currentTarget.id == "searchWorkOrders")
+			tableid="closedWorkOrdersTable"; */
+		
+		if(details.status==200)
+		{
+			this.mydata=details.response;
+			this._refreshTable(tableid);
+		}
+		else{			
+			alert("error in searching work orders!!!!");
+		
+		}
+	},
+	handleSeachedData1 : function(e) {
+		var details=e.detail;
+		//this.searchKey = e.target.value.toLowerCase();
+		
+		var tableid="closedWorkOrdersTable";
+		/* if(e.currentTarget.id == "searchWorkOrders")
+			tableid="closedWorkOrdersTable"; */
+		
+		if(details.status==200)
+		{
+			this.mydata=details.response;
+			this._refreshTable(tableid);
+		}
+		else{			
+			alert("error in searching work orders!!!!");
+		
+		}
+	},
+	
+	printDataWOHistory : function() {
+		 document.getElementById("printTableWOHistory").action = "http://localhost:8081/pmms-api/printOrPdfSheduledWorkorder?status='CL'"; 
+		 document.getElementById("printTableWOHistory").submit();
+		   
+	},
+
+	callDownlaodExcelWoHistory  : function() {
+
+	 document.getElementById("downloadExcelWOHistory").action = "http://localhost:8081/pmms-api/getSheduledWorkorderListDownlaod?status='CL'";
+	 document.getElementById("downloadExcelWOHistory").submit();
+
+	}, 
+	
+	rowSelected:function(e){
+		var clickedRow = e.detail.row;		
+		this.currentRow = clickedRow.row;
+		 if(this.ids == undefined)
+				this.ids=[];
+		 
+		 var index = this.ids.indexOf((clickedRow.row.id.value));
+		  
+		  if(clickedRow._selected==false && index == -1)//not present in ids list
+			  this.ids.push(clickedRow.row.id.value);
+		  else if(index > -1) //already there
+			  this.ids.splice(index,1); 
+	},
+	
+	refreshData : function() {
+		this.$.test.generateRequest();
+		this.$.test1.generateRequest();
+	},
+	
+	searchKeyChanged : function(event) {
+		console.log(this.equipType);
+		this.searchKey = event.target.value.toLowerCase();
+		
+		var tableid="openWorkOrdersTable";
+		if(event.currentTarget.id == "searchId1")
+			tableid="closedWorkOrdersTable";
+		
+		this._refreshTable(tableid);
+	},
+
+	handleResponse : function(event) {
+		this._refreshTable("openWorkOrdersTable");
+	},
+	handleResponse1 : function(event) {
+		this._refreshTable("closedWorkOrdersTable");
+	},
+
+	_matches : function(jsonObject, searchKey) {
+		for (field in jsonObject) {
+			var fieldValue = jsonObject[field];
+
+			if (fieldValue === Object(fieldValue)
+					&& this._matches(fieldValue, searchKey)) {
+				return true;
+			} else if (fieldValue && fieldValue.indexOf
+					&& fieldValue.indexOf(this.searchKey) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	_refreshTable : function(tableId) {
+		var array = [];
+		if (!this.searchKey) {
+			array = this.mydata;
+		} else {
+			for ( var i in this.mydata) {
+				var jsonObject = this.mydata[i];
+				if (this._matches(jsonObject, this.searchKey)) {
+					array.push(jsonObject);
+
+				}
+
+			}
+		}
+
+		if(tableId == "openWorkOrdersTable"){
+			this.filteredData = [];
+			this.filteredData = array;
+		}
+		else if(tableId == "closedWorkOrdersTable"){
+			this.filteredData1 = [];
+			this.filteredData1 = array;
+		}
+	},
+
+	getParams : function(workOrderType, deptId) {
+		return {
+			workOrderType : "EQ",
+			deptId : deptId
+		};
+	},
+
+	startScheduledMaintenance :function() {
+		if(this.ids.length>0){
+			this.workOrderIds=this.ids.toString();
+			
+			document.getElementById("startAndCloseScheduledMaint").action = "http://localhost:8081/pmms-api/startScheduledMaint";
+			 document.getElementById('startAndCloseScheduledMaint').submit();
+		}
+	},		
+	closeScheduledMaintenance :function() {
+		if(this.ids.length>0){
+			this.workOrderIds=this.ids.toString();
+			document.getElementById("startAndCloseScheduledMaint").action = "http://localhost:8081/pmms-api/closeScheduledMaint";
+			 document.getElementById('startAndCloseScheduledMaint').submit();
+		}
+			
+	},
+	handlestartAndCloseScheduledMaint : function(e){
+		var details=e.detail;
+		this.workOrderIds="";
+		this.ids=[];
+		//check the details, on the basis of response proceed for form submit 
+		if(details.status==200 && e.target.id=='startAndCloseScheduledMaint')
+			{
+			document.querySelector('scheduled-maint').refreshData();
+			}
+		else{			
+			alert("error on starting  or closing sheduled Maintenance Work Orders!!!!");
+		
+		}
+	},
+});
+</script> </dom-module>
+
+
+
+
+
+

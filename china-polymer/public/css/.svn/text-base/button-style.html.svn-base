@@ -1,0 +1,28 @@
+<dom-module id="button-style"> <template>
+<style>
+.btn, .btn:link, .btn:visited, .btn:hover, .btn:active {
+	color: black;
+	background-color: #e7e7e7;
+}
+
+.btn {
+	display: inline-block;
+	overflow: visible;
+	height: 2em;
+	margin: 0;
+	border: 1px solid #b1b1bc;
+	border-radius: 3px;
+	padding: 0 1em;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+	font-family: "GE Inspira Sans", sans-serif; 
+	line-height: calc(2em - 2px);
+	-webkit-font-smoothing: antialiased;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	white-space: nowrap;
+	background-color: #e4e4ea;
+}
+</style>
+</template> </dom-module>

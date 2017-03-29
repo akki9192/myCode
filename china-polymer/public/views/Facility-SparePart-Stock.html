@@ -1,0 +1,376 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="/../css/pmms.css">
+<dom-module id="Facility-SparePart-Stock"> 
+<template>
+<px-card chevron>
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	
+	 <!-- <form is="iron-form" content-type="application/json" id="facilitySparePartStock" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSearchedData" method="post">
+		<input type="hidden" id="SearchDropdownData" name="SearchDropdownData" value="{{SearchDropdownData}}"> --> 	
+	<!-- <div class="module-body pull-left">
+	<table><tr>
+		<td>
+		<label class="control-label" style="width: 75px;"> <b>Facility type:</b>
+		</label></td>
+		<td><byutv-jsonp id="dropdpwnfact" params='{"Type":"spare_part_category"}' url="http://localhost:8081/pmms-api/getFactoryNames"
+			last-response="{{sparePartCategoryRes}}" auto></byutv-jsonp>
+		<px-dropdown display-value="Select" id="category" selected-key="{{sparePartCategory}}"> 
+			<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{sparePartCategoryRes}}">
+			</px-dropdown-content>
+		 </px-dropdown>
+		 </td>
+		 </tr>
+		 </table>
+	 </div>	   -->
+	 
+	 <br><br>	<br><br>	
+	 
+	 <div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="form1" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSearchedData" method="post">	
+				<paper-button raised onclick="add.open()" class="btn btn-large btn-primary">Add</paper-button>				
+					<paper-dialog id="add">
+				 		<paper-dialog-scrollable>	
+								<table>
+						           <tr>
+						             <td style="padding: 5px"><label class="control-label"><b>Model No.:*</b></label></td>
+						              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" name="sparePartNo" style="width: 180px;" required auto-validate error-message ="{{localize('sparePartNo')}}">
+							              </paper-input>   
+						              </td>
+						           </tr>
+						            <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Spare Part name*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3"  name="name" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Type*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3"  name="type" style="width: 180px;"  required auto-validate error-message="{{localize('spareType')}}"> 
+						                   </paper-input>        
+						                </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Manufacturer Name*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3"  name="source" style="width: 180px;" required auto-validate error-message="{{localize('source')}}"> 
+						                   </paper-input>  
+						                </td>
+						             </tr>                   
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Unit*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3" name="measurement" style="width: 180px;"  required auto-validate error-message="{{localize('unit')}}">
+						                   </paper-input>  
+						                 </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Price*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3"  name="price" style="width: 180px;" required auto-validate error-message="{{localize('sparePrice')}}">
+						                    </paper-input>  
+						                </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Category*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3"  name="sparePartCategory" style="width: 180px;" required auto-validate error-message="{{localize('sparePrice')}}">
+						                    </paper-input>  
+						                </td>
+						             </tr>
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>stock*:</b></label></td>
+						                <td style="padding: 5px">
+							                <paper-input class="span3" name="stock" style="width: 180px;" required auto-validate error-message="{{localize('stock')}}">
+							                </paper-input>  
+						                </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Saftey Stock*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3"  name="safteyStock" style="width: 180px;"  required auto-validate error-message="{{localize('saftyStock')}}"> 
+						                 </paper-input>  
+						               </td>
+						              </tr>  
+						              <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>System Saftey Stock*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3"  name="sysSafteyStock" style="width: 180px;"  required auto-validate error-message="{{localize('systemStock')}}"> 
+						                    </paper-input>  
+						                </td>
+						              </tr>  
+						              <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Location Name*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3"  name="location" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>  
+						               <tr>
+						                  <td style="padding: 5px"><label class="control-label"  style="width: 200px"><b>Remark*:</b></label></td>
+						                  <td style="padding: 5px">
+						                      <paper-input class="span3" name="remark" style="width: 180px;"  required auto-validate error-message="{{localize('sapreRemarks')}}"> 
+						                       </paper-input>   
+						                   </td>
+						               </tr>    
+						          </table>
+						       </paper-dialog-scrollable>
+					  				<div class="buttons">
+					   					 <paper-button dialog-dismiss >Cancel</paper-button>
+					    				 <paper-button dialog-confirm autofocus on-click="handleAddRequest">OK</paper-button>
+					 				 </div>
+					   </paper-dialog>		
+				</form>
+			</div>
+		<!--*****************************************************************EDIT************************************************************************-->
+		<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementEdit" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSearchedData" method="post">	
+				<paper-button raised onclick="edit.open()" class="btn btn-large btn-primary" >Edit</paper-button>				
+					<paper-dialog id="edit">
+				 		<paper-dialog-scrollable>	
+								<table>
+						           <tr>
+						           <td>  <input type="hidden" id="sparePartId" name="id"></td>
+						           </tr>
+						           <tr>
+						             <td style="padding: 5px"><label class="control-label"><b>Model No.:*:</b></label></td>
+						              <td style="padding: 5px">
+						            
+						              <paper-input class="paper-input-medium search-query span3" id="sparePartNo" name="sparePartNo" style="width: 180px;" ><!-- required auto-validate error-message ="{{localize('sparePartNo')}}"> -->
+						              </paper-input>   
+						              </td>
+						           </tr>
+						            <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Spare Part name*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3" id="name" name="name" style="width: 180px;" ><!-- required auto-validate error-message="{{localize('spareName')}}" -->
+						                  </paper-input>  
+									    </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Type*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3" id="type" name="type" style="width: 180px;" ><!-- required auto-validate error-message="{{localize('spareType')}}"> -->
+						                   </paper-input>        
+						                </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Manufacturer Name*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3" id="source" name="source" style="width: 180px;"><!--  required auto-validate error-message="{{localize('source')}}"> -->
+						                   </paper-input>  
+						                </td>
+						             </tr>                   
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Unit*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3" id="measurement" name="measurement" style="width: 180px;"><!--  required auto-validate error-message="{{localize('unit')}}"> -->
+						                   </paper-input>  
+						                 </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Price*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3" id="price" name="price" style="width: 180px;" required auto-validate error-message="{{localize('sparePrice')}}">
+						                    </paper-input>  
+						                </td>
+						             </tr>
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Category*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3" id="sparePartCategory" name="sparePartCategory" style="width: 180px;" required auto-validate error-message="{{localize('sparePrice')}}">
+						                    </paper-input>  
+						                </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>stock*:</b></label></td>
+						                <td style="padding: 5px">
+							                <paper-input class="span3" id="SpareStock" name="stock" style="width: 180px;"><!--  required auto-validate error-message="{{localize('stock')}}"> -->
+							                </paper-input>  
+						                </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Safety Stock*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3" id="SpareSafteyStock" name="safteyStock" style="width: 180px;"><!--  required auto-validate error-message="{{localize('saftyStock')}}"> -->
+						                 </paper-input>  
+						               </td>
+						              </tr>  
+						              <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>System Safety Stock*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3" id="SystemSafteyStock" name="sysSafteyStock" style="width: 180px;"><!--   required auto-validate error-message="{{localize('systemStock')}}"> -->
+						                    </paper-input>  
+						                </td>
+						              </tr>  
+						              <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Location Name*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3" id="SpareLocation" name="location" style="width: 180px;" ><!--  required auto-validate error-message="{{localize('spareLocation')}}"> -->
+						                    </paper-input>  
+						                 </td>
+						               </tr>  
+						               <tr>
+						                  <td style="padding: 5px"><label class="control-label"  style="width: 200px"><b>Remark*:</b></label></td>
+						                  <td style="padding: 5px">
+						                      <paper-input class="span3" id="SpareRemark" name="remark" style="width: 180px;"><!--  required auto-validate error-message="{{localize('sapreRemarks')}}"> -->
+						                       </paper-input>   
+						                   </td>
+						               </tr>    
+						          </table>
+						       </paper-dialog-scrollable>
+					  				<div class="buttons">
+					   					 <paper-button dialog-dismiss >Cancel</paper-button>
+					    				 <paper-button dialog-confirm autofocus on-click="handleEditRequest">OK</paper-button>
+					 				 </div>
+					   </paper-dialog>		
+				</form>
+			</div>
+<!--******************************************************DELETE****************************************************************************************-->
+	
+	<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementDelete" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+	<input type="hidden" id="deleteSapreId" name="deleteSapreId" value="{{deleteSapreId}}" />
+		<paper-button class="btn btn-large btn-primary" raised
+			on-click="deleteSaprePart">Delete</paper-button>
+	
+	<br><br>
+	
+	<br>
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp url="http://localhost:8081/pmms-api/getSparePartDataFacility" id="spareStockTable" last-response="{{facilityStockData}}" auto>
+		</byutv-jsonp>
+		<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{facilityStockData}}" on-px-row-click="selectedRow">  
+		
+			<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+			<px-data-table-column name="sparePartNo" label="Spare Part No." id="modelNo"></px-data-table-column> 
+			<px-data-table-column name="name" label="Name" id="name"></px-data-table-column>
+			<px-data-table-column name="type" label="Type" id="type"></px-data-table-column>
+			<px-data-table-column name="source" label="Source" id="manufacturer"></px-data-table-column> 
+			<px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column>
+			<px-data-table-column name="price" label="Price" id="price"></px-data-table-column>
+			<px-data-table-column name="stock" label="Stock" id="stock"></px-data-table-column> 
+			<px-data-table-column name="sparePartCategory" label="Category" id="cat" ></px-data-table-column> 
+			 <px-data-table-column name="safteyStock" label="Saftey Stock" id="safty"></px-data-table-column> 
+			 <px-data-table-column name="sysSafteyStock" label="Sys Saftey Stock" id="system"></px-data-table-column> 
+			 <px-data-table-column name="location" label="Loacation" id="loc"></px-data-table-column> 
+			 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column> 
+			 
+		</px-data-table>
+		
+	</div>
+				 <!-- params='{{getParams(sparePartCategory)}}' -->
+		</px-data-table>
+		</form>					
+	</section>
+	</px-card>
+	</template>
+	
+	<script>
+	Polymer({
+	    /* this is the element's prototype */
+	    is: 'Facility-SparePart-Stock',
+	   
+	    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			 getParams : function(sparePartCategory) {
+				return {
+					sparePartCategory : 'FAC'
+				};
+			},  
+			sparePartCategory: {
+				type: String,
+	  			notify: true
+			},
+			deleteSapreId: {
+				type: String,
+	  			notify: true
+			}},
+
+	refreshData : function() {
+		this.$.facilityStockTable.generateRequest();
+	    },	
+	    
+	    handleAddRequest : function() {			    	
+	    	document.getElementById("form1").action = "http://localhost:8081/pmms-api/SaveSpare";
+			document.getElementById('form1').submit(); 
+			
+	    },
+	    selectedRow: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+			 document.getElementById("deleteSapreId").value = clickedRow.row.id.value;
+	  	  		document.getElementById("sparePartId").value=clickedRow.row.id.value;
+	  	 		document.getElementById("sparePartNo").value=clickedRow.row.sparePartNo.value;	  	 		
+	  	 		document.getElementById("name").value=clickedRow.row.name.value;
+	  	 		document.getElementById("type").value=clickedRow.row.type.value;
+	  	 		document.getElementById("source").value=clickedRow.row.source.value;
+	  	 		document.getElementById("measurement").value=clickedRow.row.measurement.value;
+	  	 		document.getElementById("price").value=clickedRow.row.price.value;
+	  	 		document.getElementById("sparePartCategory").value=clickedRow.row.sparePartCategory.value;
+	  	 		document.getElementById("SpareStock").value=clickedRow.row.stock.value;
+	  	 		document.getElementById("SpareSafteyStock").value=clickedRow.row.safteyStock.value;
+	  	 		document.getElementById("SystemSafteyStock").value=clickedRow.row.sysSafteyStock.value;
+	  	 		document.getElementById("SpareLocation").value=clickedRow.row.location.value;
+	  	 		document.getElementById("SpareRemark").value=clickedRow.row.remark.value; 	 		
+  	 		
+    },
+    handleEditRequest : function(){
+    	document.getElementById("FacilitySpaerPartManagementEdit").action = "http://localhost:8081/pmms-api/SaveSpare";
+		document.getElementById('FacilitySpaerPartManagementEdit').submit(); 
+    },
+    deleteSaprePart : function(){				
+    	if(this.ids.length>0){
+			this.deleteSapreId=this.ids.toString();
+			document.getElementById('FacilitySpaerPartManagementDelete').action = "http://localhost:8081/pmms-api/deleteSparePart";
+			document.getElementById('FacilitySpaerPartManagementDelete')
+					.submit();
+			alert("Selected row is deleted successfully");
+				
+		}
+	},
+	ironformresponse:function(){
+		
+		document.querySelector('Facility-SparePart-Stock').refreshData();
+	},
+	
+			handleSearchedData : function(e) {
+				var details = e.detail;
+				if (details.status == 200) {
+					this.minidata1 = details.response;
+					this.refreshTable("facilityStockData");
+				} else {
+					alert("error in searching list!!!!");
+
+				}
+			},
+			refreshTable : function() {
+
+				var array = [];
+				array = this.minidata1;
+				this.minidata1 = array;
+			}
+	  });
+	
+	</script></dom-module>

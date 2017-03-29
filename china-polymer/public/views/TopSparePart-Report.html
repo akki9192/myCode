@@ -1,0 +1,100 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="TopSparePart-Report"> 
+	<template>
+		<px-card icon="fa-suitcase" header-text="Spare Part" chevron>
+			<style include="button-style">
+			</style>
+			
+<!-- local DOM goes here --> 
+
+			<px-tab-pages selected="{{selected}}">
+				<section>
+				<br>
+					<form is="iron-form" content-type="application/json" id="equipmentBreakdownTime" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+						 <input type="hidden" id="searchData" name="searchData" value="{{searchData}}"><br> 
+						
+						<div class="pull-left" style="width: 1000px";>
+							<div class="control-group pull-left" style="width: 400px">
+								<label class="control-label" style="width: 80px;"> <b>开始日期/Start Date:</b> </label>
+								<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="startdate">
+									<paper-input id="startDateField" name="startDateField" tyle="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+									<px-datetime-picker id="startDate" id="startDate" on-tap="triggerStartDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+									</px-datetime-picker>
+								</div>
+							</div>
+						</div> 
+						
+						<div class="pull-left" style="width: 1000px";>
+							<div class="control-group pull-left" style="width: 400px">
+								<label class="control-label" style="width: 80px;"> <b>结束日期/End Date:</b> </label>
+								<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="startdate">
+									<paper-input id="startDateField" name="startDateField" tyle="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+									<px-datetime-picker id="startDate" id="startDate" on-tap="triggerStartDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+									</px-datetime-picker>
+								</div>
+							</div>
+						</div> 
+						<div class="control-group pull-left" style="width: 400px">
+							<label class="col-sm-2 control-label pull-left"> <b>价格范围/Price Range:</b> </label>
+							<px-dropdown  id ="mnthDropDown" display-value="--全部 Select --">
+				        		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+				         				 items='[{"key":"1", "val":"100-500"}, 
+										         {"key":"2", "val":"500-1000"},
+										         {"key": "3", "val":"1000-2000"},
+										         {"key":"4","val":"2000-6000"}]'> 
+				          	</px-dropdown-content>
+				          </px-dropdown>
+						</div>
+						<div class="control-group pull-left" style="width: 400px">
+							<label class="col-sm-2 control-label pull-left"> <b>备件数量/Number of Spare Part:</b> </label>
+							<px-dropdown  id ="mnthDropDown" display-value="--全部 Select --">
+				        		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+				         				 items='[{"key":"1", "val":"100-500"}, {"key":"2", "val":"500-1000"}, {"key": "3", "val":"1000-2000"},
+										         {"key":"4","val":"2000-6000"}, {"key":"5", "val":"100-500"},  {"key":"6", "val":"500-1000"},
+										         {"key": "7", "val":"1000-2000"}, {"key":"8","val":"2000-6000"},  {"key":"9", "val":"100-500"}, 
+										         {"key":"10", "val":"500-1000"}, {"key": "11", "val":"1000-2000"}, {"key":"12","val":"2000-6000"},
+										         {"key":"13", "val":"100-500"},  {"key":"14", "val":"500-1000"}, {"key": "15", "val":"1000-2000"},
+										         {"key":"16","val":"2000-6000"}, {"key":"17", "val":"100-500"},  {"key":"18", "val":"500-1000"},
+										         {"key": "19", "val":"1000-2000"}, {"key":"20","val":"2000-6000"}]'> 
+				          		</px-dropdown-content>
+				          	</px-dropdown>
+						</div>
+						<div class="control-group pull-left" style="width: 400px">
+							<paper-button raised on-click="search1" class="btn btn-large btn-primary"  style="margin-left: 40px;">查询/Search</paper-button> 
+						</div>
+						
+						
+					   <div id="table2" style="display:none">
+							<px-data-table id="DtlsTableData1" 	 table-data="{{resultData}}">
+								<px-data-table-column  name="name" label="设备编号/EQNO."></px-data-table-column>
+								<px-data-table-column name="jan" label="1月"></px-data-table-column>
+								<px-data-table-column name="feb" label="2月"></px-data-table-column>
+								<px-data-table-column name="mar" label="3月"></px-data-table-column>
+								<px-data-table-column name="apr" label="4月"></px-data-table-column>
+								<px-data-table-column name="may" label="5月"></px-data-table-column>
+								<px-data-table-column name="jun" label="6月"></px-data-table-column>
+								<px-data-table-column name="jul" label="7月"></px-data-table-column>
+								<px-data-table-column name="aug" label="8月"></px-data-table-column>
+								<px-data-table-column name="sep" label="9月"></px-data-table-column>
+								<px-data-table-column name="oct" label="10月"></px-data-table-column>
+								<px-data-table-column name="nov" label="11月"></px-data-table-column>
+								<px-data-table-column name="dec" label="12月"></px-data-table-column>
+							</px-data-table>
+						</div> 
+						 
+					</form>
+				</section>
+			</px-tab-pages>
+		</px-card>
+	</template>
+	
+		<script>
+				
+		Polymer({
+		    /* this is the element's prototype */
+		    is: 'TopSparePart-Report',
+		});
+		    
+		</script>
+</dom-module>

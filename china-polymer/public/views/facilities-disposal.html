@@ -1,0 +1,143 @@
+<meta charset="utf-8">
+<link  rel="import" href="../css/button-style.html">
+<dom-module id="facilities-maintainance">
+  <template>
+     	
+ <style include="button-style" >
+ 
+ </style>
+   <!-- local DOM goes here -->
+   	 
+	<section> <br>
+ <table>
+                     <tr>
+                           <td><label class="control-label"
+                                  ><b>SSO*:</b></label></td>
+
+                           <td >
+                           <paper-input class="input-medium search-query span3"
+                                  id="creatorSSO" name="creatorSSO"  style="width: 180px;"
+                                  required auto-validate error-message="{{localize('ssoid')}}">
+                                  </paper-input>      </td>
+                                  
+                     </tr>
+                      <tr>                      
+                <div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>Maintenance Type:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwnmaintype"
+						url="http://localhost:8081/pmms-api/getMaintenanceType"
+						last-response="{{MaintenanceType}}" auto></byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="maintypeDropDown"
+						id="maintypeDropDown" selected-key="{{maintType}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{MaintenanceType}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+                                  
+                     </tr>
+                     <tr>                      
+                <div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>Issue Type:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwnissuetype"
+						url="http://localhost:8081/pmms-api/getIssueType"
+						last-response="{{faultType}}" auto></byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown"
+						id="issuetypeDropDown" selected-key="{{faultType}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{faultType}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+               </tr>
+                       <tr>                      
+                <div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>Location:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwnlocation"
+						url="http://localhost:8081/pmms-api/getLocation"
+						last-response="{{location}}" auto></byutv-jsonp>
+					<px-dropdown display-value="Select" data-ng-model="locDropDown"
+						id="locationDropDown" selected-key="{{location}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{location}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+               </tr>   
+                 <tr>
+                           <td><label class="control-label"
+                                  ><b>Comments*:</b></label></td>
+
+                           <td >
+                           <paper-input class="input-medium search-query span3"
+                                  id="comments" name="comments"  style="width: 180px;"
+                                  required auto-validate error-message="{{localize('comments')}}">
+                                  </paper-input>      </td>
+                                  
+                     </tr>        
+                  
+                 </table> 
+                 <div style="margin-left: 50px">
+		<table>
+			<tr>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Start</button>
+				</td>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Close</button>
+				</td>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Pause/Resume</button>
+				</td>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Confirm</button>
+				</td>
+			</tr>
+			  <tr>                      
+                <div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>Factories:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwnfactories"
+						url="http://localhost:8081/pmms-api/getFactories"
+						last-response="{{location}}" auto></byutv-jsonp>
+					<px-dropdown display-value="Select" data-ng-model="locDropDown"
+						id="locationDropDown" selected-key="{{location}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{location}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+               </tr>   
+			
+		</table>    
+       </section> 
+   
+  </template>
+  </dom-module>
+ 
+             
+                     
+ 

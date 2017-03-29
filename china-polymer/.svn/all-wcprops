@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/PMMS_30670_SVN/!svn/ver/1412/PMMS/pmms
+END
+.bowerrc
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.bowerrc
+END
+LICENSE.md
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/LICENSE.md
+END
+manifest-dev.yml
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/manifest-dev.yml
+END
+manifest-release.yml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/manifest-release.yml
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.project
+END
+.travis.yml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.travis.yml
+END
+bower.json
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/PMMS_30670_SVN/!svn/ver/273/PMMS/pmms/bower.json
+END
+.editorconfig
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.editorconfig
+END
+karma.conf.js
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/karma.conf.js
+END
+README.md
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/README.md
+END
+manifest-sysint.yml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/manifest-sysint.yml
+END
+protractor.conf.js
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/protractor.conf.js
+END
+HISTORY.md
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/HISTORY.md
+END
+cf-bluegreen-deploy.sh
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/cf-bluegreen-deploy.sh
+END
+.jshintrc
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.jshintrc
+END
+package.json
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/package.json
+END
+.gitignore
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/.gitignore
+END
+manifest.yml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/PMMS_30670_SVN/!svn/ver/1050/PMMS/pmms/manifest.yml
+END
+Gruntfile.js
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/Gruntfile.js
+END
+OSS_Notice.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/OSS_Notice.pdf
+END

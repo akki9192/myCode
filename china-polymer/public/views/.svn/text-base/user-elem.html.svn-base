@@ -1,0 +1,332 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link  rel="import" href="../css/button-style.html">
+<!-- <link rel="import" href="../bower_components/px-validation/px-validation.html" /> -->
+<link rel="import" href="../bower_components/common-role-access-behavior/common-role-access-behavior.html" />
+<!-- <link rel="stylesheet" type="text/css" href="../bower_components/px-validation/css/px-validation-demo.css"/> -->
+<dom-module id="user-mngt">
+
+<template> 
+<px-card
+	icon="fa-suitcase" header-text="User Management" chevron>
+
+<table align="right">
+	<tr>
+		<td style=""><span>
+					<paper-input floatingLabel id="searchId"
+				value="{{searchKey}}" on-input="searchKeyChanged" ></paper-input>
+		</span>
+	</tr>
+	<br>
+	<br>
+</table>
+
+<div class="legendmain mb10 pull-left" width=100% height=100%>
+
+	
+	
+	<px-modal class="add" modal-heading="Add New User" id="addModal" btn-modal-negative="Back" btn-modal-positive="Submit">
+	<button class="btn btn--primary modal-trigger" disabled='{{isDisabled("Work Order Managemen", "Planned Maintenance Work Order", "E")}}'>Add</button>
+	
+	<form name="userform" data-ng-controller="UserCtrl" novalidate>
+		<table>
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>FirstName:</b>
+					</label></span> <span> <input type="text"
+						class="input-medium search-query span3" name="firstName"
+						data-ng-model="firstName" required> </span></td>
+
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>LastName:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label></span> <span> <input type="text"
+						class="input-medium search-query span3" name="lastName"
+						data-ng-model="lastName" required>
+				</span></td>
+			</tr>
+
+
+			<tr>
+				<td><span> 
+				<!-- <px-validation id="sso_validate">
+                      <px-validator validation-method="isNumber" import="../bower_components/px-validation/px-example-validator.html">
+                      </px-validator>
+                    </px-validation> -->
+               <label class="control-label" id="label1" style="width: 100px;"> <b>SSO:</b></label></span> 
+				<span> 
+				<!-- 	<input type="text" id="example1" class="input-medium search-query span3" name="sso" placeholder="" onkeyup="isValid(value)"
+						data-ng-model="sso" required style="margin-left: 42px;"> -->
+							<input type="text" id="example1" class="input-medium search-query span3" name="sso" placeholder=""
+						data-ng-model="sso" required style="margin-left: 42px;">
+					<br/>
+                   <!--  <small id="validationWarning1" class="form-field__help validation-error hidden"></small>	 -->
+				</span>		
+						
+						</td>
+
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>Password:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label></span> <span> <input type="password"
+						class="input-medium search-query span3" name="password"
+						data-ng-model="passwd" required>
+				</span></td>
+			</tr>
+
+
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>EmailID:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label></span> <span> <input type="text"
+						class="input-medium search-query span3" name="emailId"
+						data-ng-model="emailId" required></span></td>
+
+
+
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>Contact Number:</b>
+					</label>
+				</span> <span> <input type="text"
+						class="input-medium search-query span3" name="contactNo"
+						data-ng-model="contactNo" required></span> </span></td>
+			</tr>
+
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>Role:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label>
+				</span> <span>
+						<div
+							style="width: 170px; height: 50px; margin-left: 20px; display: inline-block;"
+							name="role">
+							<px-dropdown display-value="Select Role" data-ng-model="role"
+								id="role"> <px-dropdown-content
+								data-ng-model="role" extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="6"
+								items='[{"key":"Admin", "val": "Admin"}, {"key":"IDM", "val": "IDM"}, {"key":"PCM", "val": "PCM"}]'>
+							</px-dropdown-content> </px-dropdown>
+						</div>
+				</span></td>
+				<td style="align: right"><span> <label
+						class="control-label" style="width: 100px;"> <b>Language:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label>
+				</span> <span>
+						<div
+							style="width: 170px; height: 50px; margin-left: 20px; display: inline-block;"
+							name="language">
+							<px-dropdown display-value="Select" data-ng-model="language"
+								id="language"> <px-dropdown-content
+								extend-dropdown="true" extend-dropdown-by="25"
+								max-cont-character-width="6"
+								items='[{"key":"En", "val": "English"}, {"key":"Zh", "val": "Chinese"}]'>
+							</px-dropdown-content> </px-dropdown>
+						</div>
+				</span></td>
+			</tr>
+		</table>
+	</form>
+
+
+	</px-modal>
+
+	<!--  -------------------------------------------------------------------------------------------- -->
+	<px-modal class="add" btn-modal-negative="Back" btn-modal-positive="Submit" modal-heading="Edit Information" id="editModal">
+	<button class="btn btn--primary modal-trigger" disabled='{{isDisabled("Work Order Managemen", "Planned Maintenance Work Order", "E")}}'>Edit</button>
+
+	<form name="userform" data-ng-controller="UserCtrl" novalidate>
+		<template is="dom-repeat" items="{{selectedRows6}}" as="myItem">
+		<table>
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>FirstName:</b>
+					</label></span> <span> <input type="text" id="firstName"
+						class="input-medium search-query span3" style="width: 180px"
+						name="firstName" data-ng-model="firstName"
+						value="{{myItem.row.firstName.value}}">
+				</span></td>
+
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>LastName:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label></span> <span> <input type="text" id="lastName"
+						class="input-medium search-query span3" style="width: 180px"
+						name="lastName" data-ng-model="lastName"
+						value="{{myItem.row.lastName.value}}">
+				</span></td>
+			</tr>
+
+
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>EmailID:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label></span> <span> <input type="text" id="emailId"
+						class="input-medium search-query span3" style="width: 180px"
+						name="emailId" data-ng-model="emailId"
+						value="{{myItem.row.emailId.value}}">
+
+				</span></td>
+
+
+
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>ContactNumber:</b>&nbsp;
+					</label>
+				</span> <span> <input type="text" id="contactNo"
+						class="input-medium search-query span3" style="width: 180px"
+						name="contactNo" data-ng-model="contactNo"
+						value="{{myItem.row.contactNo.value}}">
+				</span></td>
+			</tr>
+
+			<tr>
+				<td><span> <label class="control-label"
+						style="width: 100px;"> <b>Role:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label>
+				</span> <span>
+						<div
+							style="width: 170px; height: 50px; margin-left: 20px; display: inline-block;"
+							name="role">
+							<px-dropdown display-value="Select Role" data-ng-model="role"
+								id="editRole"> <px-dropdown-content
+								data-ng-model="role" extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="6"
+								items='[{"key":"Admin", "val": "Admin"}, {"key":"IDM", "val": "IDM"}, {"key":"PCM", "val": "PCM"}]'>
+							</px-dropdown-content> </px-dropdown>
+						</div>
+				</span></td>
+				<td style="align: right"><span> <label
+						class="control-label" style="width: 100px;"> <b>Language:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</label>
+				</span> <span>
+						<div
+							style="width: 170px; height: 50px; margin-left: 20px; display: inline-block;"
+							name="language">
+							<px-dropdown display-value="Select" data-ng-model="language"
+								id="editLanguage"> <px-dropdown-content
+								data-ng-model="language" extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="6"
+								items='[{"key":"En", "val": "English"}, {"key":"Zh", "val": "Chinese"}]'>
+							</px-dropdown-content> </px-dropdown>
+						</div>
+				</span></td>
+			</tr>
+		</table>
+		</template>
+
+	</form>
+	</px-modal>
+	
+	<px-modal class="add" modal-heading="Are you sure you want to delete selected Users? " id="deleteModal" btn-modal-negative="No" btn-modal-positive="Yes">
+	<button class="btn btn--primary modal-trigger" disabled='{{isDisabled("Work Order Managemen", "Planned Maintenance Work Order", "E")}}'>Delete</button>
+	<form name="userform" data-ng-controller="UserCtrl" novalidate>
+		
+	</form>
+	</px-modal>
+	
+	<!-- <button type="button" class="btn btn-primary btn-lg btn-block"
+		style="margin-left: 20px;" id="delete" data-ng-controller="UserCtrl"
+		data-ng-click="removeUser()">Delete</button> -->
+</div>
+<div class="module-body pull-left" style="width: 100%"
+	data-ng-controller="UserCtrl">
+
+	<byutv-jsonp id="test" url="http://localhost:8081/pmms-api/getUsers" on-response="handleResponse"
+		last-response="{{minidata1}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+	<px-data-table enable-column-resize selectable
+		selected-rows="{{selectedRows6}}" table-data="{{filteredData}}"
+		id="usertable"> <px-data-table-column name="sso" 
+		id="sso_chkbox" label="SSO" align="center"
+		px-row-click="singleRowSelect()"></px-data-table-column> <px-data-table-column
+		name="firstName" id="firstName" label="FirstName" align="center"></px-data-table-column>
+	<px-data-table-column name="lastName" id="lastName" label="LastName"
+		align="center"></px-data-table-column> <px-data-table-column
+		name="emailId" id="emailId" label="EmailID" align="center"></px-data-table-column>
+	<px-data-table-column name="contactNo" id="contactNo"
+		label="ContactNumber" align="center"></px-data-table-column> <px-data-table-column
+		name="role" data-ng-model="role" id="role" label="Role" align="center"
+		id="row6"></px-data-table-column> <px-data-table-column
+		name="language" data-ng-model="language" id="language"
+		label="Language" align="center"></px-data-table-column> </px-data-table>
+</div>
+ </px-card> 
+</template>
+ <script>
+  
+ /* isValid = function(value) {
+	 var validator=document.querySelector('#sso_validate'),
+     error = validator.validate(value);    
+	 if(value && !error.passedValidation) {
+    	 document.querySelector("#validationWarning1").innerHTML = error.failedValidationErrorMessage;
+    	 document.querySelector("#validationWarning1").classList.remove("hidden");
+    	 document.querySelector("#example1").classList.add("validation-error");
+    	 document.querySelector("#label1").classList.add("validation-error");
+     }
+     else {
+    	 document.querySelector("#validationWarning1").classList.add("hidden");
+    	 document.querySelector("#example1").classList.remove("validation-error");
+    	 document.querySelector("#label1").classList.remove("validation-error");
+     }
+ }
+  */
+  Polymer({
+      /* this is the element's prototype */
+      is: 'user-mngt',
+      
+      behaviors: [
+                  PmmsBehaviors.RoleBehavior
+                ] ,  
+
+      
+      searchKey : null,
+      
+      moduleName : null,
+      
+      submoduleName : null,
+      
+      operation : null,
+      
+      refreshData: function() {
+          this.$.test.generateRequest();
+      },
+     
+      searchKeyChanged: function (event) {
+         //console.log(this.equipType);
+                  this.searchKey = event.target.value;
+                  this._refreshTable();
+      },
+      handleResponse: function (event) {
+          this._refreshTable();
+},
+      
+      _matches: function (jsonObject, searchKey) {
+                  for (field in jsonObject) {
+                              var fieldValue = jsonObject[field];
+
+                              if (fieldValue === Object(fieldValue)
+                                          && this._matches(fieldValue, searchKey)) {
+                                          return true;
+                              } else if (fieldValue && fieldValue.indexOf
+                                          && fieldValue.indexOf(this.searchKey) >= 0) {
+                                          return true;
+                              }                                               
+                  }
+                  return false;
+      },
+   
+      _refreshTable : function() {                                 
+                  var array = [];
+                  if (!this.searchKey) {
+                              array = this.minidata1;
+                  } else {
+                	          for (var i in this.minidata1) {
+                                          var jsonObject = this.minidata1[i]; 
+                                          if (this._matches(jsonObject, this.searchKey)) {
+                                                      array.push(jsonObject);
+                                          }                                               
+                              }
+                  }
+                  
+                  this.filteredData = [];
+                  this.filteredData = array;
+      }
+    });
+  </script>
+ </dom-module>

@@ -1,0 +1,345 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="EquipmentBreakdownTimeStatistics-Rpt"> <template>
+<px-card icon="fa-suitcase"
+	header-text="Equipment Breakdown Times Statistics Report" chevron>
+<style include="button-style">
+</style>
+<section>
+	<form is="iron-form" content-type="application/json"
+		id="equipmentBreakdownTime" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="ironformresponse" method="post">
+		 <input type="hidden" id="searchData" name="searchData"
+			value="{{searchData}}"> </input> <br>
+			<input type="hidden" name="srcEvent" id="srcEvent">
+		<table>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"><b>Equipment
+							ID:</b></label></td>
+				<td style="padding: 5px"><paper-input
+						class="paper-input-medium search-query span3" name="equipId"
+						id="equipId" style="width: 180px;"> </paper-input></td>
+			</tr>
+		</table>	
+		
+		<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 400px">
+				<label class="control-label" style="width: 80px;"> <b>Start
+						Date:</b>
+				</label>
+
+				<div class="controls"
+					style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+					name="startdate">
+					<paper-input id="startDateField" name="startDateField"
+						style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="startDate" id="startDate"
+						on-tap="triggerStartDate"
+						style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 400px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;">
+					<b>End Date:</b>
+				</label>
+				<div class="controls"
+					style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;"
+					name="enddate">
+					<paper-input id="endDateField" name="endDateField"
+						style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="endDate" id="endDate"
+						on-tap="triggerEndDate"
+						style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+					</px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button"
+					style="display: inline-block; margin-top: 30px;" on-click="search">æŸ¥è¯¢/Search</button>
+			</div>
+		
+			<div><paper-button raised on-click="fiveYrData" id="btn-byYear" class="btn btn-large btn-primary" style="margin-top: 20px"";
+			>按年份统计/View Five Years </paper-button></td></tr></div>		
+		
+		</div>
+		<br>
+		<br>
+	
+		<div id="container1" style="width: 50%; height: 400px;"></div>
+		<br><br><br><br>
+		<div id="table1" style="display:none">
+			
+				<px-data-table id="DtlsTableData" 	 table-data="{{resultData}}">
+					<px-data-table-column name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="1" label="1月"></px-data-table-column>
+					<px-data-table-column name="2" label="2月"></px-data-table-column>
+					<px-data-table-column name="3" label="3月"></px-data-table-column>
+					<px-data-table-column name="4" label="4月"></px-data-table-column>
+					<px-data-table-column name="5" label="5月"></px-data-table-column>
+					<px-data-table-column name="6" label="6月"></px-data-table-column>
+					<px-data-table-column name="7" label="7月"></px-data-table-column>
+					<px-data-table-column name="8" label="8月"></px-data-table-column>
+					<px-data-table-column name="9" label="9月"></px-data-table-column>
+					<px-data-table-column name="10" label="10月"></px-data-table-column>
+					<px-data-table-column name="11" label="11月"></px-data-table-column>
+					<px-data-table-column name="12" label="12月"></px-data-table-column>
+				</px-data-table>
+				</div>	
+				
+					<div id="table2" style="display:none">
+			
+				<px-data-table id="DtlsTableData" 	 table-data="{{resultData1}}">
+					<px-data-table-column name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="2012" label="2012"></px-data-table-column>
+					<px-data-table-column name="2013" label="2013"></px-data-table-column>
+					<px-data-table-column name="2014" label="2014"></px-data-table-column>
+					<px-data-table-column name="2015" label="2015"></px-data-table-column>
+					<px-data-table-column name="2016" label="2016"></px-data-table-column>
+					
+				</px-data-table>
+				</div>		
+		
+			
+</form>
+	
+</section>
+ </px-card> </template> <script>
+
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'EquipmentBreakdownTimeStatistics-Rpt',
+			    
+			    behaviors: [
+				             PmmsBehaviors.LanguageBehavior
+				           ],
+				searchKey : null, 
+				
+			 startDate: {
+					type: String,
+		  			notify: true
+				},
+				
+				endDate: {
+					type: String,
+		  			notify: true
+				},
+				
+				startDateField: {
+		  			type: String,
+		  			notify: true,
+		  			value:""
+		  		},
+		  		
+				endDateField: {
+		  			type: String,
+		  			notify: true,
+		  			value:""
+		  		},		  		
+		  		
+				refreshTable : function() {
+					var array = [];
+					array = this.operationLog;
+					this.operationLog = array;
+				},		  		
+		  		
+		  		triggerStartDate: function(){
+					console.log("Start date : "+this.$.startDate);
+					this.startDate = this.$.startDate.dateTime.substring(0,this.$.startDate.dateTime.indexOf('T'));
+					this.startDateField=this.startDate;
+					document.getElementById("startDateField").value=this.startDateField;
+				},
+				
+				triggerEndDate: function(){
+					console.log("End date : "+this.$.endDate);
+					this.endDate = this.$.endDate.dateTime.substring(0,this.$.endDate.dateTime.indexOf('T'));
+					this.endDateField=this.endDate;
+					document.getElementById("endDateField").value=this.endDateField;
+				},		
+			
+			
+			search : function() {
+				var EqNo = document.getElementById("equipId").value;
+				this.searchData="{'startDate':"+this.startDateField+",'endDate':"+this.endDateField+"}";
+				
+					 if (EqNo!='')
+					 {							 
+						 document.getElementById("srcEvent").value = "EquipNOBsaed";
+						 document.getElementById("table1").style.display ="none";
+						 document.getElementById("table2").style.display ="none";
+						 document.getElementById("equipmentBreakdownTime").action = "http://localhost:8081/pmms-api/getEquipmentBDTimestatisticsRpt";
+						 document.getElementById("equipmentBreakdownTime").submit();
+					}	 else{ 	
+						document.getElementById("srcEvent").value = "";
+						document.getElementById("table1").style.display ="block";
+						document.getElementById("table2").style.display ="none";
+						document.getElementById("equipmentBreakdownTime").action = "http://localhost:8081/pmms-api/getEquipmentBDTimestatisticsRpt";
+						document.getElementById("equipmentBreakdownTime").submit();
+					 }
+					
+				},	
+				
+				
+				fiveYrData :function()
+				{
+				 document.getElementById("srcEvent").value = "";
+				 document.getElementById("srcEvent").value = "fiveYear";
+				 document.getElementById("table1").style.display ="none";	
+				 document.getElementById("table2").style.display ="block";
+				 document.getElementById("equipmentBreakdownTime").action = "http://localhost:8081/pmms-api/getEquipmentBDTimestatisticsRptFiveYear";
+				 document.getElementById("equipmentBreakdownTime").submit();	
+					
+				},
+				
+				
+				_refreshTable : function() {
+					var array = [];
+					array = this.resultData;
+					this.resultData = array;
+				},
+			
+		ironformresponse : function(e) {
+			var srcEvent=document.getElementById("srcEvent").value 
+			if(srcEvent=="EquipNOBsaed")
+				{
+				
+			    var details = e.detail;				
+				var Alldata = e.detail.response;
+				console.log(JSON.stringify(Alldata))
+				var data=Alldata.chart			
+				
+			    Highcharts.chart('container1', {
+			        chart: {
+			            type: 'column'
+			        },
+			        title: {
+			            text: 'Equipment Breakdown Time Statistics Report'
+			        },
+			        subtitle: {
+			            text: 'Source: EquipmentNumber'
+			        },
+			        xAxis: {
+			        	categories : [ '1月', '2月', '3月', '4月' , '5月' , '6月' , '7月' , '8月' , '9月' , '10月' , '11月' , '12月' ]
+			           
+			        },
+			        yAxis: {
+			            min: 0,
+			            title: {
+			                text: 'Average Time'
+			            }
+			        },
+			        tooltip: {
+			        	pointFormat: 'Equipment monthly breakdown time: <b>{point.y:.1f} </b>'
+			        },
+			      
+			
+			         series :data 
+			    });				
+				
+				}
+			
+			else if(srcEvent=="fiveYear")
+				{
+				
+			     var details = e.detail;				
+					var Alldata = e.detail.response;
+					console.log(JSON.stringify(Alldata))
+					var data=Alldata.chart;
+					var year=Alldata.year;
+					this.resultData1=Alldata.table;			
+									
+				    Highcharts.chart('container1', {
+				        chart: {
+				            type: 'column'
+				        },
+				        title: {
+				            text: 'Equipment Breakdown Time Statistics Report'
+				        },
+				        subtitle: {
+				            text: 'Source: Department'
+				        },
+				        xAxis: {		        	
+				        	
+				        	//categories : [ '2012', '2013', '2014', '2015' , '2016' ,  ]
+				        categories : year
+				        		           
+				        },
+				        yAxis: {
+				            min: 0,
+				            title: {
+				                text: 'Average Time'
+				            }
+				        },
+				        tooltip: {
+				            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+				                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+				            footerFormat: '</table>',
+				            shared: true,
+				            useHTML: true
+				        },
+				        plotOptions: {
+				            column: {
+				                pointPadding: 0.2,
+				                borderWidth: 0
+				            }
+				        },
+				
+				         series :data 
+				    });	
+				}
+			
+			
+			else {		
+				
+                var details = e.detail;				
+				var Alldata = e.detail.response;
+				console.log(JSON.stringify(Alldata))
+				var data=Alldata.chart;				
+				this.resultData=Alldata.table;				
+			    Highcharts.chart('container1', {
+			        chart: {
+			            type: 'column'
+			        },
+			        title: {
+			            text: 'Equipment Breakdown Time Statistics Report'
+			        },
+			        subtitle: {
+			            text: 'Source: Department'
+			        },
+			        xAxis: {		        	
+			        	
+			        	categories : [ '1月', '2月', '3月', '4月' , '5月' , '6月' , '7月' , '8月' , '9月' , '10月' , '11月' , '12月' ]
+			        		           
+			        },
+			        yAxis: {
+			            min: 0,
+			            title: {
+			                text: 'Average Time'
+			            }
+			        },
+			        tooltip: {
+			            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+			            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+			                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+			            footerFormat: '</table>',
+			            shared: true,
+			            useHTML: true
+			        },
+			        plotOptions: {
+			            column: {
+			                pointPadding: 0.2,
+			                borderWidth: 0
+			            }
+			        },
+			
+			         series :data 
+			    });			    
+				
+				
+			}
+			
+			}, 			
+		
+			  }); 
+			</script></dom-module>

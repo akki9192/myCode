@@ -1,0 +1,164 @@
+<link rel="import" href="/../css/button-style.html">
+ <dom-module id="Inventory-Check">  
+<template>
+<px-card chevron>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+<br>
+<div class="legendmain mb10 pull-left">
+	
+	<form is="iron-form" content-type="application/json" id="SearchbyMultipleData" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleMultipleSearchedData" method="post">	
+			<input type="hidden" id="multipleData" name="multipleData" value="{{multipleData}}">
+			<table>
+				<tr>
+					<td><label class="control-label"><b>Indirect Material Name:</b></label></td>
+					<td style="margin-left: 20px;">
+						<paper-input class="input-medium search-query span3" id="indirectMatName" value="{{indirectMatName}}" name="indirectMatName" style="width: 180px;"> 
+						</paper-input>
+					</td>
+				</tr>
+			</table>
+	
+	
+			<table>
+				<tr>
+					<td><label class="control-label"><b>Manufacturer:</b></label></td>
+
+					<td style="margin-left: 20px;">
+						<paper-input class="input-medium search-query span3" id="manufacturer" value="{{manufacturer}}" name="manufacturer" style="width: 180px;"> 
+						</paper-input>
+					</td>
+				</tr>
+			</table>
+	
+			<table>
+				<tr>
+					<td><label class="control-label"><b>Model:</b></label></td>
+					<td style="margin-left: 20px;">
+						<paper-input class="input-medium search-query span3" id="model" value="{{model}}" name="model" style="width: 180px;"> 
+						</paper-input>
+					</td>
+				</tr>
+				<!-- Search Button -->			
+				<tr>
+				<td>	
+				<paper-button raised id="search" class="btn btn-large btn-primary" value="{{searchKey}}" on-click="searchWithMultipleParameters"><b>Search</b></paper-button>	
+				</td>
+				</tr>
+			</table>
+	</form>
+			<br> <br>
+			<div>
+				<byutv-jsonp id="inventoryCheckData" url="http://localhost:8081/pmms-api/getIndirectMaterial" last-response="{{inventoryCheckData}}" debounce-duration="300"
+					auto="true"></byutv-jsonp>
+				<px-data-table id="indirectMaterialinfo" table-data="{{inventoryCheckData}}" selectable>
+					
+					<px-data-table-column name="idmId" label="Code"></px-data-table-column>
+					<px-data-table-column name="idmName" label="Name"></px-data-table-column> 
+					<px-data-table-column name="measurement" label="Unit`"></px-data-table-column>
+					<px-data-table-column name="source" label="Manufactory"></px-data-table-column>
+					<px-data-table-column name="stockNum" label="Stock Num"></px-data-table-column>
+					<px-data-table-column name="safetyStock" label="Safety Stock"></px-data-table-column> 
+					<px-data-table-column name="position" label="Location"></px-data-table-column>
+					<px-data-table-column name="type" label="Class"></px-data-table-column>
+					<px-data-table-column name="type" label="Sub Class"></px-data-table-column>
+					<px-data-table-column name="remark" label="Details"></px-data-table-column>
+					
+				</px-data-table>
+			</div>
+			</div>
+</section>
+</px-card>
+</template>
+<script>
+
+Polymer({
+    /* this is the element's prototype */
+    is: 'Inventory-Check',
+    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+    
+    properties : {
+		
+				currentRow : {
+					type : Object,
+					notify : true,
+					value : function() {
+				return {};
+					}
+					},
+   					 },
+   					indirectMatName : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				manufacturer : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				model : {
+					type : String,
+					notify : true,
+					value : ""
+				
+			},
+			multipleData : {
+				type : String,
+				notify : true,				
+			},
+			
+			
+				/* ironformresponse:function(){
+				
+				document.querySelector('Inventory-Check').refreshData();
+			 }, */
+			
+			 searchWithMultipleParameters : function(){
+			    	this.indirectMatName = this.$.indirectMatName.value;
+					this.manufacturer = this.$.manufacturer.value;
+					this.model = this.$.model.value;
+					
+					if ((this.indirectMatName == undefined
+							|| this.indirectMatName == null || this.indirectMatName == "")
+							|| (this.manufacturer == undefined
+									|| this.manufacturer == null || this.manufacturer == "") ||
+									(this.model == undefined
+											|| this.model == null || this.model == ""))
+			    		
+						 alert("Please select fill the data to search."); 
+					
+					else {
+						
+						this.multipleData = "{'idmName':"
+								+ this.indirectMatName + ",'source':"
+								+ this.manufacturer + ",'idmId':"
+								+ this.model 
+								+ "}";
+						document.getElementById("SearchbyMultipleData").action = "http://localhost:8081/pmms-api/searchIndirectWithMultipleData";
+						document.getElementById('SearchbyMultipleData')
+								.submit();
+					}
+					},
+					handleMultipleSearchedData : function(e) {
+						var details = e.detail;
+						if (details.status == 200) {
+							this.inventoryCheckData = details.response;
+							this.refreshTable("inventoryCheckData");
+						} else {
+							alert("error in searching list!!!!");
+
+						}
+					},
+					refreshTable : function() {
+
+						var array = [];
+						array = this.inventoryCheckData;
+						this.inventoryCheckData = array;
+					}
+				  });
+
+</script>
+</dom-module>

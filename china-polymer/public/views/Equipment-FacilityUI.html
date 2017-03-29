@@ -1,0 +1,134 @@
+<link rel="import" href="/../css/button-style.html"> 
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="equipment-FacilityUI">
+
+<template id="my-tabs" is="dom-bind">
+   <px-card icon="fa-suitcase" header-text="Equipment-Facility" chevron>
+		<px-tab-set selected="{{selected}}">
+			<px-tab>Equipment Management</px-tab>
+			<px-tab>Facility Management</px-tab>
+			</px-tab-set>
+
+  <px-tab-pages selected="{{selected}}">
+ 
+  <!-- Tab-1 -->
+   <section>
+   <table>
+	<tr>
+		<td><label class="control-label" style="width: 100px;"> 
+		<b>Equipment Type:*</b></label>
+
+		<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+        <byutv-jsonp url="http://localhost:8081/pmms-api/getEquipType"	params='{"Type":"equip_type"}' last-response="{{equipTypeRES}}"	auto></byutv-jsonp>
+		<px-dropdown display-value="--Select --"selected-key="{{equipType}}">
+		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{equipTypeRES}}"></px-dropdown-content> </px-dropdown>
+		</div></td>
+	</tr>
+</table>
+		
+		
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+		
+		<div class="module-body pull-left" style="width: 100%"
+	data-ng-controller="equipmentCntrl">
+
+	<byutv-jsonp id="equipmentData"url="http://localhost:8081/pmms-api/getEquipmentDetails" params='{{getParams(equipType)}}'on-response="handleResponse" last-response="{{mydata}}"debounce-duration="300" auto="true"></byutv-jsonp>
+	   <px-data-table id="equipmentManagementTable" table-data="{{mydata}}"> <px-data-table-column
+		name="id" label="ID" hide> </px-data-table-column> <px-data-table-column
+		name="equipType" label="Equipment Type"> </px-data-table-column> <px-data-table-column
+		name="equipId" label="DeviceId"></px-data-table-column> <px-data-table-column
+		name="assetsID" label="AssetNo"></px-data-table-column> <px-data-table-column
+		name="deviceName" label="DeviceName"></px-data-table-column> <px-data-table-column
+		name="equipModel" label="ModelNum"></px-data-table-column> <px-data-table-column
+		name="source" label="Supplier"></px-data-table-column> <px-data-table-column
+		name="powerConsumption" label="Power Consumption"></px-data-table-column><px-data-table-column
+	    name="installationDate" label="Installation Date"></px-data-table-column><px-data-table-column
+	    name="originalPrice" label="Cost"></px-data-table-column><px-data-table-column
+	    name="currentPrice" label="Present value"></px-data-table-column><px-data-table-column 
+	    name="size" label="Measurement"></px-data-table-column><px-data-table-column 
+	    name="weight" label="Weight"></px-data-table-column><px-data-table-column 
+	    name="inuse" label="Use"></px-data-table-column><px-data-table-column 
+	    name="releaseDate" label="Release Date"></px-data-table-column><px-data-table-column 
+	    name="factoryNo" label="SerialNo"></px-data-table-column><px-data-table-column 
+	    name="deptName" label="Department Name"></px-data-table-column><px-data-table-column 
+	    name="remark" label="Remark"></px-data-table-column>
+	    <px-data-table-column  name="pmxMc" label="PMX-MC" hide></px-data-table-column>
+	    <px-data-table-column  name="positionNo" label="Position" hide></px-data-table-column>
+	    <px-data-table-column  name="impFlag" label="Isimportant" hide></px-data-table-column>
+	
+	
+	</px-data-table>
+</div>
+ 				
+ 				
+ 	</table>
+  </section>
+  
+  <section>
+  
+  <br>
+  <br>
+ 
+ 				
+ 				 <byutv-jsonp id="testt"
+                     url="http://localhost:8081/pmms-api/getAllFacilityDetailss"
+                     last-response="{{myda}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+				<px-data-table id="myTabb" table-data="{{myda}}">
+			
+				<px-data-table-column sortable name="factoryNo" label="FacilitySN"></px-data-table-column>
+				<px-data-table-column sortable name="equipNameInfo.deviceName" label="FacilityName"></px-data-table-column>
+				<px-data-table-column sortable name="facilityCategory" label="FacilityCategory"></px-data-table-column>
+				<px-data-table-column sortable name=facilityArea label="FacilityArea"></px-data-table-column>
+				<px-data-table-column sortable name="facilityLocation" label=Location></px-data-table-column>
+				<px-data-table-column sortable name="deptInfo.deptName" label="Department"></px-data-table-column> 				
+				<px-data-table-column sortable name="assetsID" label="AssetSN"></px-data-table-column>
+				<px-data-table-column sortable name="remark" label="Remark"></px-data-table-column>
+ 				</px-data-table>
+				<!-- <px-data-table-column sortable name="facilityArea" label="FacilityArea"></px-data-table-column>
+				<px-data-table-column sortable name=facilityArea label="Location"></px-data-table-column>		 -->		
+			
+				
+ 				
+  </section>
+  </px-tab-pages></px-card></template>
+    
+    
+    <script>
+    Polymer({
+		/* this is the element's prototype */
+		is : 'equipment-FacilityUI',
+		selected : 0,
+		
+		
+		//----------------------------------------------------------------------
+		
+		getParams : function(equipType) {
+			return {
+				equipType : equipType
+			};
+		},
+		
+
+		ironformresponse : function() {
+
+			document.querySelector('equipment-FacilityUI').refreshData();
+		},
+
+		refreshData : function() {
+			this.$.equipmentData.generateRequest();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		}
+    //---------------------------Search Functionality----------------------------------
+		
+	
+	});
+
+	
+	</script> </dom-module>
+ 

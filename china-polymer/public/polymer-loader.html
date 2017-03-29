@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<!-- import page level css. -->
+<link rel="import" href="bower_components/px-theme/px-app.html">
+<!-- import component theme css variables. -->
+<link rel="import" href="bower_components/px-theme/px-theme.html"/>
+
+<link rel="import" href="bower_components/px-login/px-login.html"/>
+<link rel="import" href="bower_components/px-app-nav/px-app-nav.html"/>
+
+<link rel="import" href="bower_components/px-deck-selector/px-deck-selector.html"/>
+
+<link rel="import" href="bower_components/px-context-browser/px-context-browser.html"/>
+<link rel="import" href="bower_components/px-card/px-dashboard.html"/>
+<link rel="import" href="bower_components/px-card/px-deck.html"/>
+<link rel="import" href="bower_components/px-card/px-card.html"/>
+
+<!-- Currently not using the below date-picker -->
+<!-- <link rel="import" href="bower_components/paper-date-picker/paper-date-picker.html"/>
+<link rel="import" href="bower_components/paper-date-picker/paper-calendar.html"/> -->
+
+<!-- <link rel="import" href="bower_components/px-sample-cards/time-series-card.html"/> -->
+<link rel="import" href="bower_components/px-sample-cards/datagrid-card.html"/>
+<link rel="import" href="bower_components/px-sample-cards/gist-card.html"/>
+<link rel="import" href="bower_components/px-sample-cards/widgets-card.html"/>
+
+<link rel="import" href="bower_components/px-sample-cards/blank-card.html"/>
+<link rel="import" href="bower_components/google-analytics/google-analytics.html">
+
+<link rel="import" href="bower_components/px-tabs/px-tab-set.html"/>
+<link rel="import" href="bower_components/px-tabs/px-tab.html"/>
+<link rel="import" href="bower_components/px-tabs/px-tab-pages.html"/>
+<link rel="import" href="bower_components/px-data-table/px-data-table.html"/>
+<link rel="import" href="bower_components/px-data-table/px-data-table-highlight.html"/>
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html" />
+
+<link rel="import" href="bower_components/px-dropdown/px-dropdown.html"/>
+
+<link rel="import" href="bower_components/px-dropdown-master/px-dropdown.html"/>			
+
+<link rel="import" href="bower_components/px-page/px-page.html"/>
+<link rel="import" href="bower_components/px-datetime-picker/px-datetime-picker.html"/>
+<link rel="import" href="bower_components/px-theme/px-theme.html" />
+
+<link rel="import" href="bower_components/px-modal/px-modal.html"/>
+<link rel="import" href="bower_components/px-validation/px-validation.html"/>
+<link rel="import" href="bower_components/px-file-upload-master/px-file-upload.html"/>
+
+
+<!-- <link rel="import" href="bower_components/paper-datatable/paper-datatable.html"/>
+<link rel="import" href="bower_components/paper-datatable/paper-datatable-card.html"/>
+<link rel="import" href="bower_components/paper-datatable/paper-datatable-column.html"/>
+<link rel="import" href="bower_components/paper-datatable/docs/documentation-menu.html"/> -->
+
+<link rel="import" href="bower_components/paper-input/paper-input.html"/> 
+<link rel="import" href="bower_components/paper-input/paper-textarea.html"/>
+<link rel="import" href="bower_components/paper-input/paper-textarea.html"/>
+<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html"/> 
+<link rel="import" href="bower_components/paper-button/paper-button.html"/> 
+<link rel="import" href="bower_components/paper-dialog-behavior/paper-dialog-behavior.html"/> 
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html"/> 
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html"/> 
+<link rel="import" href="bower_components/iron-form/iron-form.html"/>
+<link rel="import" href="bower_components/iron-input/iron-input.html"/>
+<link rel="import" href="bower_components/iron-validator-behavior/iron-validator-behavior.html"/>
+
+<link rel="import" href="bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="language-behaviour.html">
+
+<link rel="import" href="bower_components/px-tooltip/px-tooltip.html"/>
+<link rel="import" href="bower_components/google-chart/google-chart.html"/>
+<link rel="import" href="bower_components/google-chart/google-chart-loader.html"/>
+<link rel="import" href="bower_components/google-chart/charts-loader.html"/>
+<link rel="import" href="bower_components/px-calendar-picker/px-calendar-picker.html"/>
+<link rel="import" href="bower_components/byutv-jsonp/byutv-jsonp.html"/>	
+<link rel="import" href="bower_components/vaadin-upload-master/vaadin-upload.html"/>
+<!--
+<link rel="import" href="bower_components/paper-tabs-master/paper-tab.html"/>
+<link rel="import" href="bower_components/paper-tabs-master/paper-tabs.html"/>
+<link rel="import" href="bower_components/paper-tabs-master/paper-tabs.html"/>
+<link rel="import" href="bower_components/iron-resizable-behavior/iron-resizable-behavior.html"/>
+<link rel="import" href="bower_components/iron-selector/iron-selectable.html"/>
+<link rel="import" href="bower_components/iron-pages/iron-pages.html"/>
+<link rel="import" href="bower_components/paper-card/paper-card.html"/>
+<link rel="import" href="bower_components/paper-input/paper-input.html"/>
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html"/>-->
+
+<!-- custom elements -->
+<link rel="import" href="views/frontend/fault-report.html"/>
+<link rel="import" href="views/frontend/fault-repair.html"/>
+<link rel="import" href="views/frontend/operator-check.html"/>
+<link rel="import" href="views/frontend/maintainance-check.html"/>
+<link rel="import" href="views/frontend/planned-maintainance.html"/>
+<link rel="import" href="views/frontend/facilities-repair.html"/>
+<link rel="import" href="views/frontend/facilities-maintainance.html"/>
+<link rel="import" href="views/frontend/equipment-dashboard.html"/>
+<link rel="import" href="views/frontend/equipment-issuelist.html"/>
+
+
+<!-- SPARE PART MANAGEMENT -->
+<link rel="import" href="views/SparePart-Stock.html"/>
+<link rel="import" href="views/Safety-Stock.html"/>
+<link rel="import" href="views/SparePart-StorageTransaction.html"/>
+<link rel="import" href="views/SparePart-NotUsed.html"/>
+<link rel="import" href="views/SparePart-OperationLog.html"/>
+
+<!--FACILITY SPARE PART MANAGEMENT-->
+<link rel="import" href="views/Facility-SparePart-Stock.html"/>
+<link rel="import" href="views/Facility-Safety-Stock.html"/>
+<link rel="import" href="views/Facility-SparePart-StorageTransaction.html"/>
+<link rel="import" href="views/Facility-SparePart-NotUsed.html"/>
+<link rel="import" href="views/Facility-SparePart-OperationLog.html"/>
+
+<!--INSPECTION RECORDING & TRACKING-->
+<link rel="import" href="views/EquipmentSM-FulfillmentRecord.html"/>
+<link rel="import" href="views/CurrentPCM-QMLogbook.html"/>
+<link rel="import" href="views/QMData-Record.html"/>
+<link rel="import" href="views/OperatorInspection-RecordMonthly.html"/>
+<link rel="import" href="views/MaintenanceTechnicianInspection-RecordMonthly.html"/>
+<link rel="import" href="views/CurrentPCMWO-Fulfillmenttracking.html"/>
+<link rel="import" href="views/CurrentlyQMWO-Fulfillmenttracking.html"/>
+
+
+<link rel="import" href="bower_components/paper-input/paper-input.html"/> 
+<!-- ---------------HistorySM Tracking and Record---------------------------------- -->
+<link rel="import" href="views/EquipmentSM-FulfillmentHistoryRecord.html"/>
+<link rel="import" href="views/HistoryPCM-QMLogbook.html"/>
+<link rel="import" href="views/HistoryPCMWO-Fulfillmenttracking.html"/>
+<link rel="import" href="views/HistoryQMWO-Fulfillmenttracking.html"/>
+<link rel="import" href="views/HistoryQMData-Record.html"/>
+<link rel="import" href="views/HistoryOperatorInspection-RecordMonthly.html"/>
+<link rel="import" href="views/HistoryTechnicianInspection-RecordMonthly.html"/>
+<!-- --------------------------------------------------------------------------------------- -->
+
+<!--*********************************Reports**********************************************-->
+			
+<link rel="import" href="views/Equipment-MTBF.html"/>
+
+<link rel="import" href="bower_components/common-role-access-behavior/common-role-access-behavior.html"/> 
+<link rel="import" href="bower_components/px-file-upload/px-file-upload.html"/>
+<link rel="import" href="bower_components/file-upload/file-upload.html"/>
+<link rel="import" href="bower_components/vaadin-upload-master/vaadin-upload.html"/>
+
+<link rel="import" href="views/measuringTool-inventoryManagement.html"/>
+<link rel="import" href="views/ScrappedMeasuring-ToolsList.html"/>
+<link rel="import" href="views/Operation-Log.html"/>
+<link rel="import" href="views/MeasuringTool-Inventory.html"/>
+<link rel="import" href="views/measuringTool-stocktransactions.html"/>
+<link rel="import" href="views/measuringToolStocktransactions.html"/>

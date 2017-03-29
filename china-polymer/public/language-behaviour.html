@@ -1,0 +1,38 @@
+<link rel="import" href="bower_components/polymer/polymer.html" />
+<link rel="import" href="bower_components/app-localize-behavior/app-localize-behavior.html">
+
+<script>
+	var LanguageBehaviorImpl = LanguageBehaviorImpl || {
+
+      properties: {
+        language: {
+          value: 'en',
+          type: String
+        },
+		
+		displayLanguage: {
+          value: 'English',
+          type: String
+        },
+        
+        formats: {
+          type: Object,
+          value: function() {
+            return {
+              number: { USD: { style: 'currency', currency: 'USD' } }
+            };
+          }
+        }	
+      },
+
+	  attached: function() {
+        this.loadResources(this.resolveUrl('/locales.json'));
+		
+      },	  
+	  
+
+    };
+	
+	window.PmmsBehaviors = window.PmmsBehaviors || {};
+	PmmsBehaviors.LanguageBehavior = PmmsBehaviors.LanguageBehavior || [ Polymer.AppLocalizeBehavior, LanguageBehaviorImpl ];
+</script>

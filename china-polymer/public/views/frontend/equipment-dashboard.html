@@ -1,0 +1,405 @@
+<meta charset="utf-8">
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../validations/cats-only.html" />
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="../../bower_components/jquery/dist/jquery.js"></script>
+<script	src="../../bower_components/highcharts-dist-master/highcharts.js"></script>
+<script src="../../bower_components/highcharts-dist-master/highstock.js"></script>
+<script	src="../../bower_components/highcharts-dist-master/modules/map.js"></script>
+<script type="text/javascript" src="../../scripts/calendar.js"></script>
+
+<dom-module id="equipment-dashboard"> <template>
+<style include="button-style">
+			.cal_calendar {font-size:10pt;font-family:verdana;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_header {background-color:#CCCCCC;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_cell {padding:2px;margin:1px;border:2px groove;text-align:center;width:3ex}
+			.cal_labelcell {padding:2px;margin:1px;border:2px groove;text-align:center;}
+			.cal_oddweek {background-color:#AAAACC;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_evenweek {background-color:#CCCCEE;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_day {width:3ex;text-align:center;padding:0px;margin:0px;border:none; border-collapse:collapse;cursor:hand;}
+			.cal_today {color:black;font-weight:bold;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_disabled {color:#999999;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_common {color:black;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_holiday {color:red;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_event {background-color:yellow;color:red;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+</style>
+<!-- local DOM goes here -->
+
+<section>
+	<!-- <form  content-type="application/json" id="equipmentDashboard"  method="post">  -->
+	<br> <br>
+	<!-- <template id="my-subtab" > -->
+	<px-tab-set id="tab-set1" selected="{{selected}}">
+		<px-tab>Percentage of Completion</px-tab> 
+		<px-tab>Monthly record check</px-tab>
+		<px-tab>DowntimeRatio</px-tab>
+	</px-tab-set>
+	
+	<px-tab-pages selected="{{selected}}">
+	<section>
+		<form is="iron-form" on-iron-form-response="ironformresponse"
+			content-type="application/json" id="OperativesCheckCompletion"
+			method="post">
+			<br>
+			<h2 class="caps u-mv0" id="headertext">
+				<i id="headericon"></i>Operatives check completion rate
+			</h2>
+			<br> <input type="hidden" name="hiddenYear" id="hiddenYear">
+			<table>
+				<tr>
+					<td><label class="control-label" style="width: 130px;"><b>区域/Select Years:</b></label></td>
+						
+						<!-- currently the year drop down is hardcoded. 1 logic in JS should be written to show the list of years -->
+					<td>
+						<!--  Changed for defect no 126 on 6th Jan -->
+						<byutv-jsonp id="completionYearValList"url="http://localhost:8081/pmms-api/getYearDropDown" last-response="{{yearList}}" auto></byutv-jsonp>
+					<px-dropdown id="yearDropDown" selected-key="{{selectedYear}}" display-value="--選擇 Select --"> 
+						<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"
+								max-cont-character-width="5" items="{{yearList}}">
+								<!-- items='[{"key":"0", "val": "--選擇 Select --"},{"key":"2015", "val": "2015"}, {"key":"2016", "val": "2016"}]'> -->
+						</px-dropdown-content> 
+					</px-dropdown></td>
+							
+					<!-- <td><label class="control-label" style="width: 130px; margin-left: 30px;">
+							<b>设施名称/EQNo:</b>
+					</label></td>
+
+					paper-input class="input-medium search-query span3" id="equipNo"
+								name="equipNo" value={{equipNo}} on-change="updateEquipNo"></paper-input>
+						<td>
+						<input type="text"id="equipNo" style="width: 180px; height:25px;"
+								name="equipNo" value={{equipNo}} onchange="updateEquipNo" required
+						auto-validate error-message="{{localize('equipId')}}"/>
+		
+						</td> -->
+	<!---- ----------------------------------START 3 JAN dropdown change for equip Id------------------------------------	 -->
+		<td><label class="control-label" style="width: 130px;"> <b>EQNo:</b></label></td>
+	<td>
+	<!--  Changed for defect no 126 on 6th Jan -->
+	<byutv-jsonp id="pxdrpdwnedit4"url="http://localhost:8081/pmms-api/getEquipmentNumber" last-response="{{equipmentNumber}}" auto></byutv-jsonp>
+	 <px-dropdown display-value="-- 選擇Select --" id="cboequipNumber"> 
+	<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{equipmentNumber}}">
+	</px-dropdown-content> </px-dropdown> 
+	
+	<input type="hidden" name="equipNo"	id="equipNo" value={{equipNo}}/>
+	</td>
+	<!---- ----------------------------------END 3 JAN dropdown change for equip Id------------------------------------	 -->					
+					<td>
+					 <paper-button raised on-click="search1"
+								class="btn btn-large btn-primary"  style="margin-left: 40px;">查询/Search</paper-button> 
+								</td>
+				</tr>
+
+			</table>
+			<br> <br>
+
+			<div id="container1" style="width: 50%; height: 400px;"></div>
+			<!-- <google-chart type="column" class="google"
+		options='{"title": "Percentage of Completion","width":"1000","height":"300"}'
+		data="/views/chart.json"> </google-chart>   -->
+		</form>
+	</section>
+	<section>
+		<form is="iron-form" on-iron-form-response="ironformresponseMnth"
+			content-type="application/json" id="MonthlyRecord" method="post">
+			<br>
+			<!--  <input type="hidden" name="hiddenYear" id="hiddenYear1"> -->
+			<h2>Operatives check record monthly</h2>
+			<table>
+				<tr>
+				<td>
+				<label class="control-label" style="width: 130px;"> <b>区域/Year:</b>
+				</label></td>
+                   <td> <input type="text" style="width: 170px;height: 22px;" id="cal_year" size="5" maxLength="4" name="cal_year" value="" required/></td>
+                   
+				<td><label class="control-label"
+						style="width: 130px; margin-left: 30px;"> <b>区域/Select Months:</b>
+					</label></td>
+
+					<td>
+					<select name="cal_month" id="cal_month" style="width: 180px;height: 30px;" >
+					<option value="1">January</option>
+					<option value="2">February</option>
+					<option value="3">March</option>
+					<option value="4">April</option>
+					<option value="5">May</option>
+					<option value="6">June</option>
+					<option value="7">July</option>
+					<option value="8">August</option>
+					<option value="9">September</option>
+					<option value="10">October</option>
+					<option value="11">November</option>
+					<option value="12">December</option>
+				</select></td>
+					
+	<!-- 			
+	<div class="control-group pull-left"style="width: 300px; margin-left: 40px">
+    <label class="control-label" style="width: 130px;"> <b>设备种类/EQType</b>
+    <div style="width: 150px; display: inline-block; margin-left: 20px;">
+    <px-dropdown id="cal_month" display-value="Select">
+	<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"	max-cont-character-width="5"
+		items='[{"key":"1", "val": "January"}, {"key":"2", "val": "February"},{"key":"3", "val": "March"},{"key":"4", "val": "April"},{"key":"5", "val": "May"},{"key":"6", "val": "June"},{"key":"7", "val": "July"},{"key":"8", "val": "August"},{"key":"9", "val": "September"},{"key":"10", "val": "October"},{"key":"11", "val": "November"},{"key":"11", "val": "December"}]'>
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+	</div> -->
+	<!---- ----------------------------------START 3 JAN dropdown change for equip Id------------------------------------	 -->	
+			 <td><label class="control-label"
+						style="width: 130px; margin-left: 30px;"> <b>设施名称/EQNo:</b>
+					</label></td>
+				<!-- <td><input type="text" id="equipNo"	name="equipNo" value={{equipNo}} onchange="updateEquipNo" style="width: 180px;height: 22px;" required/></td>
+				<td> --> 
+				<td>
+	  <byutv-jsonp id="pxdrpdwnedit4"url="http://localhost:8081/pmms-api/getEquipmentNumber" last-response="{{equipmentNumber}}" auto></byutv-jsonp>
+	 <px-dropdown display-value="--選擇 Select --" id="cboequipNumber2"> 
+	<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{equipmentNumber}}">
+	</px-dropdown-content> </px-dropdown> 
+	
+	<input type="hidden" name="equipNo"	id="equipNo2" value={{equipNo}}/>
+	</td>
+	<!---- ----------------------------------END 3 JAN dropdown change for equip Id------------------------------------	 -->						
+			       <td><paper-button raised on-click="search2" class="btn btn-large btn-primary" style="margin-left:30;">查询/Search</paper-button></td>
+					</tr>
+					</table>
+		</form>
+			<div id="cal_cal_display"></div>
+	</section>
+	
+	<section>
+		<form is="iron-form" on-iron-form-response="ironformresponse"
+			content-type="application/json" id="EquipmentDowntimeRatio"
+			method="post">
+			<br>
+			<h2 class="caps u-mv0" id="headertext">
+				<i id="headericon"></i>The equipment downtime ratio
+			</h2>
+			<br>
+			 <input type="hidden" name="hiddenYear" id="hiddenYear1">
+			
+				<table>
+				<tr>
+				<td><label class="control-label" style="width: 130px;"> <b>区域/Select Years:</b>
+				</label>
+					</td>
+				
+			<td>
+				   		<byutv-jsonp id="downTimeYearValList"url="http://localhost:8081/pmms-api/getYearDropDown" last-response="{{yearList}}" auto></byutv-jsonp>
+			
+						<px-dropdown id="yearDropDown3" selected-key="{{selectedYear3}}"
+							display-value="--選擇  Select --"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{yearList}}">
+							<!-- items='[{"key":"0", "val": "--選擇  Select --"},{"key":"2015", "val": "2015"}, {"key":"2016", "val": "2016"}]' -->
+							
+							
+						</px-dropdown-content> </px-dropdown>
+				</td>
+	<!---- ----------------------------------START 3 JAN dropdown change for equip Id------------------------------------	 -->	
+		  <!--  <td>
+		  <label class="control-label"style="width: 130px; margin-left: 30px;"> <b>设施名称/EQNo:</b>
+		</label></td>
+		<td><input type="text" id="equipNo" name="equipNo" value={{equipNo}} style="width: 170px; height:25px;" required/></td> -->
+		<td><label class="control-label" style="width: 130px;"> <b>EQNo:</b></label></td>
+	     <td>
+	   <byutv-jsonp id="pxdrpdwnedit4"url="http://localhost:8081/pmms-api/getEquipmentNumber" last-response="{{equipmentNumber}}" auto></byutv-jsonp>
+	   <px-dropdown display-value="--選擇 Select --" id="cboequipNumber1"> 
+	    <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{equipmentNumber}}">
+	  </px-dropdown-content> </px-dropdown> 
+	
+	<input type="hidden" name="equipNo"	id="equipNo1" value={{equipNo}}/>
+	</td>
+	<!---- ----------------------------------END 3 JAN dropdown change for equip Id------------------------------------	 -->	
+			
+				<td><paper-button raised on-click="search3"
+						class="btn btn-large btn-primary" style="margin-left: 40px;">查询/Search</paper-button></td>
+			</tr>
+		
+           </table>
+			<br> <br> <br> <br>
+
+
+			<div id="container2" style="width: 50%; height: 400px;"></div>
+			
+		</form>
+	</section>
+	</px-tab-pages>
+	<!--   </form> -->
+</section>
+</template>
+
+<script>
+
+	Polymer({
+		/* this is the element's prototype */
+		is : 'equipment-dashboard',
+		ready: function() {
+ 			 this.selected = 0;
+		},
+		equipNo : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		 singleSelectedDate: {
+        type: String,
+        value: ''
+      },
+
+		/* updateEquipNo : function() {
+			this.equipNo = document.getElementById("equipNo").value;
+		}, */
+		<!---- ----------------------------------START 3 JAN dropdown change for equip Id------------------------------------	 -->
+		 listeners : {
+			 'cboequipNumber2.dropdown_content_value_changed':'EquipDropDownFunction3',
+			 'cboequipNumber1.dropdown_content_value_changed':'EquipDropDownFunction2',
+			'cboequipNumber.dropdown_content_value_changed' : 'EquipDropDownFunction',
+			'yearDropDown.dropdown_content_value_changed' : 'yearDropDownFunction',
+			'yearDropDown3.dropdown_content_value_changed' : 'yearDropDownFunction',
+			'monthDropDown.dropdown_content_value_changed' :  'monthDropDownFunction'
+		},
+		yearDropDownFunction : function(event) {
+
+			document.getElementById("hiddenYear").value = event.detail.textValue;
+			document.getElementById("hiddenYear1").value = event.detail.textValue;
+			/*  document.getElementById("hiddenYear2").value = event.detail.textValue;  */
+		},
+		monthDropDownFunction  : function(event) {
+
+			document.getElementById("month").value = event.detail.textValue;
+		}, 
+		
+		EquipDropDownFunction  : function(event) {
+
+			document.getElementById("equipNo").value = event.detail.textValue;
+		},
+		EquipDropDownFunction2  : function(event) {
+
+			document.getElementById("equipNo1").value = event.detail.textValue;
+		},
+		
+		EquipDropDownFunction3  : function(event) {
+
+			document.getElementById("equipNo2").value = event.detail.textValue;
+		},
+		<!---- ----------------------------------END 3 JAN dropdown change for equip Id------------------------------------	 -->
+		search1 : function() {
+			//console.log("Year: " + document.getElementById("hiddenYear").value + " equiNo : " + equipNo);
+			//Changed for defect no 126 on 6th Jan
+			 var yearDropDown= document.getElementById("yearDropDown").value;
+			var cboequipNumber=document.getElementById("cboequipNumber").value;
+			if(yearDropDown=='--選擇 Select --' || cboequipNumber=='-- 選擇Select --'){
+				alert('Please select all fields');
+		}	
+			else{	 
+			document.getElementById("OperativesCheckCompletion").action = "http://localhost:8081/pmms-api/getCheckCompltn";
+			document.getElementById('OperativesCheckCompletion').submit();
+		}
+		},
+		search2 : function() {
+			//console.log("Year: " + document.getElementById("hiddenYear1").value + " equiNo : " + equipNo+" Month: "+document.getElementById("month").value);
+			document.getElementById("MonthlyRecord").action = "http://localhost:8081/pmms-api/getMonthlyRecordCheck";
+			document.getElementById('MonthlyRecord').submit();
+		},
+		search3 : function() {
+			//console.log("Year: " + document.getElementById("hiddenYear2").value + " equiNo : " + equipNo);
+			//Changed for defect no 126 on 6th Jan
+			 var yearDropDown3= document.getElementById("yearDropDown3").value;
+				var cboequipNumber1=document.getElementById("cboequipNumber1").value;
+				if(yearDropDown3=='--選擇  Select --' || cboequipNumber1=='--選擇 Select --'){
+					alert('Please select all fields');
+			}	
+				else{	
+			document.getElementById("EquipmentDowntimeRatio").action = "http://localhost:8081/pmms-api/getDownRatio";
+			document.getElementById('EquipmentDowntimeRatio').submit();
+				}
+		},
+
+		ironformresponse : function(e) {
+			var details = e.detail;
+			console.log(e.detail.response);
+			var data = e.detail.response;
+			if(data == null || data.length <  1 )
+			{
+				alert("Data is not available for given combination");
+				return;
+			}
+			console.log("data.length : " + data.length);
+			if (details.status == 200) {
+				var container = "container1";
+				if(e.target.id=='EquipmentDowntimeRatio')
+					container="container2";
+				
+				var title = "Operatives check completion rate (YTD monthly)";
+				if(e.target.id=='EquipmentDowntimeRatio')
+					title="The equipment downtime ratio(YTD monthly)";
+				
+				var test = [];
+				var date=[];
+				for (var i = 0; i < data.length; i++) {
+					date[i]=i;
+					var value = data[i][i + 1];
+					var tmpArr = [ i, value ];
+					test[i] = tmpArr;
+				}
+				console.log(test); 
+				
+				var options = {
+						chart : {
+							renderTo : container,
+							type : 'column'
+						},
+						title : {
+							text : title
+						},
+						xAxis: {
+			 	           
+				            min: 1,
+				            //minTickInterval:0 
+				           categories: []
+				        },
+						series : [ {} ]
+					};
+					
+					options.xAxis.categories = date; 
+
+
+				options.series[0].data = test;
+				// options.series[0].data = [[1,data[0][1]],[2,data[1][2]],[3,data[2][3]],[4,data[3][4]],[5,data[4][5]],[6,data[5][6]],[7,data[6][7]],[8,data[7][8]],[9,data[8][9]],[10,data[9][10]],[11,data[10][11]]];
+				var chart = new Highcharts.Chart(options);
+			} else {
+				alert("error in searching equipment issues list!!!!");
+
+			}
+		},
+		ironformresponseMnth : function(e){
+			
+			if(e.detail.__data__.response == null || e.detail.__data__.response.length <  1 )
+				{
+				
+					alert("Data is not available for given combination");
+					return;
+				}
+			var arrLength =e.detail.__data__.response.length;
+			
+			var eventArr=[];
+			for(i=0;i<arrLength;i++)
+				{
+				var dateStr =e.detail.__data__.response[i];
+				var result =dateStr.substring(0,10);
+				var resultDate=result.split("-").join("/");
+				var arr = new Array(resultDate,(i+1));
+				eventArr.push(arr);
+				}
+			var year = document.getElementById("cal_year").value;
+			var month = document.getElementById("cal_month").selectedIndex+1;
+			var d = new Date(year, month, '1','', '', '',''); 
+			cal2 = new Calendar ("cal2", "cal", new Date(d));
+			cal2.eventDates = eventArr;
+			cal2.scrolling = false;
+			cal2.selectEvent = function(eventId) {//alert("cal2 Event: " + eventId);
+			};
+			renderCalendar (cal2);
+			
+		}
+	});
+</script> </dom-module>

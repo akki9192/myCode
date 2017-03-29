@@ -1,0 +1,143 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="Facility-SparePart-NotUsed"> <template>
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>		
+<form is="iron-form" content-type="application/json" id="searchFacilitySparePartWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSeachedData" method="post">
+	<input type="hidden" id="searchData" name="searchData" value="{{searchData}}"> </input>				
+</form>
+			<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchWithDates">Search</button>
+			</div>
+		</div>
+		
+		<br><br>
+			
+			<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse"  method="post">
+			<div class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="NotBeingUsedTable" url="http://localhost:8081/pmms-api/getSparePartDataFacility" last-response="{{FacilitySparePartNotUsed}}" auto on-response="handleResponse">
+				</byutv-jsonp>
+				<px-data-table id="facilitySparePartNotUsedTable" enable-column-resize selectable table-data="{{FacilitySparePartNotUsed}}" > 
+				
+					<px-data-table-column name="sparePartNo" label="Spare Part No." id="sapreNumber"></px-data-table-column> 
+					<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+					<px-data-table-column name="type" label="Type" id="spareType"></px-data-table-column>
+					<px-data-table-column name="source" label="Source" id="sapreSource"></px-data-table-column> 
+					<px-data-table-column name="measurement" label="Measurement" id="spareMeasurement"></px-data-table-column>
+					<px-data-table-column name="price" label="Price" id="sparePrice"></px-data-table-column>
+					<px-data-table-column name="stock" label="Stock" id="sapreStock"></px-data-table-column> 
+					<px-data-table-column name="safteyStock" label="Saftey Stock" id="sapreSaftyStock"></px-data-table-column> 
+					<px-data-table-column name="sysSafteyStock" label="System Saftey Stock" id="sapreSysStock"></px-data-table-column> 
+					<!-- <px-data-table-column name="location" label="Loacation" id="spareLocation"></px-data-table-column> --> 
+					<px-data-table-column name="remark" label="Remark" id="sapreRemark"></px-data-table-column> 
+					 
+				</px-data-table>
+						
+	</div>
+		</form>
+
+</section>
+	</px-card>
+	</template>
+	
+	<script>
+	Polymer({
+	    /* this is the element's prototype */
+	    is: 'Facility-SparePart-NotUsed',
+	    behaviors: [
+		             PmmsBehaviors.LanguageBehavior
+		           ],
+		searchKey : null,
+		
+		fromDate: {
+			type: String,
+ 			notify: true
+		},
+		
+		toDate: {
+			type: String,
+ 			notify: true
+		},
+		
+		toDateField: {
+ 			type: String,
+ 			notify: true,
+ 			value:""
+ 		},
+ 		
+		fromDateField: {
+ 			type: String,
+ 			notify: true,
+ 			value:""
+ 		},
+ 		triggerToDate: function(){
+			console.log("To date : "+this.$.toDate);
+			this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+			this.toDateField=this.toDate;
+			document.getElementById("toDateField").value=this.toDateField;
+		},
+		
+		triggerFromDate: function(){
+			console.log("From date : "+this.$.fromDate);
+			this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+			this.fromDateField=this.fromDate;
+			document.getElementById("fromDateField").value=this.fromDateField;
+		},
+		
+		searchWithDates : function()
+		{
+			if
+				((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+				alert("Please select From Date and To Date to seach Spare Part.");
+			  
+			else {
+				this.searchData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+"}";
+				document.getElementById("searchFacilitySparePartWithDates").action = "http://localhost:8081/pmms-api/searchSparePartWithDates";
+				document.getElementById('searchFacilitySparePartWithDates').submit();
+			}
+			
+		},
+		
+		handleSeachedData : function(e) {
+			var details=e.detail;
+			if(details.status==200)
+			{
+				this.FacilitySparePartNotUsed=details.response;
+				this._refreshTable("NotBeingUsedTable");
+			}
+			else{			
+				alert("error in searching Spare part list!!!!");
+			
+			}
+		},
+		handleResponse : function(event) {
+			var details=event.detail;
+			this._refreshTable(event.target.id);
+		},
+	});
+
+	</script></dom-module>

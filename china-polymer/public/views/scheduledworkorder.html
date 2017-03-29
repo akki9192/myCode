@@ -1,0 +1,962 @@
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="fa-suitcase" header-text="SM工单" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>当前工单</px-tab>
+    <px-tab>PCM&QM工作日志</px-tab>
+    <px-tab>历史工单</px-tab>
+    <px-tab>PM工单处理</px-tab>
+    <px-tab>PCM&QM工单处理</px-tab>
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}">
+    <section>
+        <br>
+        <br>
+        <table>
+          <tr>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>产生时间FROM:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div class="controls" style="margin-left:20px;display:inline-block;">
+                <px-datetime-picker id="starttime">
+                </px-datetime-picker>
+            </div>
+            </td>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>产生时间TO:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div class="controls" style="margin-left:20px;display:inline-block;">
+                <px-datetime-picker id="endttime">
+                </px-datetime-picker>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>区域/Department:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div style="width:200px;margin-left:20px;display:inline-block;">
+                <px-dropdown display-value="--全部--">
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+              </px-dropdown-content>
+            </px-dropdown>
+          </div>
+            </td>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>工单种类/WOType:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div style="width:200px;margin-left:20px;display:inline-block;">
+                <px-dropdown display-value="ALL">
+                  <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"PM", "val": "PM"}, {"key":"QM", "val": "QM"}, {"key":"PCM", "val": "PCM"}]'>
+                  </px-dropdown-content>
+                </px-dropdown>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="align:center" colspan="2">
+              <button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>
+            </td>
+            <td style="align:center" colspan="2">
+              <!-- <button type="button" id="download" class="btn btn-primary btn-lg btn-block">下载/Download</button> -->
+              <div style="float: right;padding: 0px 50px 0px 0px; width:120px;" class="box">
+              <input type="image" src="/images/download.png" width='25px' height='25px' />
+              </div>
+            </td>
+          </tr>
+          </table>
+          <br>
+          <div class="legendmain mb10 pull-left">
+            <span class="label" style="background-color:green;display:inline-block;">
+              <h5>未开始维修</h5>
+            </span>
+            <span class="label" style="background-color:orange;display:inline-block;">
+              <h5>正在维修中</h5>
+            </span>
+            <span>
+              <input type="text" class="input-medium search-query" style="margin-left:20px;display:inline-block;">
+              <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+            </span>
+          </div> 
+          <div class="module-body pull-left" style="width:100%">
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata}}">
+            <px-data-table-column filterable name="工单号"></px-data-table-column>
+            <px-data-table-column filterable name="设备编号"></px-data-table-column>
+            <px-data-table-column filterable name="设备名称"></px-data-table-column>
+            <px-data-table-column filterable name="设备型号"></px-data-table-column>
+            <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+            <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+            <px-data-table-column filterable name="维修工"></px-data-table-column>
+            <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+            <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+            <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+            </px-data-table>
+          </div>
+      
+    </section>
+
+
+    <section>
+    <br>
+    <hr>
+    <br>
+    <px-tab-set selected="{{selected1}}">
+      <px-tab>编辑PCM&QM工作日志</px-tab>
+      <px-tab>查看PCM&QM工作日志</px-tab>
+      <px-tab>QM工作记录</px-tab>
+      </px-tab-set>
+      <px-tab-pages selected="{{selected1}}">
+      <section>
+      
+      <br>
+      <div class="legendmain mb10 pull-left">
+            <span class="label" style="background-color:green;display:inline-block;">
+              <h5>未开始维修</h5>
+            </span>
+            <span class="label" style="background-color:orange;display:inline-block;">
+              <h5>正在维修中</h5>
+            </span>
+            <span>
+              <input type="text" class="input-medium search-query" style="margin-left:20px;display:inline-block;">
+              <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+            </span>
+      </div> 
+      <div class="module-body pull-left" style="width:100%">
+      <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata1}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata1}}">
+              <px-data-table-column filterable name="工单号"></px-data-table-column>
+              <px-data-table-column filterable name="设备编号"></px-data-table-column>
+              <px-data-table-column filterable name="设备名称"></px-data-table-column>
+              <px-data-table-column filterable name="设备型号"></px-data-table-column>
+              <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+              <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+              <px-data-table-column filterable name="维修工"></px-data-table-column>
+              <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+        </px-data-table>
+        </div>
+      <br>
+      <table>
+        <tr>
+          <td style="align:right">
+            <label class="control-label" style="width:100px;">
+                <b>设备编号:</b>
+              </label>
+          </td>
+          <td style="align:left">
+            <input type="text" class="input-medium search-query span3">
+          </td>
+        </tr>
+        <tr>
+          <td style="align:right">
+            <label class="control-label" style="width:100px;">
+                <b>负责人/Responsible:</b>
+              </label>
+          </td>
+          <td style="align:left">
+            <input type="text" class="input-medium search-query span3">
+          </td>
+        </tr>
+        <tr>
+          <td style="align:right">
+            <label class="control-label" style="width:100px;">
+                <b>日期/Date:</b>
+              </label>
+          </td>
+          <td style="align:left">
+            <div class="controls">
+                <px-datetime-picker id="date">
+                </px-datetime-picker>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="align:right">
+            <label class="control-label" style="width:100px;">
+                <b>项目名称/Project:</b>
+              </label>
+          </td>
+          <td style="align:left">
+            <input type="text" class="input-medium search-query span3">
+          </td>
+        </tr>
+        
+        <tr>
+            <!-- <td style="align:center" >
+              <button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>
+            </td> -->
+            <td style="align:center" colspan="2">
+              <px-modal btn-modal-positive="Submit" btn-modal-negative="Back" modal-heading="提交PCM&QM工作日志">
+            <button class="btn btn--primary modal-trigger">提交/Submit</button>
+              <table>
+                <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:100px;">
+                    <b>工作结果/WorkResult:</b>
+                  </label>
+                </td>
+                <td style="align:left">
+                  <input type="file" name="upload">
+              </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>上传图片预览:</b>
+                  </label>
+                </td>
+                <td>
+                  <fieldset class="form-field">
+                    <figure class="code u-mb+">
+                    <code>
+                    <textarea cols="5" rows="5"></textarea>
+                    </code>
+                  </figure>
+                  </fieldset>
+                </td>
+              </tr>
+            <tr>
+            <td style="align:right">
+            <label class="control-label" style="width:100px;">
+              <b>风险/Risk:</b>
+            </label>
+            </td>
+            <td style="align:left">
+            <textarea id="desc3" rows="3" class="span3" value=""></textarea>
+            </td>
+            </tr>
+            </table>
+            </px-modal>
+            </td>
+          </tr>
+      </table>
+      <br>
+      <div class="legendmain mb10 pull-left">
+      <px-modal btn-modal-positive="Save" btn-modal-negative="Back" modal-heading="新增PCM&QM工作日志">
+          <button class="btn btn--primary modal-trigger">新增/Add</button> 
+          <table>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>日志号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true" value="">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>机床:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>负责人:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>日期:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>项目名称:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>工作内容:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>完成情况:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>标准要求:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>结果:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+          </table>
+          </px-modal>
+      <!-- <button type="button" id="search" class="btn btn-primary btn-lg btn-block" style="margin-left:20px;">编辑/Edit</button> -->
+      <px-modal btn-modal-positive="Save" btn-modal-negative="Back" modal-heading="编辑PCM&QM工作日志">
+          <button class="btn btn--primary modal-trigger">编辑/Edit</button> 
+          <table>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>日志号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true" value="">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>机床:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>负责人:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>日期:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>项目名称:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>工作内容:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>完成情况:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>标准要求:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>结果:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+          </table>
+          </px-modal>
+      <button type="button" id="search" class="btn btn-primary btn-lg btn-block" style="margin-left:20px;">删除/Delete</button>
+      </div>
+      <br>
+      <div class="module-body pull-left" style="width:100%">
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/qm-pcm-log.json" last-response="{{minidata4}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata4}}">
+            <px-data-table-column filterable name="日志号"></px-data-table-column>
+            <px-data-table-column filterable name="机床"></px-data-table-column>
+            <px-data-table-column filterable name="负责人"></px-data-table-column>
+            <px-data-table-column filterable name="日期"></px-data-table-column>
+            <px-data-table-column filterable name="项目名称"></px-data-table-column>
+            <px-data-table-column filterable name="工作内容"></px-data-table-column>
+            <px-data-table-column filterable name="完成情况"></px-data-table-column>
+            <px-data-table-column filterable name="标准要求"></px-data-table-column>
+            <px-data-table-column filterable name="结果"></px-data-table-column>
+            </px-data-table>
+          </div>
+          </section>
+
+          <section><!--查看PCM&QM工作日志-->
+            <br><br>
+            <div class="legendmain mb10 pull-left">
+            <span>
+              <input type="text" class="input-medium search-query" style="margin-left:20px;display:inline-block;">
+              <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+            </span>
+            </div> 
+            <div class="module-body pull-left" style="width:100%">
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/qm-pcm-log.json" last-response="{{minidata11}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata11}}">
+            <px-data-table-column filterable name="工单号"></px-data-table-column>
+            <px-data-table-column filterable name="日志号"></px-data-table-column>
+            <px-data-table-column filterable name="机床"></px-data-table-column>
+            <px-data-table-column filterable name="负责人"></px-data-table-column>
+            <px-data-table-column filterable name="日期"></px-data-table-column>
+            <px-data-table-column filterable name="项目名称"></px-data-table-column>
+            <px-data-table-column filterable name="工作内容"></px-data-table-column>
+            <px-data-table-column filterable name="完成情况"></px-data-table-column>
+            <px-data-table-column filterable name="标准要求"></px-data-table-column>
+            <px-data-table-column filterable name="结果"></px-data-table-column>
+            </px-data-table>
+          </px-data-table>
+          </div>
+          </section>
+
+          <section><!--QM工作记录-->
+            <br><br>
+            <table>
+              <tr>
+                <td>
+                <div class="pull-left">
+                <input type="text" class="input-medium search-query">
+                <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+                </div>
+                </td>
+              </tr>
+            </table>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata12}}" auto></iron-ajax>
+            <px-data-table enable-column-resize filterable selectable table-data="{{minidata12}}">
+              <px-data-table-column filterable name="工单号"></px-data-table-column>
+              <px-data-table-column filterable name="设备编号"></px-data-table-column>
+              <px-data-table-column filterable name="设备名称"></px-data-table-column>
+              <px-data-table-column filterable name="设备型号"></px-data-table-column>
+              <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+              <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+              <px-data-table-column filterable name="维修工"></px-data-table-column>
+              <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+            </px-data-table>
+            <br>
+
+            <br>
+            <form>
+              <fieldset class="form-field">
+                <figure class="code u-mb+">
+                  <code>
+                    <ol class=list-bare>
+                      <li class=form-field> 
+                        <h3>QM工单记录明细</h3>
+                          <label for=basic-form-name>WONO.*:</label>
+                          <input id=basic-form-name class=text-input type=text placeholder="QM11111111111" style="width:10%">
+                      </li>
+                    </ol>
+                </code>
+                </figure>
+              </fieldset>
+            </form>
+            <br>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="operator" url="/sample-data/qm-work-order.json" last-response="{{minidata13}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata13}}">
+            <px-data-table-column filterable name="序号"></px-data-table-column>
+            <px-data-table-column filterable name="区域"></px-data-table-column>
+            <px-data-table-column filterable name="设备编号"></px-data-table-column>
+            <px-data-table-column filterable name="设备名称"></px-data-table-column>
+            <px-data-table-column filterable name="设备型号"></px-data-table-column>
+            <px-data-table-column filterable name="检测项目"></px-data-table-column>
+            <px-data-table-column filterable name="部件"></px-data-table-column>
+            <px-data-table-column filterable name="标准值"></px-data-table-column>
+            <px-data-table-column filterable name="周期"></px-data-table-column>
+            <px-data-table-column filterable editable name="实际值"></px-data-table-column>
+            <px-data-table-column filterable editable name="超差原因"></px-data-table-column>
+            <px-data-table-column filterable editable name="对加工的影响"></px-data-table-column>
+            <px-data-table-column filterable editable name="预警Y/N"></px-data-table-column>
+            <px-data-table-column filterable editable name="后续方案"></px-data-table-column>
+            </px-data-table>
+            <br>
+            <div style="align:left">
+              <button type="button" class="btn btn-large btn-primary">保存</button>
+            </div>
+          </section>
+      </px-tab-pages>
+    </section>
+
+
+
+    <section>
+        <br>
+        <br>
+        <table>
+          <tr>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>产生时间FROM:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div class="controls" style="margin-left:20px;display:inline-block;">
+                <px-datetime-picker id="starttime">
+                </px-datetime-picker>
+            </div>
+            </td>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>产生时间TO:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div class="controls" style="margin-left:20px;display:inline-block;">
+                <px-datetime-picker id="endttime">
+                </px-datetime-picker>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>区域/Department:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div style="width:200px;margin-left:20px;display:inline-block;">
+                <px-dropdown display-value="--全部--">
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+              </px-dropdown-content>
+            </px-dropdown>
+          </div>
+            </td>
+            <td style="align:right">
+              <label class="control-label" style="width:100px;">
+                <b>工单种类/WOType:</b>
+              </label>
+            </td>
+            <td style="align:left">
+              <div style="width:200px;margin-left:20px;display:inline-block;">
+                <px-dropdown display-value="ALL">
+                  <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"PM", "val": "PM"}, {"key":"QM", "val": "QM"}, {"key":"PCM", "val": "PCM"}]'>
+                  </px-dropdown-content>
+                </px-dropdown>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="align:center" colspan="2">
+              <button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>
+            </td>
+            <td style="align:center" colspan="2">
+              <button type="button" id="download" class="btn btn-primary btn-lg btn-block">下载/Download</button>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <br>
+      <div class="legendmain mb10 pull-left">
+        <span class="label" style="background-color:green;display:inline-block;">
+          <h5>已完成维修</h5>
+        </span>
+        <span class="label" style="background-color:orange;display:inline-block;">
+          <h5>未完成维修</h5>
+        </span> 
+          <px-modal btn-modal-positive="Save" btn-modal-negative="Back" modal-heading="历史计划保养工单编辑">
+
+          <button class="btn btn--primary modal-trigger" onclick="toggleMenu()" onc>编 辑</button> 
+          <table>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>工单号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true" value="{{smnum}}">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>设备编号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>设备名称:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>设备型号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>固定资产号:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>计划开始月:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>区域:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>维修工:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>维修开始时间:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>维修结束时间:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <input type="text" class="input-medium search-query span3" disabled="true">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>备注:</b>
+              </label>
+              </td>
+              <td style="align:left">
+                <textarea>
+                  
+                </textarea>
+              </td>
+            </tr>
+          </table>
+          
+          </px-modal>
+      </div>
+      <br>
+      <div class="module-body pull-left" style="width:100%">
+      <iron-ajax <button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+      <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata2}}" auto></iron-ajax>
+      <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata2}}" selected-rows="{{mySelectedRows}}" id="historicaltable">
+      <px-data-table-column filterable name="工单号"></px-data-table-column>
+      <px-data-table-column filterable name="设备编号"></px-data-table-column>
+      <px-data-table-column filterable name="设备名称"></px-data-table-column>
+      <px-data-table-column filterable name="设备型号"></px-data-table-column>
+      <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+      <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+      <px-data-table-column filterable name="维修工"></px-data-table-column>
+      <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+      <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+      <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+      <px-data-table-column filterable name="计划维修时间"></px-data-table-column>
+      <px-data-table-column filterable name="实际维修时间"></px-data-table-column>
+      
+      </px-data-table>
+      </div>
+    </section>
+
+
+
+    <section>
+            <br>
+            <table>
+              <tr>
+                <td>
+                <div class="pull-left">
+                <input type="text" class="input-medium search-query">
+                <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+                </div>
+                </td>
+              </tr>
+            </table>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata5}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata5}}">
+              <px-data-table-column filterable name="工单号"></px-data-table-column>
+              <px-data-table-column filterable name="设备编号"></px-data-table-column>
+              <px-data-table-column filterable name="设备名称"></px-data-table-column>
+              <px-data-table-column filterable name="设备型号"></px-data-table-column>
+              <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+              <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+              <px-data-table-column filterable name="维修工"></px-data-table-column>
+              <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+            </px-data-table>
+            <br><br>
+            <form>
+              <fieldset class="form-field">
+                <figure class="code u-mb+">
+                  <code>
+                    <ol class=list-bare>
+                      <li class=form-field> 
+                        <h3>PM工单明细</h3>
+              <table>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px"><b>工单号/WONO.*:</b></label>
+                </td>
+                <td style="align:left">
+                    <input type="text" class="input-medium search-query span3" data-filter-table="workOrderTable3">
+                </td>
+              </tr>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px"><b>设备代码/EQSN*:</b></label>
+                </td>
+                <td style="align:left">
+                  <input type="text" class="input-medium search-query span3">
+                </td>
+              </tr>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px;"><b>维修工编号/SSO*:</b></label>
+                </td>
+                <td style="align:left">
+                  <input id="opSSO2" type="text" placeholder="" class="span3" value="" >
+                </td>
+              </tr>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px;"><b>关闭工单人SSO*:</b></label>
+                </td>
+                <td style="align:left">
+                  <input type="text" placeholder="结束维修时填写" class="span3" value="" disabled="disabled">
+                </td>
+              </tr>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px;">
+                    <b>备注/Remark:</b>
+                  </label>
+                </td>
+                <td style="align:left">
+                  <textarea id="desc3" rows="3" class="span3" value=""></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td style="align:right">
+                  <label class="control-label" style="width:200px;">
+                    <b>是否需停机/Shutdown:</b>
+                  </label>
+                </td>
+                <td style="align:left">
+                  <input type="checkbox" checked="checked">
+                </td>
+              </tr>
+              <tr>
+                <td style="align:center">
+                  <button type="button" class="btn btn-large btn-primary">开始维修/Start</button>
+                </td>
+                <td style="align:center">
+                  <button type="button" class="btn btn-large btn-primary">结束维修/Close</button>
+                </td>
+              </tr>
+            </table>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+                    <iron-ajax id="test" url="/sample-data/work-order-maint-pm-info.json" last-response="{{minidata6}}" auto></iron-ajax>
+                    <px-data-table show-column-chooser enable-column-resize filterable table-data="{{minidata6}}">
+                    <px-data-table-column filterable name="序号"></px-data-table-column>
+                    <px-data-table-column filterable name="保养内容"></px-data-table-column>
+                    <px-data-table-column filterable name="方法"></px-data-table-column>
+                    <px-data-table-column filterable name="正常状态"></px-data-table-column>
+                    <px-data-table-column filterable editable name="扫码"></px-data-table-column>
+                  </px-data-table>
+                      </li>
+                    </ol>
+                     </code>
+                </figure>
+              </fieldset>
+            </form>
+            <br>
+                    
+                 
+          </section>
+          <section>
+            <br>
+            <table>
+              <tr>
+                <td>
+                <div class="pull-left">
+                <input type="text" class="input-medium search-query">
+                <button class="btn btn-icon" type="button" style="display:inline-block;">搜索</button>
+                </div>
+                </td>
+              </tr>
+            </table>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order.json" last-response="{{minidata7}}" auto></iron-ajax>
+            <px-data-table enable-column-resize filterable selectable table-data="{{minidata7}}">
+              <px-data-table-column filterable name="工单号"></px-data-table-column>
+              <px-data-table-column filterable name="设备编号"></px-data-table-column>
+              <px-data-table-column filterable name="设备名称"></px-data-table-column>
+              <px-data-table-column filterable name="设备型号"></px-data-table-column>
+              <px-data-table-column filterable name="固定资产号"></px-data-table-column>
+              <px-data-table-column filterable name="是否需要停机"></px-data-table-column>
+              <px-data-table-column filterable name="维修工"></px-data-table-column>
+              <px-data-table-column filterable name="维修开始时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修结束时间"></px-data-table-column>
+              <px-data-table-column filterable name="维修计划开始月"></px-data-table-column>
+            </px-data-table>
+            
+            <br>
+
+            <br>
+            <form>
+              <fieldset class="form-field">
+                <figure class="code u-mb+">
+                  <code>
+                    <ol class=list-bare>
+                      <li class=form-field> 
+                        <h3>PCM&QM工单明细</h3>
+                          <label for=basic-form-name>WONO.*:</label>
+                          <input id=basic-form-name class=text-input type=text placeholder="PCM11111111111" style="width:10%">
+                      </li>
+                    </ol>
+                </code>
+                </figure>
+              </fieldset>
+            </form>
+            <br>
+            <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+            <iron-ajax id="test" url="/sample-data/work-order-maint-pcm-qm-info.json" last-response="{{minidata8}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata8}}">
+              <px-data-table-column filterable name="工单号"></px-data-table-column>
+              <px-data-table-column filterable name="设备编码"></px-data-table-column>
+              <px-data-table-column filterable name="序号"></px-data-table-column>
+              <px-data-table-column filterable name="序列"></px-data-table-column>
+              <px-data-table-column filterable name="检测项目"></px-data-table-column>
+              <px-data-table-column filterable name="部件"></px-data-table-column>
+              <px-data-table-column filterable name="标准值"></px-data-table-column>
+              <px-data-table-column filterable name="周期"></px-data-table-column>
+              <px-data-table-column filterable editable name="检测结果"></px-data-table-column>
+              <px-data-table-column filterable name="Comments" type="html"></px-data-table-column>
+            </px-data-table>
+            <div style="align:left">
+              <button type="button" class="btn btn-large btn-primary">保存</button>
+            </div>
+          </section>
+    
+  </px-tab-pages>
+  </px-card>
+</template>
+

@@ -1,0 +1,719 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="SparePart-StorageTransaction"> 
+<template id="storageTransactionTemplate">
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br> <br>
+		
+	<form is="iron-form" content-type="application/json" id="searchWithDatesAndParameters" on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">			
+			<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+	</form>
+	
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">		
+			<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+			</label>
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="FacilityFromDate">
+				<paper-input id="FacilityFromDateFields" name="FacilityFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityFromDate" on-tap="triggerFacilityFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="FacilityToDate">
+				<paper-input id="FacilityToDateFields" name="FacilityToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityToDate" on-tap="triggerFacilityToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>ModelNo.:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="model" id="model" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>SSO.:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="createdByText" id="createdByText" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>Library:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="suggestedLibrary" id="library" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 130px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="FacilityTransactionDates">Search</paper-button>
+		</div>
+	</div>	
+
+	<br>
+	<br>
+	<br><br><br>
+<!--************************************************************************SCANIN**************************************************************************************** -->
+			
+			<div class="input-append flR pull-right">
+				<form is="iron-form" content-type="application/json" id="SpaerPartManagementSacnIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="scanIn.open()" class="btn btn-large btn-primary" id="scanInButton">Scan In</paper-button>				
+						<paper-dialog id="scanIn">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Code:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparePartNo2" id=sparePartID >
+										</paper-input></td>
+									</tr>
+									 <tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Name:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text"class="paper-input-medium search-query span3" name="sparepart.name" id="scanName" disabled>
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Specification:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.modelSpecifications" id="scanSpecification" disabled>
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Manufacturer:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;" >
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.source" id="scanManufacturer" disabled>
+										</paper-input></td>
+									</tr>									
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Unit Price:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="price" id="hiddenSparePartPrice">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Existing Stock:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.stock" id="scanStock">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Number of Storage:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="quantity" id="quantity">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Delivery Time:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="leadTime" id="leadTime">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Warehousing People:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="createdBy" id="createdBy" placeholder="1000001">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Remark:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-textarea type="text" class="paper-input-medium search-query span3" name="remark" id="remark">
+										</paper-textarea></td>
+									</tr>
+								</table>
+							</paper-dialog-scrollable>
+								<div class="buttons">
+						   			<paper-button dialog-dismiss >Cancel</paper-button>
+						    		<paper-button dialog-confirm autofocus on-click="scanInRequest">OK</paper-button>
+						 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+			
+			<br><br><br>
+		<!--**************************************************SCAN OUT********************************************************************************-->			
+			<div class="input-append flR pull-right">
+				<form is="iron-form" content-type="application/json" id="SpaerPartManagementSacnOut" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleIronformresponseScanOut" method="post">	
+					<input type="hidden" id="ScanOutData" name="ScanOutData" value="{{ScanOutData}}">	
+					
+					<paper-button raised onclick="scanOut.open()" class="btn btn-large btn-primary" id="scanOutButton">Scan Out</paper-button>				
+						<paper-dialog id="scanOut">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>									
+										<td>  <input type="hidden" id="sparePartId" name="id"></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Code:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparePartNo2" id="sparePartOutId">
+										</paper-input></td>
+									
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Name:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.name" id="scanOutName" disabled>
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Specification:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.modelSpecifications" id="scanOutSpecifications" disabled>
+										</paper-input></td>
+									
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Manufacturer:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparepart.source" id="scanOutManufacturer" disabled>
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Receiver:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="reciever" id="reciever">
+										</paper-input></td>
+									
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Warehousing People:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="createdBy" id="createdBy">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+											<label class="control-label" style="width: 100px;"> <b>Current Stock:</b>
+											</label></td>
+										<td style="align: center; padding: 3px;">
+											<paper-input type="text" class="paper-input-medium search-query span3" name="quantity" id="scanStocks">
+											</paper-input></td>
+										
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Remark:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="remark" id="remark">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+											<label class="control-label" style="width: 100px;"> <b>No. of WO associated with:</b>
+											</label></td>
+										<td style="align: center; padding: 3px;">
+											<paper-checkbox> </paper-checkbox>
+									    </td>
+										<td style="align: center; padding: 3px;">
+											<label class="control-label" style="width: 100px;"> <b>Related WorkOrder:</b>
+											</label></td>
+										<td style="align: center; padding: 3px;">
+											<paper-input type="text" class="paper-input-medium search-query span3" name="woId" id="woIdOfInsidePopUp" placeholder="10000000000000">
+											</paper-input>
+									   <td style="align: center; padding: 3px;">
+									 		<paper-button class="btn btn-large btn-primary" raised onclick="insideScanOut.open()">choose ticket</paper-button>
+									 		<paper-dialog id="insideScanOut">
+				 								<paper-dialog-scrollable>
+				 							<!-- <form is="iron-form" content-type="application/json" id="SpaerPartManagementSacnOut" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleIronformresponseScanOut" method="post">	 -->
+																		<input type="hidden" id="dataScanOut" name="dataScanOut" value="{{dataScanOut}}">	
+											<!-- </form> -->
+				 									<div class="pull-left" style="width: 900px";>
+														<div class="control-group pull-left" style="width: 450px">		
+															<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+															</label>
+												
+															<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="ScanOutFramDate">
+																<paper-input id="ScanOutFromDateFields" name="ScanOutFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+																</paper-input>
+																<px-datetime-picker id="ScanOutFramDate" on-tap="triggerScanOutFromDate"
+																	style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+															</div>
+														</div>
+														
+														<div class="control-group pull-left" style="width: 450px;">
+															<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+															</label>
+															
+															<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="ScanOutToDate">
+																
+																
+																<paper-input id="ScanOutToDateFields" name="ScanOutToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+																</paper-input>
+																<px-datetime-picker id="ScanOutToDate" on-tap="triggerScanOutToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+																</px-datetime-picker>
+															</div>
+															
+														</div>
+														
+														<br>
+														<br>													
+														<br>
+														<br>
+														<table>
+															<tr>
+																<td><label class="control-label" style="width: 100px;"> <b>Equipment Type:</b> </label>
+																</td>
+																<td>
+																	<byutv-jsonp id="firstdrpdwn" params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getEquipType"
+																						last-response="{{equipTypeResponse}}" auto> 
+																	</byutv-jsonp>
+																	<px-dropdown id="scanOutEquipType" display-value="--Select --">
+																		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+																							items="{{equipTypeResponse}}">
+																		 </px-dropdown-content>
+																	</px-dropdown>
+																	<input type="hidden" name="equipType" id="equipType" />																	   
+																  </td>
+																   <td><label class="control-label" style="width: 100px; margin-left: 40px;"> <b>Department:</b> </label>
+																   </td>
+																   <td>
+																        <byutv-jsonp  url="http://localhost:8081/pmms-api/getDepartmentName"
+                                  					`									last-response="{{department}}" auto>
+                                  										</byutv-jsonp>
+                                   	     								 <px-dropdown id="scanOutDropdpwnDept" selected-key="{{deptId}}" display-value="--全部 Select --"> 
+                                   	     									 <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+                                                												items="{{department}}">
+                                         									</px-dropdown-content> 
+                                         								</px-dropdown>
+                                         								<input type="hidden" name="deptType" id="deptType"/>																	   
+																  </td>
+																  <td><label class="control-label" style="width: 100px; margin-left: 40px;"> <b>Ticket Type:</b> </label>
+																   </td>
+																   <td>
+																        <byutv-jsonp id="dropdpwndept" params='{"Type":"ticket_type"}' url="http://localhost:8081/pmms-api/getTicketType"
+                                  					`									last-response="{{ticketType}}" auto>
+                                  										</byutv-jsonp>
+                                   	     								 <px-dropdown id="scanOutTicketType" selected-key="{{ticket}}" display-value="--全部 Select --"> 
+                                   	     									 <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+                                                												items="{{ticketType}}">
+                                         									</px-dropdown-content> 
+                                         								</px-dropdown>
+                                         								<input type="hidden" name="TicketType" id="TicketType"/>																	   
+																  </td>
+																</tr>
+																<tr>
+																	<td>
+																		<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchWithDatesAndParams">Search</button>
+																	</td>
+																</tr>
+															</table>
+															
+																<br>
+																<br>
+														
+				 									<byutv-jsonp url="http://localhost:8081/pmms-api/getWorkOrderDetails" id="spareScanOutTrans" last-response="{{insidePopUp}}" auto>
+													</byutv-jsonp>
+													<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{insidePopUp}}" on-px-row-click="SelectedWoRow">  
+													
+														<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+														<px-data-table-column name="workOrderNumber" label="Device ID"></px-data-table-column> 
+														<px-data-table-column name="equipmentInfo.equipNameInfo.deviceName" label="Device Name"></px-data-table-column>
+														<px-data-table-column name="equipId2" label="Device No"></px-data-table-column> 
+														<px-data-table-column name="workOrderType" label="Ticket Type"></px-data-table-column>
+														<px-data-table-column name="wordOrderStatus" label="Status"></px-data-table-column> 
+														<px-data-table-column name="equipmentInfo.deptInfo.deptName" label="Department"></px-data-table-column> 		
+														<px-data-table-column name="equipmentInfo.equipType" label="Equipment Type"></px-data-table-column> 	
+														 
+													</px-data-table>
+				 								</paper-dialog-scrollable>
+				 								<div class="buttons">
+										   			<paper-button dialog-dismiss >Cancel</paper-button>
+										    		<paper-button dialog-confirm autofocus on-click="handleRequest">Determine</paper-button>
+										 		</div>
+				 							</paper-dialog>	
+									   </td> 										
+									</tr>
+								</table>
+								<!-- </form> -->
+							</paper-dialog-scrollable>
+							<div class="buttons">
+					   			<paper-button dialog-dismiss >Cancel</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="handleScanOutRequest">OK</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+
+	<br><br><br><br><br>
+
+	<div  class="module-body pull-left" style="width: 100%">				
+			<byutv-jsonp id="spareTrans" url="http://localhost:8081/pmms-api/getSparePartDataEquipment" last-response="{{spareTransaction}}" debounce-duration="300" auto="true" >
+			</byutv-jsonp>
+			<px-data-table id="spareTable" enable-column-resize selectable table-data="{{spareTransaction}}" on-px-row-click="selectedRow"> 
+		
+				<px-data-table-column name="sparePartNo" label="Spare Part No." id="sapreNumber"></px-data-table-column> 
+				<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+				<px-data-table-column name="type" label="Type" id="spareType"></px-data-table-column> 
+				<px-data-table-column name="source" label="Source" id="sapreSource"></px-data-table-column> 
+				<px-data-table-column name="createdBy" label="In/Out SSO" id="spareCreatedBy"></px-data-table-column> 
+				<px-data-table-column name="measurement" label="Measurement" id="spareMeasurement"></px-data-table-column>
+				<px-data-table-column name="price" label="Price" id="sparePrice"></px-data-table-column>
+				<px-data-table-column name="suggestedLibrary" label="Library" id="lib"></px-data-table-column>
+				<px-data-table-column name="SpareTransInfo.amount" label="Amount" id="amount"></px-data-table-column> 
+				<px-data-table-column name="leadTime" label="Lead Time" id="leadTime"></px-data-table-column> 
+				
+			 
+		    </px-data-table>
+	</div>
+</section>
+</px-card>
+</template>
+<script>
+
+Polymer({
+    /* this is the element's prototype */
+    is: 'SparePart-StorageTransaction',
+    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+    properties : {
+    currentRow : {
+		type : Object,
+		notify : true,
+		value : function() {
+			return {};
+		}
+	},
+	currentRow1 : {
+		type : Object,
+		notify : true,
+		value : function() {
+			return {};
+		}
+	},
+    FilteredData : {
+		type : String,
+		notify : true
+	},
+	ScanOutData : {
+		type : String,
+		notify : true
+	},
+	FacilityFromDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	FacilityToDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	ScanOutFromDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	ScanOutToDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	
+	spareId :{
+		type : String,
+		notify : true,
+		value : ""
+		
+	},
+	library :{
+		type : String,
+		notify : true,
+		value : ""
+		
+	},
+	
+	model : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	createdBy : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	EquipType : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	DeptType : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	Ticket : {
+		type : String,
+		notify : true,
+		value : ""
+	}
+    },
+    
+	triggerFacilityFromDateField : function() {
+		//console.log("calibrationdate : " + this.$.StockFromDate);
+		this.FacilityFromDate = this.$.FacilityFromDate.dateTime.substring(0,
+				this.$.FacilityFromDate.dateTime.indexOf('T'));
+		this.FacilityFromDateField = this.FacilityFromDate;
+		document.getElementById("FacilityFromDateFields").value = this.FacilityFromDateField;
+	},
+	triggerFacilityToDate : function() {
+		//console.log("calibrationdate : " + this.$.StockToDate);
+		this.FacilityToDate = this.$.FacilityToDate.dateTime.substring(0,
+				this.$.FacilityToDate.dateTime.indexOf('T'));
+		this.FacilityToDateField = this.FacilityToDate;
+		document.getElementById("FacilityToDateFields").value = this.FacilityToDateField;
+	},
+	
+	FacilityTransactionDates : function() {
+		if ((this.FacilityToDateField == undefined
+				|| this.FacilityToDateField == null || this.FacilityToDateField == "")
+				|| (this.FacilityFromDateField == undefined
+						|| this.FacilityFromDateField == null || this.FacilityFromDateField == "") 
+						/* (this.model == undefined
+								|| this.model == null || this.model == "")||
+								(this.createdBy == undefined
+										|| this.createdBy == null || this.createdBy == "") */	)
+			alert("Please select From Date and To Date to search.");
+		else {
+			this.model = this.$.model.value;
+			this.library = this.$.library.value;
+			this.createdBy = this.$.createdByText.value;
+			this.FilteredData = "{'fromDate':" + this.FacilityFromDateField 
+					+ ",'toDate':" + this.FacilityToDateField 
+					+ ",'modelNo':" + this.model 
+					+ ",'library':" + this.library
+					+ ",'sso':" + this.createdBy
+					+ "}";
+					
+					
+			document.getElementById("searchWithDatesAndParameters").action = "http://localhost:8081/pmms-api/searchWithDatesAndFields";
+			document.getElementById('searchWithDatesAndParameters').submit();
+		}
+
+	},
+	handleFilteredData : function(e) {
+		var details = e.detail;
+		if (details.status == 200) {
+			this.spareTransaction = details.response;
+			this._refreshTable("spareTrans");
+		} else {
+			alert("error in searching list!!!!");
+
+		}
+	},
+	_refreshTable : function() {
+
+		var array = [];
+		array = this.spareTransaction;
+		this.spareTransaction = array;
+	},
+	
+	
+	selectedRow: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+			
+				 document.getElementById("sparePartId").value=clickedRow.row.id.value;
+				 document.getElementById("sparePartID").value=clickedRow.row.sparePartNo.value;
+				 document.getElementById("scanName").value=clickedRow.row.name.value;
+				 document.getElementById("scanManufacturer").value=clickedRow.row.source.value;
+				 document.getElementById("scanStock").value=clickedRow.row.stock.value;
+				 document.getElementById("scanSpecification").value=clickedRow.row.modelSpecifications.value;
+				 
+				 document.getElementById("sparePartOutId").value=clickedRow.row.sparePartNo.value;
+				 document.getElementById("scanOutName").value=clickedRow.row.name.value;
+				 document.getElementById("scanOutManufacturer").value=clickedRow.row.source.value;
+				 document.getElementById("scanStocks").value=clickedRow.row.stock.value;
+				 document.getElementById("scanOutSpecifications").value=clickedRow.row.modelSpecifications.value;			 
+		},
+		
+		scanInRequest : function(){
+		
+			document.getElementById("SpaerPartManagementSacnIn").action = "http://localhost:8081/pmms-api/addScanIn";
+			document.getElementById('SpaerPartManagementSacnIn').submit();
+			
+			
+		},
+		
+		
+		triggerScanOutFromDate : function() {
+			//console.log("calibrationdate : " + this.$.StockFromDate);
+			this.ScanOutFramDate = this.$.ScanOutFramDate.dateTime.substring(0,
+					this.$.ScanOutFramDate.dateTime.indexOf('T'));
+			this.ScanOutFramDateField = this.ScanOutFramDate;
+			document.getElementById("ScanOutFromDateFields").value = this.ScanOutFramDateField;
+		},
+		
+		
+		triggerScanOutToDate : function() {
+			//console.log("calibrationdate : " + this.$.StockToDate);
+			this.ScanOutToDate = this.$.ScanOutToDate.dateTime.substring(0,
+					this.$.ScanOutToDate.dateTime.indexOf('T'));
+			this.ScanOutToDateField = this.ScanOutToDate;
+			document.getElementById("ScanOutToDateFields").value = this.ScanOutToDateField;
+		},
+		
+		
+		searchWithDatesAndParams : function()
+		{
+			
+				if ((this.ScanOutFramDateField == undefined
+						|| this.ScanOutFramDateField == null || this.ScanOutFramDateField == "")
+						|| (this.ScanOutToDateField == undefined
+								|| this.ScanOutToDateField == null || this.ScanOutToDateField == "") 
+								 /* (this.EquipType == undefined
+										|| this.EquipType == null || this.EquipType == "")||
+										(this.DeptType == undefined
+												|| this.DeptType == null || this.DeptType == "")||
+												(this.Ticket == undefined
+														|| this.Ticket == null || this.Ticket == "") */)
+					
+					alert("Please select From Date and To Date to search.");
+				
+				else {
+					
+					this.EquipType = this.$.equipType.value;
+					this.DeptType = this.$.deptType.value;
+					this.Ticket = this.$.TicketType.value;			
+					this.ScanOutData = "{'fromDate':" + this.ScanOutFramDateField +
+							",'toDate':" + this.ScanOutToDateField +
+							",'equipType':" + this.EquipType + 
+							",'deptType':" + this.DeptType + 
+							", 'TicketType':" + this.Ticket +
+							"}";
+							
+				
+				
+				document.getElementById("SpaerPartManagementSacnOut").action = "http://localhost:8081/pmms-api/searchWithDatesScanOut";
+				document.getElementById('SpaerPartManagementSacnOut').submit();
+				}
+			
+		},
+		
+		SelectedWoRow : function(e) {
+  	        var clickedRow1 = e.detail.row;
+ 	  		 this.currentRow1 = clickedRow1.row;
+ 	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow1.row.id.value));
+			 if(clickedRow1._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow1.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+			 
+				  this.$.woIdOfInsidePopUp.value=clickedRow1.row.workOrderNumber.value;
+		},
+		
+		
+			
+		
+		
+		listeners: {
+			'scanOutEquipType.dropdown_content_value_changed': 'equipChanged',
+			'scanOutDropdpwnDept.dropdown_content_value_changed': 'deptChange',
+			'scanOutTicketType.dropdown_content_value_changed': 'ticketChange'
+			
+			},
+			equipChanged: function (event) {
+				
+				document.getElementById('equipType').value = event.detail.key;
+				
+			},
+			
+			deptChange : function (event) {
+				
+				document.getElementById('deptType').value = event.detail.textValue;
+				
+			},
+			
+			ticketChange : function (event) {
+				
+				document.getElementById('TicketType').value = event.detail.textValue;
+				
+			},
+			
+			
+	handleScanOutRequest : function() {
+		
+				document.getElementById("SpaerPartManagementSacnOut").action = "http://localhost:8081/pmms-api/AddScanOut";
+					document.getElementById('SpaerPartManagementSacnOut').submit();
+				
+			},
+			
+			
+			
+			handleIronformresponseScanOut : function(e) {
+				var details = e.detail;
+				if (details.status == 200) {
+					this.insidePopUp = details.response;
+					this._refreshTable1("spareScanOutTrans");
+				} else {
+					alert("error in searching list!!!!");
+
+				}
+			},
+			
+			_refreshTable1 : function() {
+
+				var array = [];
+				array = this.insidePopUp;
+				this.insidePopUp = array;
+			},
+			
+			
+		}); 
+
+</script>
+</dom-module>

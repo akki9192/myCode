@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist
+END
+get_access_token.lua
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist/get_access_token.lua
+END
+Staticfile
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist/Staticfile
+END
+nginx.conf
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist/nginx.conf
+END
+common.lua
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist/common.lua
+END
+set_access_token.lua
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/dist/set_access_token.lua
+END

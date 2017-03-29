@@ -1,0 +1,466 @@
+<meta charset="utf-8">
+<link  rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../validations/cats-only.html"/>
+<dom-module id="facilities-repair">
+  <template>
+   <style include="button-style" > 
+ </style>
+    <!-- local DOM goes here -->   	 
+	<section> <br>      
+       <!-- <h2 class="caps u-mv0" id="headertext">
+              <i id="headericon"></i>提交新工单
+       </h2> -->
+       <br>
+       <form is="iron-form" content-type="application/json" id="saveFacilityMain" on-iron-form-invalid="ironforminvalid"
+	  on-iron-form-response="ironformresponse" method="post"> <!-- action="http://localhost:8081/pmms-api/saveFacilityRepair" -->
+       <table>
+             <tr>
+                <td>
+              <label class="control-label" style="width: 130px;"> <b>区域/FAC_Area:</b>
+               </label></td>
+                                  
+             <!-- <byutv-jsonp id="dropdownFacArea1" params='{"Type":"FACILITY_AREA"}'url="http://localhost:8081/pmms-api/getFacilityArea"
+                                  last-response="{{facilityAreaRes}}" auto></byutv-jsonp> -->
+             <byutv-jsonp id="dropdownFacArea1" params='{"Type":"FACILITY_AREA"}'url="http://localhost:8081/pmms-api/getFacilityAreaDropDown"
+                                  last-response="{{facilityAreaRes}}" auto></byutv-jsonp> 
+                                  <!-- Added for defect no 126 on 6th Jan  -->
+           <td>  <px-dropdown id="pxDfacilityArea" display-value="--選擇 Select --"> 
+             <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5"
+                   items="{{facilityAreaRes}}">
+              </px-dropdown-content> 
+              </px-dropdown></td>
+            <input type="hidden" name="facilityArea" id="facilityArea"/>
+                     <td>
+            <label class="control-label" style="width: 130px;"> <b>设施类别/FAC_Category</b>
+            </label></td>             
+             <!--  <byutv-jsonp id="dropdownFacCategory" params='{"Type":"FACILITY_CATEGORY"}'url="http://localhost:8081/pmms-api/getFacilityCategory"
+                   last-response="{{facilityCategoryRes}}" auto></byutv-jsonp> -->
+				<byutv-jsonp id="dropdownFacCategory" url="http://localhost:8081/pmms-api/getFacilityCategory"
+                   last-response="{{facilityCategoryRes}}" auto></byutv-jsonp> 
+                   <!-- Added for defect no 126 on 6th Jan  -->                  
+               <td> <px-dropdown id ="pxDfacilityCategory" display-value="--選擇 Select --"> 
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5"
+                   items="{{facilityCategoryRes}}">
+                 </px-dropdown-content>
+                  </px-dropdown></td>
+                  <input type="hidden" name="facilityCategory" id="facilityCategory"/>         
+                     <td>
+                <label class="control-label"style="width: 130px; margin-left: 10px"> <b>设施名称/FacName:</b>
+                </label></td>                 
+                <!-- <byutv-jsonp id="dropdownFacName" params='{"Type":"FACILITY_NAME"}'url="http://localhost:8081/pmms-api/getFacilityName"
+                                  last-response="{{facilityNameRes}}" auto></byutv-jsonp> -->
+				 <byutv-jsonp id="dropdownFacName" url="http://localhost:8081/pmms-api/getFacilityName"
+                                  last-response="{{facilityNameRes}}" auto></byutv-jsonp>      
+                                  <!-- Added for defect no 126 on 6th Jan  -->                             
+               <td><px-dropdown id ="pxDfacilityName" display-value="--選擇 Select --">
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5"
+                         items="{{facilityNameRes}}">
+               </px-dropdown-content> 
+               </px-dropdown></td>
+                <input type="hidden" name="facilityName" id="facilityName"/>             
+             
+             </tr>       
+              <tr>
+                     <td style="padding: 5px"><label class="control-label"
+                           style="width: 200px"><b>员工编号/SSO*:</b></label></td>
+                   <td>
+				<paper-input class="input-medium search-query span3"
+					id="creatorSSO1" name="creatorSSO"  style="width: 180px;"
+					 required auto-validate error-message="{{localize('ssoid')}}">
+					 </paper-input>	</td>
+					
+              </tr>          
+              
+              <tr>
+                             <td><label class="control-label"
+                           style="width: 200px"><b>设施编码/FacSN.*:</b></label></td>
+                     <td>
+                     <paper-input class="span3" id="equipId3"
+					name="equipId2" style="width: 180px;" 
+					required auto-validate error-message="{{localize('equipid')}}">
+					</paper-input>	
+					</td>			
+                                
+              </tr>
+              <tr>
+                     <td><label class="control-label"
+                           style="width: 200px;"> <b>故障描述/FaultDesc: </b>
+                     </label></td>
+				<td style="padding: 5px; width: 200px;"><paper-textarea
+						id="faultdesc1" rows="3" name="faultDescription"
+						style="width: 181px; height: 60px;" required auto-validate
+						error-message="{{localize('faultDesc')}}"> </paper-textarea></td>
+			</tr></table>
+                                                    
+                    <br><br><br><table>
+			<tr></tr>
+			<tr></tr>
+			<tr>
+				<td ><label class="control-label"
+					style="width: 200px;" required auto-validate
+						error-message="{{localize('check')}}"> <b>涉及安全隐患/Safety:</b>
+				</label></td>
+				<td>
+			<paper-checkbox  id="safety1" name="safetyInvolved"></paper-checkbox></td>
+			</tr>
+				<tr>
+				<td><label class="control-label"
+					style="width: 200px;"> <b>是否需停机/Shutdown:</b>
+				</label></td>
+				<td >
+			<paper-checkbox  id="shutdown1" name="shutdownFlag"></paper-checkbox></td>
+			</tr>
+		</table>
+       <br><br>
+		<div style="margin-left: 100px">
+		<!-- <button type="submit" 	class="btn btn-large btn-primary">Submit</button>  -->
+	<paper-button raised on-click="saveFacilityWOInfo" class="btn btn-large btn-primary">提交/Submit</paper-button> 							
+		</div>  
+		</form>   
+		 <byutv-jsonp id="validateEquipID"
+			url="http://localhost:8081/pmms-api/isValidEquipIdfc"
+			params='{{getParamsEq(equipId)}}' on-response="handleEquipmentResponse"
+			last-response="{{equipData}}" debounce-duration="300" auto="true"></byutv-jsonp>
+       <br><br>
+
+		<div class="pull-left" >
+			<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>区域/FAC_Area:</b>		
+              </label>
+              <div class="controls" style="width: 140px; display: inline-block; margin-left: 20px;">
+                     <!-- <byutv-jsonp id="dropdownFacArea" params='{"Type":"FACILITY_AREA"}'
+                                  url="http://localhost:8081/pmms-api/getFacilityArea"
+                                  last-response="{{facilityAreaFilter}}" auto></byutv-jsonp> -->
+                           <byutv-jsonp id="dropdownFacArea" params='{"Type":"FACILITY_AREA"}'
+                                  url="http://localhost:8081/pmms-api/getFacilityAreaDropDown"
+                                  last-response="{{facilityAreaFilter}}" auto></byutv-jsonp> 
+                                         <px-dropdown display-value="--全部 Select --" selected-key="{{facilityArea}}">
+                                          <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{facilityAreaFilter}}">
+                     						</px-dropdown-content> </px-dropdown>
+              </div>
+              
+       </div>
+       	<div class="control-group pull-left" style="width: 310px; margin-left: 40px">
+
+				<label class="control-label" style="width: 130px;"><b>设施类别/FAC_Category:</b>
+				</label>     
+            <div style="width: 110px; display: inline-block; margin-left: 20px;">
+                      <!--  <byutv-jsonp id="dropdownFaccatgry" params='{"Type":"FACILITY_CATEGORY"}'
+                                  url="http://localhost:8081/pmms-api/getFacilityCategory"
+                                  last-response="{{facilityCategoryFilter}}" auto></byutv-jsonp> -->
+                             <byutv-jsonp id="dropdownFaccatgry" params='{"Type":"FACILITY_CATEGORY"}'
+                                  url="http://localhost:8081/pmms-api/getFacilityCategoryDropDown"
+                                  last-response="{{facilityCategoryFilter}}" auto></byutv-jsonp>
+                                         <px-dropdown display-value="--全部 Select --" selected-key="{{facilityCategory}}"> 
+                                         <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{facilityCategoryFilter}}">
+                     					</px-dropdown-content> 
+                     					</px-dropdown>
+              </div>
+       </div>
+       
+       <div class="control-group pull-left" style="margin-top: -25px; margin-left: 78px" >
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+
+	</div>
+       </div>
+
+        
+	
+
+     <br><br>
+	<byutv-jsonp id="addRecords"
+			url="http://localhost:8081/pmms-api/saveFaultReport"
+			method="POST"
+			last-response="{{addeddata}}" debounce-duration="300" auto="true"></byutv-jsonp>
+        <br>
+       <br>
+     
+       <div class="module-body pull-left" style="width: 100%">
+            <byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getFacilityWORequest"  params='{{getParams("FAC",facilityCategory,facilityArea)}}' on-response="handleResponse"
+			last-response="{{mydata}}" debounce-duration="300" auto="true"></byutv-jsonp>
+           <px-data-table id="myTable" table-data="{{filteredData}}">	
+		   <px-data-table-column name="workOrderNumber" label="工单号/WOSN"></px-data-table-column>
+           <px-data-table-column name="wordOrderStatus" label="WorkOrderStatus">		
+			<px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="condclose" highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="notstart" highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="closed"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<!-- <px-data-table-highlight highlight-type="row" highlight-value="low" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="condclose"  highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="medium"  highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="white"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight> -->	
+		</px-data-table-column>
+              <px-data-table-column name="facilityNumber"label="设施代码/FacSN"></px-data-table-column>
+              <px-data-table-column name="facilityName" label="设施名称/FacNM"></px-data-table-column>
+              <px-data-table-column name="equipmentInfo.assetsID" label="固定资产号/AssetSN"></px-data-table-column>
+              <px-data-table-column name="faultDescription" label="需求描述/FaultDesc"></px-data-table-column>
+              <px-data-table-column name="creatorSSO" label="申报人/Requestor"></px-data-table-column>
+              <px-data-table-column name="createdDate" label="申报时间/ReqTime"></px-data-table-column>
+              <px-data-table-column name="safetyInvolved" label="涉及安全隐患/Safety"></px-data-table-column>
+              <px-data-table-column name="shutdownFlag" label="是否需停机/Shutdown"></px-data-table-column>
+              <px-data-table-column name="updaterSSO" label="维修工/Maintainer"></px-data-table-column>
+              <px-data-table-column name="planStartMonth" label="维修开始时间/MaintStart"></px-data-table-column>
+              <px-data-table-column name="equipmentInfo.deptInfo.deptName" label="使用部门/Department"></px-data-table-column>
+              <px-data-table-column name="equipmentInfo.remark" label="备注/Remark"></px-data-table-column>
+              </px-data-table> 
+             
+       </div>
+	    <br/><br/>  
+		<div class="legendmain mb10 pull-center">
+			<span class="label wo_not_started_legend">未开始</span>
+			<span class="label wo_in_progress_legend">进行中</span>
+			<span class="label wo_pause_legend">暂停</span>
+			<span class="label wo_close_legend">关闭</span>
+			<span class="label wo_conditional_close_legend">带遗留问题运行</span>
+		</div>
+	
+	</section> 
+   
+  </template>
+  
+  <script>
+  
+  Polymer({
+		/* this is the element's prototype */
+		is : 'facilities-repair',
+		 behaviors: [
+		             PmmsBehaviors.LanguageBehavior
+		           ],
+
+		searchKey : null,
+		
+		equipId: {
+  			type: String,
+  			notify: true
+  		},
+  		
+		refreshData : function() {
+			this.$.test.generateRequest();
+		},
+		
+		validateEquipID : function() {
+			this.equipId=document.getElementById('equipId3').value;	
+			console.log(this.equipId+"equip id found")
+			this.$.validateEquipID.generateRequest();
+		},
+		
+		handleFacResponse:function(e){
+			var details=e.detail;
+			console.log(details);
+			if(details.length>0)
+				{ 
+				 //document.getElementById('saveFacilityRepair').submit();
+				
+				}			
+			else
+			{			
+				alert("Facility number does not matches with records! Please enter valid facility number");
+			
+			}
+		},
+		handleEquipmentResponse:function(e){
+			var details=e.detail;
+			console.log(details);
+			if(details.length>0 && equipId3.value != "")
+				{ 
+				//alert("equipId "+equipId)
+				
+				 document.getElementById('saveFacilityMain').submit();
+				
+				}
+			else{			
+				console.log("Equipment ID does not exists for Facilities WO Request");			
+			}
+		},
+		searchKeyChanged : function(event) {
+			this.searchKey = event.target.value.toLowerCase();
+		
+			this._refreshTable();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					
+					}
+
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+ 		
+		getParams : function(workOrderType,facilityCategory,facilityArea) {
+			return {
+				workOrderType : "FAC",
+				facilityCategory : facilityCategory,
+				facilityArea : facilityArea
+			};
+		},
+		getParamsEq : function(equipId) {
+			return {
+				
+				equipId : equipId
+			};
+		},
+			
+		ironformresponse : function(e) {
+			
+			if(e.detail.__data__.response.status){				
+		 	document.querySelector('facilities-repair').refreshData();
+		 	document.querySelector('facilities-maintainance').refreshData();
+
+			//document.querySelector('facilities-repair').refreshData(); 			
+			alert("Data is submitted.");
+			//document.querySelector('dropdownFacArea1').refreshData();
+			document.getElementById("creatorSSO1").value="";
+			document.getElementById("equipId3").value="";
+			document.getElementById("faultdesc1").value="";
+			document.getElementById("safety1").checked=false;
+			document.getElementById("shutdown1").checked=false;
+			document.getElementById("dropdownFacArea1").generateRequest();
+			document.getElementById("dropdownFacCategory").generateRequest();
+			
+			document.getElementById("pxDfacilityArea").displayValue = "--全部 Select --";
+	    	document.getElementById("pxDfacilityArea").selectedKey = "0";
+	    	
+	    	document.getElementById("pxDfacilityCategory").displayValue = "--全部 Select --";
+	    	document.getElementById("pxDfacilityCategory").selectedKey = "0";
+	    	
+	    	document.getElementById("pxDfacilityName").displayValue = "--全部 Select --";
+	    	document.getElementById("pxDfacilityName").selectedKey = "0";
+			
+			/*  document.getElementById("saveFacilityMain").value="";
+				 document.getElementById("saveFacilityMain").value="";
+					 document.getElementById("saveFacilityMain").value="";
+						 document.getElementById("saveFacilityMain").value= "" */
+							 this._refreshTable();
+											 
+			
+			}
+			
+			else{
+				
+				alert("Data is not submitted. Try again.");
+			}
+			},
+			
+			saveFacilityWOInfo:function() {				
+				
+			if (("" == document.getElementById("facilityArea").value)) {
+						alert("Select dropdown value");
+					} else if ("" == document.getElementById("facilityName").value) {
+						alert("Select dropdown value");
+					} else if ("" == document
+							.getElementById("facilityCategory").value) {
+						alert("Select dropdown value");
+					}
+				var ssoValue = document.getElementById("creatorSSO1").value;
+					var isValid = this.isValidSSO(ssoValue);
+					if(isValid){
+						document.getElementById("saveFacilityMain").action = "http://localhost:8081/pmms-api/saveFacilityRepair";
+						document.getElementById("saveFacilityMain").submit();
+		
+					}
+				},
+				listeners : {
+					'pxDfacilityArea.dropdown_content_value_changed' : 'dropfacitlityAreaValChanged',
+					'pxDfacilityName.dropdown_content_value_changed' : 'dropfacilityNameValChanged',
+					'pxDfacilityCategory.dropdown_content_value_changed' : 'dropfacilityCategoryValChanged'
+
+				},
+				dropfacitlityAreaValChanged : function(event) {
+					
+					document.getElementById("facilityArea").value = event.detail.textValue;
+					var facilityCategoryRes = document.getElementById('dropdownFacCategory');
+					facilityCategoryRes.params = {
+					"nameId" : event.detail.textValue
+					}
+					facilityCategoryRes.generateRequest();
+
+					
+				},
+				dropfacilityNameValChanged : function(event) {
+					/* alert('key is:'+event.detail.key);
+					alert('value is:'+event.detail.textValue);		 *///Testing by Kailash
+					document.getElementById("facilityName").value = event.detail.textValue;
+				},
+				dropfacilityCategoryValChanged : function(event) {
+					document.getElementById("facilityCategory").value = event.detail.textValue;
+					var facilityNameRes = document.getElementById('dropdownFacName');
+					facilityNameRes.params = {
+					"nameId" : event.detail.textValue
+					}
+					facilityName.generateRequest();
+				},
+				isValidSSO : function (ssoValue){
+					var resp = false;
+				     $.ajax({
+				     method  : 'GET',
+				     url     : 'http://localhost:8081/pmms-api/isValidSSO',
+				     dataType : 'json',
+					    data: {"sso" : ssoValue}, 
+				     async: false,
+				     error : function (status) {
+				     alert("Your operation failed");
+				     resp= false;
+				     },
+				     success: function(data) {
+				     if(data.data=="SUCCESS")
+				     {
+				     resp= true;
+				     }
+				     else if(data.data=="FAIL")
+				     {
+				     alert("Creator SSO does not exist");
+				     resp= false;
+				     }
+				     }
+				     });
+				     return resp;
+				}
+			});
+		</script>
+
+
+</dom-module>

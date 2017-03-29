@@ -1,0 +1,309 @@
+<meta charset="utf-8">
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../validations/cats-only.html" />
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="Equipment-MTBF">
+ 
+<template>
+<px-card icon="fa-suitcase" header-text="Equipment MTBF statistics and report (Only for Break Down Maintenance)" chevron> 
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+
+<section>
+	<section>
+		<form is="iron-form" on-iron-form-response="ironformresponse" content-type="application/json" id="MTBF" method="post">
+			<br> <input type="hidden" name="year" id="year">
+			<input type="hidden" name="month" id="month">
+			<input type="hidden" name="srcEvent" id="srcEvent">
+			
+			<table>
+				<tr>
+					<td><label class="control-label" style="width: 130px;"><b>区域/Select Years:</b></label>
+			<px-dropdown id="yearDropDown" selected-key="{{selectedYear}}"	display-value="--全部 Select --">
+			       		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"2014", "val":"2014"}, {"key":"2015", "val":"2015"},{"key":"2016", "val":"2016"},{"key":"2017", "val":"2017"},{"key":"2018", "val":"2018"},{"key":"2019", "val":"2019"},{"key":"2020", "val":"2020"}]'> 
+			       		</px-dropdown-content>
+			      	  </px-dropdown>
+					</td>
+					<td>	
+						<label class="col-sm-2 control-label pull-left"> <b>区域/Select Months:</b>
+						</label>
+	
+						
+						<px-dropdown  id ="mnthDropDown" display-value="--全部 Select --">
+				        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+				          items='[{"key":"1", "val":"January"}, 
+				          {"key":"2", "val":"February"},
+				          {"key": "3", "val":"March"},
+				          {"key":"4","val":"April"},
+				          {"key":"5","val":"May"},
+				          {"key":"6","val":"June"},
+				          {"key":"7","val":"July"},
+				          {"key":"8","val":"August"},
+				          {"key":"9","val":"September"},
+				          {"key":"10","val":"October"},
+				          {"key":"11","val":"November"},
+				          {"key":"12","val":"December"}]'> 
+				          </px-dropdown-content>
+				          </px-dropdown>
+						
+				</td>
+						<td>
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<label class="col-sm-2 control-label pull-left"> <b>设施名称/EQName:</b>
+						</label>
+					
+							<paper-input class="input-medium search-query" id="MTBFEquipName"
+								name="MTBFEquipName" value={{equipNo}} on-change="updateEquipNo"></paper-input>
+	
+					</div>
+				</td>
+				<td>	
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<label class="col-sm-2 control-label pull-left"> <b>设施名称/EQNo:</b>
+						</label>
+					
+	
+							<paper-input class="input-medium search-query" id="MTBFEqNo"
+								name="MTBFEqNo" value={{EqNo}} on-change="updateEquipNo"></paper-input>
+	
+					</div>
+				</td>
+					<td>
+					 <paper-button raised on-click="search1"
+								class="btn btn-large btn-primary"  style="margin-left: 40px;">查询/Search</paper-button> 
+								</td>
+				</tr>
+				<tr>
+				<td><paper-button raised on-click="fiveYrData" id="btn-byYear" class="btn btn-large btn-primary">按年份统计/View Five Years </paper-button></td></tr>
+			</table>
+			<br> <br>
+			<div id="container1" style="width: 100%; height: 400px;"></div>
+				<div id="table1" style="display:none">
+			
+				<px-data-table id="DtlsTableData" 	 table-data="{{resultData}}">
+					<px-data-table-column name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="jan" label="1月"></px-data-table-column>
+					<px-data-table-column name="feb" label="2月"></px-data-table-column>
+					<px-data-table-column name="mar" label="3月"></px-data-table-column>
+					<px-data-table-column name="apr" label="4月"></px-data-table-column>
+					<px-data-table-column name="may" label="5月"></px-data-table-column>
+					<px-data-table-column name="jun" label="6月"></px-data-table-column>
+					<px-data-table-column name="jul" label="7月"></px-data-table-column>
+					<px-data-table-column name="aug" label="8月"></px-data-table-column>
+					<px-data-table-column name="sep" label="9月"></px-data-table-column>
+					<px-data-table-column name="oct" label="10月"></px-data-table-column>
+					<px-data-table-column name="nov" label="11月"></px-data-table-column>
+					<px-data-table-column name="dec" label="12月"></px-data-table-column>
+				</px-data-table>
+				</div>
+				<div id="table2" style="display:none">
+				<px-data-table id="DtlsTableData1" 	 table-data="{{resultData}}">
+					<px-data-table-column  name="name" label="设备编号/EQNO."></px-data-table-column>
+					<px-data-table-column name="jan" label="1月"></px-data-table-column>
+					<px-data-table-column name="feb" label="2月"></px-data-table-column>
+					<px-data-table-column name="mar" label="3月"></px-data-table-column>
+					<px-data-table-column name="apr" label="4月"></px-data-table-column>
+					<px-data-table-column name="may" label="5月"></px-data-table-column>
+					<px-data-table-column name="jun" label="6月"></px-data-table-column>
+					<px-data-table-column name="jul" label="7月"></px-data-table-column>
+					<px-data-table-column name="aug" label="8月"></px-data-table-column>
+					<px-data-table-column name="sep" label="9月"></px-data-table-column>
+					<px-data-table-column name="oct" label="10月"></px-data-table-column>
+					<px-data-table-column name="nov" label="11月"></px-data-table-column>
+					<px-data-table-column name="dec" label="12月"></px-data-table-column>
+				</px-data-table>
+				</div>
+				
+				
+				<div id="table3" style="display:none">
+				<px-data-table id="DtlsTableData2" 	 table-data="{{resultData}}">
+					<px-data-table-column  name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="jan" label="1月"></px-data-table-column>
+					<px-data-table-column name="feb" label="2月"></px-data-table-column>
+					<px-data-table-column name="mar" label="3月"></px-data-table-column>
+					<px-data-table-column name="apr" label="4月"></px-data-table-column>
+					<px-data-table-column name="may" label="5月"></px-data-table-column>
+					
+				</px-data-table>
+				</div>
+			
+		</form>
+	</section>
+</px-card>
+</template>
+
+<script>
+
+	Polymer({
+		/* this is the element's prototype */
+		is : 'Equipment-MTBF',
+		equipNo : {
+			type : String,
+			notify : true,
+			value : ""
+	},
+	getParams : function(year, month) {
+		return {
+			year : year,
+			month : month,
+			EqNo : EqNo,
+			event:srcEvent
+
+		};
+	},
+	 listeners : {
+			'yearDropDown.dropdown_content_value_changed' : 'yearDropDownFunction',
+			'mnthDropDown.dropdown_content_value_changed' : 'mnthDropDownFunction'
+		},
+		yearDropDownFunction : function(event) {
+
+			document.getElementById("year").value = event.detail.textValue;
+	},
+	mnthDropDownFunction : function(e) {
+
+		document.getElementById("month").value = e.detail.textValue;
+},
+	search1 : function() {
+
+	var EqNo = document.getElementById("MTBFEqNo").value;
+	var EqName = document.getElementById("MTBFEquipName").value;
+	
+		 if (EqNo!='')
+		 {
+			 document.getElementById("table3").style.display ="none";
+			document.getElementById("table2").style.display ="block";	
+			document.getElementById("table1").style.display ="none";	
+			 document.getElementById("MTBF").action = "http://localhost:8081/pmms-api/chart/getEquipMTBFByEqId";
+			 document.getElementById("MTBF").submit();
+		}	 else{ 
+			
+			document.getElementById("table3").style.display ="none";	
+			document.getElementById("table1").style.display ="block";
+			document.getElementById("table2").style.display ="none";
+			document.getElementById("MTBF").action = "http://localhost:8081/pmms-api/chart/getSignleYrEquipMTBF";
+			document.getElementById("MTBF").submit();
+		 }
+		
+	},
+	fiveYrData : function() {
+		document.getElementById("srcEvent").value = "Five";
+		document.getElementById("table3").style.display ="block";	
+		document.getElementById("table1").style.display ="none";
+		document.getElementById("table2").style.display ="none";
+		document.getElementById("MTBF").action = "http://localhost:8081/pmms-api/chart/getEquipMTBFByYr";
+		document.getElementById('MTBF').submit();
+	},
+
+	_refreshTable : function() {
+		var array = [];
+		array = this.resultData;
+		this.resultData = array;
+	},
+
+	ironformresponse : function(e) {
+		var details = e.detail;
+		var responseData = e.detail.response;
+		var backData = responseData.chart;
+		
+		this.resultData = responseData.table;
+		var EqNo = document.getElementById("MTBFEqNo").value;
+		if (details.status == 200) {
+			var container = "container1";
+			
+			//全局详细数据
+			
+			//全局设置highchart
+			
+			var options = {
+					chart : {
+						renderTo : container
+					},
+					credits:{
+						enabled:false                  //版权信息
+					},	
+					title : {
+						text : '平均维修间隔时间统计<br>MTBF',
+						x : -20
+					//center
+					},
+					subtitle : {
+						text : '无数据',
+						x : -20
+					},
+					xAxis : {
+						categories : [ '1月', '2月', '3月', '4月' , '5月' , '6月' , '7月' , '8月' , '9月' , '10月' , '11月' , '12月' ]
+					},
+					yAxis : {
+						title : {
+							text : '维修配件使用数量（个）/月'
+						},
+						plotLines : [ {
+							value : 0,
+							width : 1,
+							color : '#808080'
+						} ]
+					},
+					tooltip : {
+						valueSuffix : ''
+					},
+					tooltip : {
+						headerFormat : '<span style="font-size:15px">{point.key}配件使用数量</span><table>',
+						pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+								+ '<td style="padding:0"><b>{point.y:.2f} 个</b></td></tr>',
+						footerFormat : '</table>',
+						shared : true,
+						useHTML : true
+					},
+					plotOptions: {
+					    series: {
+					        step: 'left' 
+					    }
+					},
+					legend : {//图示说明 配置
+						layout : 'vertical',
+						align : 'right',
+						verticalAlign : 'middle',
+						borderWidth : 0
+					},
+					series : [{"name":"无数据","data":[null,null,null,null,null,null,null,null,null,null,null,null]}]
+				};
+
+			if(backData.length==1){//单个备件
+				if(backData[0]==null){
+					backData[0] = [null,null,null,null,null,null,null,null,null,null,null,null];
+				}
+			}else{//几大部门
+				for(var i=0;i<backData.length;i++){
+					if(backData[i]==null){
+						backData[i] = [null,null,null,null,null,null,null,null,null,null,null,null];
+					}
+				}
+			}
+			
+			var srcEvent= document.getElementById("srcEvent").value;
+			
+			if (srcEvent == "Five"){
+				options.xAxis.categories = responseData.years;
+				options.series = backData;
+			}else{
+				options.series = backData;
+			}
+			var chart = new Highcharts.Chart(options);
+			
+			var table = document.getElementById("DtlsTableData2");
+			
+
+			
+
+			
+
+		} else {
+			alert("error in searching equipment issues list!!!!");
+
+		}
+	}
+	});
+</script> </dom-module>

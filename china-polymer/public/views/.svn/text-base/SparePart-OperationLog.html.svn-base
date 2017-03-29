@@ -1,0 +1,111 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="SparePart-OperationLog"> <template>
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	
+	<div>
+		<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse" id="SearchSparePart" method="post">
+			<table>
+			<tr><td>
+			<label class="control-label" style="width: 20px;"><b>Search</b> </label></td>
+			<td><paper-input class="paper-input-medium search-query span3" name="searchKey" value="{{searchKey}}" on-input="searchKeyChanged"></td>
+			</tr>
+			</table>
+			</form>
+	</div>
+			<br><br>
+			
+	<br><br>
+			<div class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="stockTable" url="http://localhost:8081/pmms-api/getSparePart" last-response="{{sparePartOperationLog}}" auto on-response="handleResponse">
+				</byutv-jsonp>
+				<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{filteredData}}" on-px-row-click="selectedRow">  
+		
+					<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+					<px-data-table-column name="sparePartNo" label="Spare Part No." id="modelNo"></px-data-table-column> 
+					<px-data-table-column name="name" label="Name" id="name"></px-data-table-column>
+					<px-data-table-column name="type" label="Type" id="type"></px-data-table-column>
+					<px-data-table-column name="source" label="Source" id="manufacturer"></px-data-table-column> 
+					<px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column>
+					<px-data-table-column name="price" label="Price" id="price"></px-data-table-column>
+					<px-data-table-column name="stock" label="Stock" id="stock"></px-data-table-column> 
+					<px-data-table-column name="safteyStock" label="Saftey Stock" id="safty"></px-data-table-column> 
+					<px-data-table-column name="sysSafteyStock" label="Sys Saftey Stock" id="system"></px-data-table-column> 
+					<px-data-table-column name="location" label="Loacation" id="loc"></px-data-table-column> 
+				    <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column> 
+			 
+		</px-data-table>
+		
+	</div>
+	</form>	
+</section>
+</px-tab-pages> 
+</px-card> 
+			
+</template>
+			<script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'SparePart-OperationLog',
+			    
+ ironformresponse:function(){
+					
+					document.querySelector('SparePart-OperationLog').refreshData();
+				},
+			    searchData : function(){
+			    	document.getElementById("SearchSparePart").action = "http://localhost:8081/pmms-api/getSearchedData";
+					document.getElementById('SearchSparePart').submit(); 
+			    },
+				 searchKey : null,
+
+				    searchKeyChanged: function (event) {			     
+				                this.searchKey = event.target.value;
+				                this._refreshTable();
+				    },
+
+					handleResponse : function(event) {
+						this._refreshTable();
+					},
+				    
+				    _matches: function (jsonObject, searchKey) {
+				                for (field in jsonObject) {
+				                            var fieldValue = jsonObject[field];
+
+				                            if (fieldValue === Object(fieldValue)
+				                                        && this._matches(fieldValue, searchKey)) {
+				                                        return true;
+				                            } else if (fieldValue && fieldValue.indexOf
+				                                        && fieldValue.indexOf(this.searchKey) >= 0) {
+				                                        return true;
+				                            }                                               
+				                }
+				                return false;
+				    },
+				    
+				    _refreshTable : function() {                                 
+				                var array = [];
+				                if (!this.searchKey) {
+				                            array = this.sparePartOperationLog;
+				                } else {
+				                            for (var i in this.sparePartOperationLog) {
+				                                        var jsonObject = this.sparePartOperationLog[i];                                                  
+				                                        if (this._matches(jsonObject, this.searchKey)) {
+				                                                    array.push(jsonObject);
+				                                        }                                               
+				                            }
+				                }
+				                
+				                this.filteredData = [];
+				                this.filteredData = array;
+				    }  
+			});
+			</script>
+			</dom-module>
+
+

@@ -1,0 +1,33 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="IndirectMaterial-elem"> 
+<template>
+<style include="button-style">
+</style> 
+<px-card icon="fa-suitcase" header-text="Indirect Material Management" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Indiect Material Management</px-tab> 
+		<px-tab>Saftey Stock</px-tab> 
+		<px-tab>Storage transaction</px-tab> 
+		<px-tab>Inventory Check</px-tab>
+		<px-tab>Operation Log</px-tab>
+		</px-tab-set>
+	
+<!-- local DOM goes here -->
+	<px-tab-pages selected="{{selected}}">
+	<IndirectMaterial-Management></IndirectMaterial-Management>		
+	<IndirectSafety-Stock></IndirectSafety-Stock>
+	<Storage-Transaction></Storage-Transaction> 
+	<Inventory-Check></Inventory-Check>
+	<Operation-Log></Operation-Log>
+
+</px-tab-pages>
+</px-card>
+
+</template> <script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'IndirectMaterial-elem',
+			    
+			  });
+			
+			</script></dom-module>

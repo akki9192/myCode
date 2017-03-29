@@ -1,0 +1,471 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="Stock-Transcation-mgmt"> 
+<template id="Stock-Transcation">
+<px-card icon="fa-suitcase" header-text="Indirect Material Management" chevron>
+
+<form is="iron-form" content-type="application/json" id="searchWithDatesAndParametersForIdm" on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">
+					
+			<input type="hidden" id="idmFilteredData" name="idmFilteredData" value="{{idmFilteredData}}">		
+	</form>
+<div class="pull-left" style="width: 900px">
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+			</label>
+
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="IdmFromDate">
+				<paper-input id="IdmFromDateFields" name="IdmFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="IdmFromDate" on-tap="triggerIdmFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 80px;" name="IdmToDate">
+				<paper-input id="IdmToDateFields" name="IdmToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="IdmToDate" on-tap="triggerIdmToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 20px;">
+				<b>Name:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="idmName" id="idmName" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 20px;">
+				<b>A Library/Storage</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 40px;">
+				<paper-input class="span3" name="transType" id="transType" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+	
+	    <div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px;">
+				<b>Warehouse Manager:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="operatorSso" id="operatorSso" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 100px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="getAllData">Inquire</paper-button>
+		</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 100px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="DownloadIdmTransaction">Download</paper-button>
+		</div>
+		</div>		<!-- -----------------------------Download------------------------------------------------- -->
+	<form content-type="application/xls" id="IdmTransactionDownload" method="GET">
+			<div class="control-group pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="DownloadIdmTransaction">Download</paper-button> 
+		</div>		
+		</form>
+		
+		
+		<!--****************************SCANIN************************************ -->
+			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="IdmManagementStockIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="stockIn.open()" class="btn btn-large btn-primary" >Storage/Stock-In</paper-button>				
+						<paper-dialog id="stockIn">
+				 			<paper-dialog-scrollable>
+		<form is="iron-form" content-type="application/json" id="searchforStockIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleFilteredDataStockIn" method="post">
+					
+			<input type="hidden" id="idmFilteredDataStockIn" name="idmFilteredDataStockIn" value="{{idmFilteredDataStockIn}}">		
+	</form>	
+								<table>		
+								<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>编码号/Code Number:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="CodeNumber" id="CodeNumber">
+										</paper-input></td>
+									
+									
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>入库人(sso)/Warehousing People:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="warehousingPeople" id="warehousingPeople">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>数量/Quantity:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="noOfLibraries" id="noOfLibraries">
+										</paper-input></td>
+									
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>订货交付时间差（天）:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="orderingTime" id="orderingTime">
+										</paper-input></td>
+									</tr>	
+								
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>批次号/Batch Number:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="batchNumber" id="batchNumber">
+										</paper-input></td>
+									</tr>
+									
+								</table>
+						<div  class="module-body pull-left" style="width: 100%">				
+			  <byutv-jsonp id="StockIn" url="http://localhost:8081/pmms-api/getIdmTransactionDetailsStockIn" last-response="{{IdmTransactionStockIn}}" params='{"transType":"I"}' debounce-duration="300" auto="true">
+			  </byutv-jsonp>
+				<px-data-table id="idmtranscRecordStockIn" enable-column-resize selectable table-data="{{IdmTransactionStockIn}}" > 
+				
+					<px-data-table-column name="transId" label="Code Number" ></px-data-table-column> 
+					<px-data-table-column name="idmName" label="Name"></px-data-table-column>
+					 <px-data-table-column name="idmName" label="Specification"></px-data-table-column>
+					<px-data-table-column name="price" label="Price"></px-data-table-column> 				
+					<px-data-table-column name="noOfLibraries" label="Unit"></px-data-table-column>				
+					<px-data-table-column name="idmType" label="Category"></px-data-table-column>
+					<px-data-table-column name="operatorSso" label="Warehousing People"></px-data-table-column>
+					<px-data-table-column name="purchaseOrder" label="Batch Number"></px-data-table-column>
+					<px-data-table-column name="leadTime" label="Ordering delivery time Difference"></px-data-table-column> 
+					<px-data-table-column name="purchaseOrder" label="Batch Number"></px-data-table-column>
+							
+				</px-data-table>
+		 </div>
+				</paper-dialog-scrollable>
+				    	<div class="buttons">
+					   				<paper-button dialog-confirm autofocus on-click="getStockInData">Warehousing/入库</paper-button>
+					   				<paper-button dialog-dismiss >关闭/Shutdown</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+				
+		<!--**************************************************SCAN OUT********************************************************************************-->			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="IdmManagementStockOut" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="stockOut.open()" class="btn btn-large btn-primary" >A Library/Stock-Out</paper-button>				
+						<paper-dialog id="stockOut">
+				 			<paper-dialog-scrollable>	
+				 					 			<paper-dialog-scrollable>
+		<form is="iron-form" content-type="application/json" id="searchforStockIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleFilteredDataStockOut" method="post">
+					
+			<input type="hidden" id="idmFilteredDataStockOut" name="idmFilteredDataStockOut" value="{{idmFilteredDataStockOut}}">		
+	</form>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Code Number:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="idmId" id="idmId">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>The Number of Libraries:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="noOfLibraries2" id="noOfLibraries2">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Picking People(SSO):</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="receiver" id="receiver">
+										</paper-input></td>
+									</tr>
+									
+								</table>
+				<div  class="module-body pull-left" style="width: 100%">				
+			  <byutv-jsonp id="StockOut" url="http://localhost:8081/pmms-api/getIdmTransactionDetailsStockOut" params='{"transType":"O"}' last-response="{{IdmTransactionStockOut}}" debounce-duration="300" auto="true">
+			  </byutv-jsonp>
+				<px-data-table id="idmtranscRecordTableOut" enable-column-resize selectable table-data="{{IdmTransactionStockOut}}"  > 
+				
+					<px-data-table-column name="transId" label="Code Number" ></px-data-table-column> 
+					<px-data-table-column name="idmName" label="Name"></px-data-table-column>
+					 <px-data-table-column name="idmName" label="Specification"></px-data-table-column>
+					<px-data-table-column name="price" label="Price"></px-data-table-column> 				
+					<px-data-table-column name="noOfLibraries" label="Unit"></px-data-table-column>				
+					<px-data-table-column name="idmType" label="Category"></px-data-table-column>
+					<px-data-table-column name="operatorSso" label="Warehousing People"></px-data-table-column>
+					<px-data-table-column name="purchaseOrder" label="Batch Number"></px-data-table-column>
+					<px-data-table-column name="leadTime" label="Ordering delivery time Difference"></px-data-table-column> 
+					<px-data-table-column name="purchaseOrder" label="Batch Number"></px-data-table-column>
+				</px-data-table>
+		 </div>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+							<paper-button>Print</paper-button>
+					   			<paper-button dialog-dismiss >ShutDown</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="getStockdataOut">A Library</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+	<!--************************************************************DATATABLE****************************************************************-->
+	      <div  class="module-body pull-left" style="width: 100%">				
+			<byutv-jsonp id="idmtranscRecord" url="http://localhost:8081/pmms-api/getIdmTransactionDetails" last-response="{{IdmTransaction}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+				<px-data-table id="idmtranscRecordTable" enable-column-resize selectable table-data="{{IdmTransaction}}" > 
+				
+					<px-data-table-column name="transId" label="Serial Number" ></px-data-table-column> 
+					<px-data-table-column name="idmId" label="Code"></px-data-table-column>
+					<px-data-table-column name="idmName" label="Name"></px-data-table-column>
+					<px-data-table-column name="price" label="Price"></px-data-table-column> 				
+					<px-data-table-column name="noOfLibraries" label="Quantity"></px-data-table-column>				
+					<px-data-table-column name="idmType" label="Category"></px-data-table-column> 
+					<px-data-table-column name="transType" label="Inbound/Outbound"></px-data-table-column>
+					<px-data-table-column name="idmInTime" label="Operating Time"></px-data-table-column> 
+					<px-data-table-column name="leadTime" label="Ordering delivery time Difference"></px-data-table-column> 
+					<px-data-table-column name="operatorSso" label="Warehousing People"></px-data-table-column> 
+					<px-data-table-column name="receiver" label="Picking People"></px-data-table-column> 
+					<px-data-table-column name="purchaseOrder" label="Batch Number"></px-data-table-column> 
+				  					
+					 
+				</px-data-table>
+		 </div>
+
+</px-card> 
+</template>
+<script>
+Polymer({
+		/* this is the element's prototype */
+		is : 'Stock-Transcation-mgmt',
+	    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+	    idmFilteredData : {
+			type : String,
+			notify : true
+		},
+		idmFilteredDataStockIn : {
+			type : String,
+			notify : true
+		},
+		IdmFromDateFields : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		IdmToDateFields : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		orderingTime : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		idmName : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		transType : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		
+		operatorSso : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		
+		CodeNumber:	{
+			type : String,
+			notify : true,
+			value : ""
+		},
+		
+		warehousingPeople:	{
+			type : String,
+			notify : true,
+			value : ""
+		},
+		noOfLibraries:	{
+			type : String,
+			notify : true,
+			value : ""
+		},
+		orderingTimeField:	{
+			type : String,
+			notify : true,
+			value : ""
+		},
+		batchNumber:	{
+			type : String,
+			notify : true,
+			value : ""
+		},
+	
+		triggerIdmFromDateField : function() {
+			//console.log("calibrationdate : " + this.$.StockFromDate);
+			this.IdmFromDate = this.$.IdmFromDate.dateTime.substring(0,
+					this.$.IdmFromDate.dateTime.indexOf('T'));
+			this.IdmFromDateField = this.IdmFromDate;
+			document.getElementById("IdmFromDateFields").value = this.IdmFromDateField;
+		},
+		triggerIdmToDate : function() {
+			//console.log("calibrationdate : " + this.$.StockToDate);
+			this.IdmToDate = this.$.IdmToDate.dateTime.substring(0,
+					this.$.IdmToDate.dateTime.indexOf('T'));
+			this.IdmToDateField = this.IdmToDate;
+			document.getElementById("IdmToDateFields").value = this.IdmToDateField;
+		},
+		
+	/* -------------------------------------------------for first Screen---------------------------------- */
+		getAllData : function() {
+			if ((this.IdmToDateField == undefined
+					|| this.IdmToDateField == null || this.IdmToDateField == "")
+					|| (this.IdmFromDateField == undefined
+							|| this.IdmFromDateField == null || this.IdmFromDateField == "") ||
+							(this.idmName == undefined
+									|| this.idmName == null || this.idmName == "")||
+									(this.transType == undefined
+											|| this.transType == null || this.transType == "")||(this.operatorSso == undefined
+													|| this.operatorSso == null || this.operatorSso == "")	)
+				alert("Please select All the fiels to Inquire.");
+			else {
+				this.transType = this.$.transType.value;
+				this.idmName = this.$.idmName.value;
+				this.operatorSso = this.$.operatorSso.value;
+				this.idmFilteredData = "{'fromDate':"
+						+ this.IdmFromDateField + ",'toDate':"
+						+ this.IdmToDateField + ",'idmName':"
+						+ this.idmName + ",'transType':" + this.transType
+						+ ", 'operatorSso':" + this.operatorSso+ "}";
+				document.getElementById("searchWithDatesAndParametersForIdm").action = "http://localhost:8081/pmms-api/searchWithDatesAndFieldsForIdm";
+				document.getElementById("searchWithDatesAndParametersForIdm").submit();
+			}
+
+		},
+		handleFilteredData : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.IdmTransaction = details.response;
+				this._refreshTable("idmtranscRecord");
+			} else {
+				alert("error in searching list!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.IdmTransaction;
+			this.IdmTransaction = array;
+		},
+	
+		/* ----------------------------------search StockIn---------------------------------------------------------- */
+		
+		getStockInData : function() {
+			if ((this.CodeNumber == undefined
+									|| this.CodeNumber == null || this.CodeNumber == "")||
+									(this.warehousingPeople == undefined
+											|| this.warehousingPeople == null || this.warehousingPeople == "")||(this.noOfLibraries == undefined|| this.noOfLibraries == null || this.noOfLibraries == "")
+													||(this.orderingTime == undefined || this.orderingTime == null || this.orderingTime == "")
+													||(this.batchNumber == undefined
+													|| this.batchNumber == null || this.batchNumber == "")
+													)
+				alert("Please select All the fiels to Inquire.");
+			else {
+				this.CodeNumber = this.$.CodeNumber.value;
+				this.warehousingPeople = this.$.warehousingPeople.value;
+				this.noOfLibraries = this.$.noOfLibraries.value;
+				this.orderingTime = this.$.orderingTime.value;
+				this.batchNumber = this.$.batchNumber.value;
+				this.idmFilteredDataStockIn = "{'CodeNumber':"
+						+ this.CodeNumber + ",'warehousingPeople':"
+						+ this.warehousingPeople + ",'noOfLibraries':"
+						+ this.noOfLibraries + ",'batchNumber':" + this.batchNumber
+						+ ", 'orderingTime':" + this.orderingTime+ "}";
+				document.getElementById("IdmManagementStockIn").action = "http://localhost:8081/pmms-api/searchWithDatesAndFieldsForIdmStockIn";
+				document.getElementById("IdmManagementStockIn").submit();
+			
+			}
+		},
+		handleFilteredDataStockIn : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.IdmTransactionStockIn = details.response;
+				this._refreshTable("StockIn");
+			} else {
+				alert("error in searching list!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.IdmTransactionStockIn;
+			this.IdmTransactionStockIn = array;
+		},
+		/* -----------------------------------------StockOut--------------------------------------------------- */
+		
+		
+	/* 	getStockdataOut : function() {
+			if ((this.CodeNumber == undefined
+									|| this.CodeNumber == null || this.CodeNumber == "")||
+									(this.reciever == undefined
+											|| this.reciever == null || this.reciever == "")
+											(this.noOfLibraries == undefined
+											|| this.noOfLibraries == null || this.noOfLibraries == "")
+													)
+				alert("Please select All the fiels to Inquire.");
+			else {
+				this.CodeNumber = this.$.CodeNumber.value;
+				this.reciever = this.$.reciever.value;
+				this.noOfLibraries = this.$.noOfLibraries.value;
+				this.idmFilteredDataStockOut = "{'CodeNumber':"
+						+ this.CodeNumber + ",'reciever':"
+						+ this.reciever + ",'noOfLibraries':"+ "}";
+				document.getElementById("IdmManagementStockIn").action = "http://localhost:8081/pmms-api/searchWithDatesAndFieldsForIdmStockIn";
+				document.getElementById("IdmManagementStockIn").submit();
+			
+			}
+		},
+		handleFilteredDataStockIn : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.IdmTransactionStockIn = details.response;
+				this._refreshTable("StockOut");
+			} else {
+				alert("error in searching list!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.IdmTransactionStockIn;
+			this.IdmTransactionStockIn = array;
+		}, */
+	
+		/* -----------------------------------------Download--------------------------------------------------- */
+		DownloadIdmTransaction : function() {
+
+			 document.getElementById("IdmTransactionDownload").action = "http://localhost:8081/pmms-api/getIdmTransactionListDownlaod";
+			 document.getElementById("IdmTransactionDownload").submit();
+
+			}
+		
+});
+		
+</script> </dom-module>

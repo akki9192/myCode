@@ -1,0 +1,98 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="Operation-Log"> 
+<template>
+<px-card icon="fa-suitcase" header-text="StorageTransaction" chevron>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+			<!-- Text Fields  -->
+			<br> <br>
+			<table>
+				<tr>
+					<td><label class="control-label"><b>SSO:</b></label></td>
+
+					<td style="margin-left: 20px;"><paper-input
+							class="input-medium search-query span3" id="sso"
+							value="{{sso}}" name="sso"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+			</table>
+			<br> <br>
+		<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>Start Date:</b>
+			</label>
+			<div class="controls"
+				style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+				name="StockStartDate">
+				<paper-input id="StockStartDateFields" name="StockStartDateFields"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="StockStartDate"
+					on-tap="triggerStockFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>End Date:</b>
+			</label>
+			<div class="controls"
+				style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;"
+				name="StockEndDate">
+				<paper-input id="StockEndDateFields" name="StockEndDateFields"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="StockEndDate" on-tap="triggerStockToDate"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+	</div>
+			<br> <br>
+			<table>
+				<tr>
+					<td><label class="control-label"><b>Model:</b></label></td>
+					<td style="margin-left: 20px;"><paper-input
+							class="input-medium search-query span3" id="model"
+							value="{{model}}" name="model"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+				<!-- Search Button -->
+				<br>
+				<br>
+				<tr>
+				<td colspan="2">
+				<paper-button style="margin-left: 40px;" class="btn btn-icon" type="button" style="display: inline-block;" on-click="">Search
+				</paper-button></td>
+			</table>
+			<br> <br> <br>
+			<div id="measuringinfo" class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="indirectMaterialData" url="" last-response="{{operationLog}}" debounce-duration="300"
+					auto="true"></byutv-jsonp>
+				<px-data-table id="indirectMaterialinfo" table-data="{{operationLog}}" selectable>
+				<px-data-table-column name="id" label="ID" hide></px-data-table-column>
+				<px-data-table-column name="encode" label="Encode"></px-data-table-column>
+				<px-data-table-column name="firstCalibDate" label="Name"></px-data-table-column> 
+				<px-data-table-column name="size" label="Size"></px-data-table-column>
+				<px-data-table-column name="supplier" label="Supplier"></px-data-table-column>
+				<px-data-table-column name="stockNum" label="StockNum"></px-data-table-column>
+				<px-data-table-column name="stcokSaveNum" label="Stock Save Num"></px-data-table-column> 
+				<px-data-table-column name="postion" label="Postion"></px-data-table-column>
+				<px-data-table-column name="class" label="Class"></px-data-table-column>
+				<px-data-table-column name="subClass" label="Sub Class"></px-data-table-column>
+				<px-data-table-column name="remarks" label="Remarks"></px-data-table-column>
+				</px-data-table>
+			</div>
+</section>
+</px-card>
+</template>
+
+<script>
+Polymer({
+    /* this is the element's prototype */
+    is: 'Operation-Log',
+    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+   
+</script>
+
+</dom-module>

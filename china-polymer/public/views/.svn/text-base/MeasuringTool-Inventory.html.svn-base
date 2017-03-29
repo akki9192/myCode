@@ -1,0 +1,636 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="MeasuringTool-Inventory"> <template>
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<h2>Inside MeasuringTool-Inventory</h2>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="measuringToolInventorySystemAdd" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="addMeasuringTool.open()">Add</paper-button>
+			<paper-dialog id="addMeasuringTool"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"><b>Instrument
+								No*:</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="instrumentNo"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>First Calibration Date:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="firstCalibrationDate">
+				 <paper-input id="firstCalibDates" name="firstCalibDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="firstCalibrationDate"  on-tap="triggerfirstCalibrationDate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>				
+				</td>			
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Lose / Scrap/ Archive Date:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="loseScrapArchiveDate">
+				 <paper-input id="loseScrapArchiveDates" name="loScArDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="loseScrapArchiveDate"  on-tap="triggerloseScrapArchiveDate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+			
+				</td>							
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Person responsible:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="personResponsible" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Transfer Date:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="transferdate">
+					 <paper-input id="transferdates" name="transferDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="transferdate"  on-tap="triggertransferdate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+			
+				</td>		
+					
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Frequency:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibrationFrequency" style="width: 180px;">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Fee:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibrationFee" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Department:</b></label></td>
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwndept" params='{"Type":"DEPT"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{factory}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="deptNameAdd">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{factory}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="department" id="department"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Depository</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="depository" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Name of the Instrument:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="instrumentName" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Type Management Nos:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="managementNos" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Status:</b></label></td>
+
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwnstatus"
+								params='{"Type":"MEASURE_STATUS"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{measurestatus}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="measuringStatusAdd">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{measurestatus}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="status"
+						id="status" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Date.:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="calibrationdate">
+				 <paper-input id="calibrationdates" name="calibrationDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="calibrationdate"  on-tap="triggercalibrationdate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+				
+				</td>		
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Plan Submission Date:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="plansubmissiondate">
+				 <paper-input id="plansubmissiondates" name="planSubDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="plansubmissiondate"  on-tap="triggerplansubmissiondate" style="margin-left: 10px; display: inline-block; 
+					width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+				</td>						
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Verification Results:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="verificationResults" style="width: 180px;"> </paper-input></td>
+				</tr>
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="saveMeasuringTool">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+		&nbsp;&nbsp;&nbsp;
+	</div>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="measuringToolInventorySystemEdit" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="editMeasuringTool.open()">Edit</paper-button>
+			<paper-dialog id="editMeasuringTool"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"><b>Instrument
+								No*:</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" id="instrumentNo"
+							name="instrumentNo" style="width: 180px;" required auto-validate
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>First Calibration Date:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="firstCalibrationDate">
+				 <paper-input id="firstCalibDatesEdit" name="firstCalibDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="firstCalibrationDate"  on-tap="triggerfirstCalibrationDateEdit" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>				
+				</td>			
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Lose / Scrap/ Archive Date:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="loseScrapArchiveDate">
+				 <paper-input id="loseScrapArchiveDatesEdit" name="loScArDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="loseScrapArchiveDate"  on-tap="triggerloseScrapArchiveDateEdit" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+			
+				</td>							
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Person responsible:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="personResponsible" name="personResponsible"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Transfer Date:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="transferdate">
+					 <paper-input id="transferdatesEdit" name="transferDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="transferdate"  on-tap="triggertransferdateEdit" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+			
+				</td>		
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Frequency:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="calibrationFrequency" name="calibrationFrequency"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Fee:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="calibrationFee" name="calibrationFee" style="width: 180px;">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Department:</b></label></td>
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwndept" params='{"Type":"DEPT"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{factory}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="deptNameEdit">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{factory}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="department" id="departmentEdit" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Depository</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="depository" name="depository" style="width: 180px;">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Name of the Instrument:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="instrumentName" name="instrumentName" style="width: 180px;">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Type Management Nos:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="managementNos" name="managementNos" style="width: 180px;">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Status:</b></label></td>
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwnstatus"
+								params='{"Type":"MEASURE_STATUS"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{measurestatus}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="measuringStatusEdit">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{measurestatus}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="status"
+						id="statusEdit" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Date.:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="calibrationdate">
+				 <paper-input id="calibrationdatesEdit" name="calibrationDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="calibrationdate"  on-tap="triggercalibrationdateEdit" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+				
+				</td>		
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Plan Submission Date:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="plansubmissiondate">
+				 <paper-input id="plansubmissiondatesEdit" name="planSubDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="plansubmissiondate"  on-tap="triggerplansubmissiondateEdit" style="margin-left: 10px; display: inline-block; 
+					width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+				</td>					
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Verification Results:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							id="verificationResults" name="verificationResults"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+
+					<td colspan="2"><input type="hidden" id="editMeasureId"
+						name="id" /></td>
+				</tr>
+				<tr>
+
+					<td colspan="2"><input type="hidden" id="createdDate"
+						name="createdDate" /></td>
+				</tr>
+				<tr>
+
+					<td colspan="2"><input type="hidden" id="createdBy"
+						name="createdBy" /></td>
+				</tr>
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="editMeasuringTool">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+
+	<div>
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="measuringToolInventorySystemDelete" method="post">
+
+
+			<input type="hidden" id="deleteMeasureId" name="deleteMeasureId"
+				value="{{deleteMeasureId}}" />
+			<paper-button class="btn btn-large btn-primary" raised
+				on-click="deleteMeasuringTool">Delete</paper-button>
+
+		</form>
+	</div>
+
+	<br>
+	<form content-type="application/json" id="measuringtoolinventory">
+		<br>
+		<div class="pull-left" style="width: 900px";>
+			<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+				</label>
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+					<px-dropdown 
+						id="deptDropDown" selected-Key="{{deptId}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+
+			<div class="control-group pull-left"
+				style="width: 300px; margin-left: 40px">
+
+				<label class="control-label" style="width: 130px;"> <b>状态/Status</b>
+				</label>
+
+				<div style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="measureinsstatus"
+						params='{"Type":"MEASURE_INS_STATUS"}'
+						url="http://localhost:8081/pmms-api/getMeasureInsStatus"
+						last-response="{{measinsstatus}}" auto></byutv-jsonp>
+					<px-dropdown id="measurestatus" selected-Key="{{status}}">
+					<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{measinsstatus}}">
+					<!-- items='[{"key":"L", "val": "Lost"},{"key":"I", "val": "In-use"},{"key":"S", "val": "Scrap"},{"key":"A", "val": "Archive"}]'> -->
+					</px-dropdown-content> </px-dropdown>
+				</div>
+			</div>
+		</div>
+		<br> <br>
+		<table>
+			<tr>
+				<td><label class="control-label"><b>Measurement
+							Name</b></label></td>
+
+				<td style="margin-left: 20px;"><paper-input
+						class="input-medium search-query span3" id="measurementName"
+						value="{{measurementName}}" name="measurementName"
+						style="width: 180px;"> </paper-input></td>
+			</tr>
+		</table>
+
+		<br> <br> <br>
+
+		<div id="measuringinfo" class="module-body pull-left"
+			style="width: 100%">
+
+			<byutv-jsonp id="measuringtooldata"
+				params='{{getParams(measurementName,deptId,status)}}'
+				url="http://localhost:8081/pmms-api/getMeasuringToolInfo"
+				last-response="{{measuringtooldata}}" debounce-duration="300"
+				auto="true"></byutv-jsonp>
+
+			<px-data-table id="measuringtoolinfo"
+				table-data="{{measuringtooldata}}"
+				on-px-row-click="measuringToolInfoRow" selectable> <px-data-table-column
+				name="id" label="ID" hide></px-data-table-column> <px-data-table-column
+				name="instrumentNo" label="Instrument No"></px-data-table-column> <px-data-table-column
+				name="firstCalibDate" label="First Calibration Date"></px-data-table-column>
+			<px-data-table-column name="loScArDate"
+				label="Loose/Scrap/Archive Date"></px-data-table-column> <px-data-table-column
+				name="personResponsible" label="Responsible"></px-data-table-column>
+			<px-data-table-column name="transferDate" label="Transfer Date"></px-data-table-column>
+			<px-data-table-column name="calibrationFrequency"
+				label="Calibration Frequency"></px-data-table-column> <px-data-table-column
+				name="calibrationFee" label="Calibration Fee"></px-data-table-column>
+			<px-data-table-column name="department" label="Department"></px-data-table-column>
+			<px-data-table-column name="depository" label="Depository"></px-data-table-column>
+			<px-data-table-column name="instrumentName" label="Instrument Name"></px-data-table-column>
+			<px-data-table-column name="managementNos"
+				label="Type Management Nos"></px-data-table-column> <px-data-table-column
+				name="status" label="Status"></px-data-table-column> <px-data-table-column
+				name="calibrationDate" label="Calibration Date"></px-data-table-column>
+			<px-data-table-column name="planSubDate" label="Plan Submission Date"></px-data-table-column>
+			<px-data-table-column name="verificationResults"
+				label="Verification Results"></px-data-table-column>
+			<px-data-table-column name="createdBy" label="createdBy" hide></px-data-table-column>
+			<px-data-table-column name="createdDate" label="createdDate" hide></px-data-table-column>
+			<!-- <px-data-table-column name="lastUpdatedBy" label="lastUpdatedBy"></px-data-table-column> 
+		<!-- <px-data-table-column name="lastUpdatedDate" label="lastUpdatedDate"></px-data-table-column>   -->
+
+
+			</px-data-table>
+
+		</div>
+	</form>
+</section></template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'MeasuringTool-Inventory',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			deleteMeasureId : {
+				type : String,
+				notify : true
+			}
+		},
+		getParams : function(measurementName, deptId, status) {
+			return {
+				measurementName : measurementName,
+				deptId : deptId,
+				status : status
+
+			};
+		},
+		refreshData : function() {
+			this.$.measuringtooldata.generateRequest();
+		},
+		measuringToolInfoRow : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.id.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.id.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);
+			document.getElementById("deleteMeasureId").value = clickedRow.row.id.value;
+			document.getElementById("editMeasureId").value = clickedRow.row.id.value;
+			document.getElementById("createdDate").value = clickedRow.row.createdDate.value;
+			document.getElementById("createdBy").value = clickedRow.row.createdBy.value;
+			document.getElementById("instrumentNo").value = clickedRow.row.instrumentNo.value;
+			document.getElementById("firstCalibDatesEdit").value = clickedRow.row.firstCalibDate.value;
+			document.getElementById("loseScrapArchiveDatesEdit").value = clickedRow.row.loScArDate.value;
+			document.getElementById("personResponsible").value = clickedRow.row.personResponsible.value;
+			document.getElementById("transferdatesEdit").value = clickedRow.row.transferDate.value;
+			document.getElementById("calibrationFrequency").value = clickedRow.row.calibrationFrequency.value;
+			document.getElementById("calibrationFee").value = clickedRow.row.calibrationFee.value;
+			document.getElementById("departmentEdit").value = clickedRow.row.department.value;
+			document.getElementById("depository").value = clickedRow.row.depository.value;
+			document.getElementById("instrumentName").value = clickedRow.row.instrumentName.value;
+			document.getElementById("managementNos").value = clickedRow.row.managementNos.value;
+			document.getElementById("statusEdit").value = clickedRow.row.status.value;
+			document.getElementById("calibrationdatesEdit").value = clickedRow.row.calibrationDate.value;
+			document.getElementById("plansubmissiondatesEdit").value = clickedRow.row.planSubDate.value;
+			document.getElementById("verificationResults").value = clickedRow.row.verificationResults.value;
+
+		},
+
+		saveMeasuringTool : function() {
+
+			document.getElementById('measuringToolInventorySystemAdd').action = "http://localhost:8081/pmms-api/saveMeasuringToolInventory";
+			document.getElementById('measuringToolInventorySystemAdd').submit();
+		},
+		editMeasuringTool : function() {
+			document.getElementById('measuringToolInventorySystemEdit').action = "http://localhost:8081/pmms-api/saveMeasuringToolInventory";
+			document.getElementById('measuringToolInventorySystemEdit')
+					.submit();
+		},
+
+		deleteMeasuringTool : function() {
+			if (this.ids.length > 0) {
+				this.deleteMeasureId = this.ids.toString();
+				document.getElementById('measuringToolInventorySystemDelete').action = "http://localhost:8081/pmms-api/deleteMeasuringToolInventory";
+				document.getElementById('measuringToolInventorySystemDelete')
+						.submit();
+			}
+
+		},
+		ironformresponse : function() {
+
+			document.querySelector('MeasuringTool-Inventory').refreshData();
+		},
+
+		listeners : {
+			'deptNameAdd.dropdown_content_value_changed' : 'deptNameAddValChanged',
+			'measuringStatusAdd.dropdown_content_value_changed' : 'measuringStatusAddValChanged',
+		 	'deptNameEdit.dropdown_content_value_changed' : 'deptNameEditValChanged', 
+			'measuringStatusEdit.dropdown_content_value_changed' : 'measuringStatusEditValChanged', 
+
+		},
+		deptNameAddValChanged : function(event) {
+
+			document.getElementById("department").value = event.detail.key;
+		},
+
+		measuringStatusAddValChanged : function(event) {
+
+			document.getElementById("status").value = event.detail.key;
+		},
+		deptNameEditValChanged : function(event) {
+
+			document.getElementById("departmentEdit").value = event.detail.key;
+		},
+		measuringStatusEditValChanged : function(event) {
+
+			document.getElementById("statusEdit").value = event.detail.key;
+		},
+		triggerfirstCalibrationDate: function(){
+			console.log("firstCalibrationDate : "+this.$.firstCalibrationDate);
+			this.firstCalibrationDate = this.$.firstCalibrationDate.dateTime.substring(0,this.$.firstCalibrationDate.dateTime.indexOf('T'));
+			this.firstCalibrationDateField=this.firstCalibrationDate;
+			document.getElementById("firstCalibDates").value=this.firstCalibrationDateField;
+		},
+		triggerfirstCalibrationDateEdit: function(){
+			console.log("firstCalibrationDate : "+this.$.firstCalibrationDate);
+			this.firstCalibrationDate = this.$.firstCalibrationDate.dateTime.substring(0,this.$.firstCalibrationDate.dateTime.indexOf('T'));
+			this.firstCalibrationDateField=this.firstCalibrationDate;
+			document.getElementById("firstCalibDatesEdit").value=this.firstCalibrationDateField;
+		},
+		triggerloseScrapArchiveDate: function(){
+			console.log("loseScrapArchiveDate : "+this.$.loseScrapArchiveDate);
+			this.loseScrapArchiveDate = this.$.loseScrapArchiveDate.dateTime.substring(0,this.$.loseScrapArchiveDate.dateTime.indexOf('T'));
+			this.loseScrapArchiveDateField=this.loseScrapArchiveDate;
+			document.getElementById("loseScrapArchiveDates").value=this.loseScrapArchiveDateField;
+		}
+		,
+		triggerloseScrapArchiveDateEdit: function(){
+			console.log("loseScrapArchiveDate : "+this.$.loseScrapArchiveDate);
+			this.loseScrapArchiveDate = this.$.loseScrapArchiveDate.dateTime.substring(0,this.$.loseScrapArchiveDate.dateTime.indexOf('T'));
+			this.loseScrapArchiveDateField=this.loseScrapArchiveDate;
+			document.getElementById("loseScrapArchiveDatesEdit").value=this.loseScrapArchiveDateField;
+		}
+		,
+		triggertransferdate: function(){
+			console.log("transferdate : "+this.$.transferdate);
+			this.transferdate = this.$.transferdate.dateTime.substring(0,this.$.transferdate.dateTime.indexOf('T'));
+			this.transferdateField=this.transferdate;
+			document.getElementById("transferdates").value=this.transferdateField;
+		},
+		triggertransferdateEdit: function(){
+			console.log("transferdate : "+this.$.transferdate);
+			this.transferdate = this.$.transferdate.dateTime.substring(0,this.$.transferdate.dateTime.indexOf('T'));
+			this.transferdateField=this.transferdate;
+			document.getElementById("transferdatesEdit").value=this.transferdateField;
+		},
+		triggercalibrationdate: function(){
+			console.log("calibrationdate : "+this.$.calibrationdate);
+			this.calibrationdate = this.$.calibrationdate.dateTime.substring(0,this.$.calibrationdate.dateTime.indexOf('T'));
+			this.calibrationdateField=this.calibrationdate;
+			document.getElementById("calibrationdates").value=this.calibrationdateField;
+		},
+		triggercalibrationdateEdit: function(){
+			console.log("calibrationdate : "+this.$.calibrationdate);
+			this.calibrationdate = this.$.calibrationdate.dateTime.substring(0,this.$.calibrationdate.dateTime.indexOf('T'));
+			this.calibrationdateField=this.calibrationdate;
+			document.getElementById("calibrationdatesEdit").value=this.calibrationdateField;
+		},
+		triggerplansubmissiondate: function(){
+			console.log("plansubmissiondate : "+this.$.plansubmissiondate);
+			this.plansubmissiondate = this.$.plansubmissiondate.dateTime.substring(0,this.$.plansubmissiondate.dateTime.indexOf('T'));
+			this.plansubmissiondateField=this.plansubmissiondate;
+			document.getElementById("plansubmissiondates").value=this.plansubmissiondateField;
+		},
+		triggerplansubmissiondateEdit: function(){
+			console.log("plansubmissiondate : "+this.$.plansubmissiondate);
+			this.plansubmissiondate = this.$.plansubmissiondate.dateTime.substring(0,this.$.plansubmissiondate.dateTime.indexOf('T'));
+			this.plansubmissiondateField=this.plansubmissiondate;
+			document.getElementById("plansubmissiondatesEdit").value=this.plansubmissiondateField;
+		}
+
+	});
+</script> </dom-module>

@@ -1,0 +1,543 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/px-file-upload-master/px-file-upload.html"/>
+<dom-module id="document-mngt">
+<template>
+
+<px-card icon="" header-text="设备文档列表¨/Document Management" chevron>
+  	
+  	
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Add PopUp------------------------------------------------
+	****************************************************************************************************** -->
+	
+	<table>
+	<tr>
+	<td>
+	 <div class="legendmain mb10 pull-left" style="width:100%;height:100%">	 
+	 <form is="iron-form" content-type="application/json"
+					id="documentManagementAdd" on-iron-form-invalid="ironforminvalid"
+					on-iron-form-response="ironformresponse" method="post">
+					<paper-button raised onclick="add.open()"
+						class="btn btn-large btn-primary">Add</paper-button>
+					<paper-dialog id="add"> <paper-dialog-scrollable>
+					<template is="dom-bind" id="addPaperDialog">
+					
+					<table style="width:700px">
+	   					<tr>
+		   					<td>
+		   					<span style ="font-family:Arial">Click to add files</span>&nbsp;&nbsp;
+		    						<input id="Button1" type="button" value="add" onclick = "AddFileUpload()" /></span>    					
+	   						</td>
+	   					</tr>
+						<tr>
+							<td>
+								<span> <label class="control-label" style="width: 100px;"> <b>Attachments:</b></label></span> 							
+								<!-- <input class="module-body pull-left" type="file"  id="upload" onchange="uploadOnChange()"/> 
+								<input type="file" id="fileUpload" onchange="Upload()" /> -->			
+								<input id="inp" type="file" />				
+								<!-- <px-file-upload accept=".png,.jpg,.jpeg" id="upload" on-change="_fileChange"></px-file-upload> -->
+								<!-- <span> <input class="module-body pull-left" type="file"  id="upload" onchange="uploadOnChange()"/></span> -->								
+	    						<div id = "FileUploadContainer">
+	        						<!--File Upload Controls will be added here -->
+	    						</div>
+							</td>
+          				<td align="right">
+          					<span><label><b>Select Document Type:</b></label></span>
+          				</td>
+          				<td align="left">
+	          				<px-dropdown id="selDocType" selected-key="{{fileType}}" display-value="--Select --">
+	          				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+          				
+          					items='[{"key":"1", "val": "The whole plant"}, {"key":"2", "val": "Device Model"}, {"key":"3", "val": "device ID"}]'>
+          				
+          				</px-dropdown-content>
+          				</px-dropdown>
+          				<input type="hidden" name="fileType" id="fileType"/>
+          				</td>
+          				</tr>          	
+          				<tr id="diveqipcat" style="visibility: hidden;">           				
+          				<td>
+          				</td>         				
+							<td align="right">
+								<span><label><b>Select the device category / Equip Category:</b></label></span>
+								</td>
+								<td align="left"> 							
+								<span>
+								<byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getDocumentTypeNames" last-response="{{doctyperesponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Select" data-ng-model="fileType" id="fileType" selected-key="{{fileType}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doctyperesponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								  <px-dropdown id="pxDfileType" selected-key="{{fileCategory}}" display-value="--Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="fileCategory" id="fileCategory"/>
+							</td>	
+							
+							</tr>												
+							<tr id= "divEqupID" style="visibility:hidden;">
+							<td>
+							</td>
+							<td align="right">
+							<span><label><b>Select the device ID / Equip No:</b></label></span>
+							</td>							
+							<td align="left">								
+								<span>
+								<byutv-jsonp id="dropdowneqmodel"  url="http://localhost:8081/pmms-api/getEqId" last-response="{{doceqidresponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								<px-dropdown id="pxDequipId" selected-key="{{equipmentId}}" display-value="--Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doceqidresponse}}">
+                                         </px-dropdown-content> </px-dropdown>
+								</span>		
+								<input type="hidden" name="equipmentId" id="equipmentId"/>						
+							</td>													
+                      		</tr>       
+													
+							<tr id= "divEqupMod" style="visibility:hidden;">
+							<td>
+							</td>
+							<td align="right">
+							<span><label><b>Select Equip Model:</b></label></span>
+							</td>							
+							<td align="left">								
+								<span>
+								<byutv-jsonp id="dropdowneqmodel"  url="http://localhost:8081/pmms-api/getEqModel" last-response="{{doceqmodelresponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								<px-dropdown id="pxDequipModel" selected-key="{{equipmentModel}}" display-value="--Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doceqmodelresponse}}">
+                                         </px-dropdown-content> </px-dropdown>
+								</span>		
+								<input type="hidden" name="equipmentModel" id="equipmentModel"/>						
+							</td>													
+                      		</tr>                      	
+                      		 <tr>                       
+		                  		 <td>
+		                  		 <input name="fileName" id="fileName" type="text" />
+		                  		 <input name="fileSize" id="fileSize" type="text"/>
+		                  		 </td>                			
+		               				<td align="right"><span> <label> <b>备注/Memo:</b></label></span> </td>
+		               				<td align="left">
+										<span><textarea rows="4" cols="" class="span2" name="description" id="description"></textarea></span>
+									</td>
+       					</tr>
+		      					<tr>
+				       					<td>
+												<!-- <span> <button type="button" class="btn btn-primary " id = "saveBtn">开始上传/Ok</button>
+							        			<button class="btn btn-primary cancelBtn" data-dismiss="modal">取消/Cancel</button></span> -->
+								       </td>
+						        </tr>
+       </table>
+       </template> </paper-dialog-scrollable>
+					<div class="buttons">
+						<paper-button dialog-dismiss>Cancel</paper-button>
+						<paper-button dialog-confirm autofocus
+							on-click="addDocumentTool">Submit</paper-button>
+					</div>
+					</paper-dialog>
+				</form>
+			</div>
+		</td>
+		
+		<!-- ******************************************************************************************************
+	 ------------------------------------------------Edit PopUp------------------------------------------------
+	****************************************************************************************************** -->
+	<td>
+	<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json"
+					id="documentManagementEdit"
+					on-iron-form-response="ironformresponse" method="post">	
+					<paper-button class="btn btn-large btn-primary" raised
+				onclick="editDocumentTool.open()">Edit</paper-button>									
+					<paper-dialog id="editDocumentTool"> <paper-dialog-scrollable>
+		<table>
+		<tr>
+		<td>
+		<input id="inpedit" type="file" />	
+			</td>
+          				<td align="right">
+          					<span><label><b>Select Document Type:</b></label></span>
+          				</td>
+          				<td align="left">
+	          				<px-dropdown id="selDocTypeEdit"  display-value="--Select --">
+	          				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+          				
+          					items='[{"key":"1", "val": "The whole plant"}, {"key":"2", "val": "Device Model"}, {"key":"3", "val": "device ID"}]'>
+          				
+          				</px-dropdown-content>
+          				</px-dropdown>
+          				<input type="hidden" name="fileType" id="selDocTypeEditVal"/>
+          				</td>
+          				<td colspan="2"><input type="hidden" id="editDocId" name="id" />
+					</td>
+					<td><input type="hidden" name="fileCategory" id="fileCategoryEdit"/></td>
+          				</tr>
+          				<tr>
+          				<td>
+          				<input type="hidden" name="equipmentId" id="equipmentIdEdit"/>
+          				</td>
+          				</tr>
+          				<tr>
+          				<td>
+          				<input type="hidden" name="equipmentModel" id="equipmentModelEdit"/>
+          				</td>
+          				</tr>
+          				<tr>
+          				
+          				 <td>
+		                  		 <input name="fileName" id="fileNameEdit" type="text" />
+		                  		 <input name="fileSize" id="fileSizeEdit" type="text"/>
+		                  		    
+          				</td>
+          				</tr>
+          				<tr>
+          				<td>
+          				</td>          				 			
+		               				<td align="right"><span> <label> <b>备注/Memo:</b></label></span> </td>
+		               				<td align="left">
+										<span><textarea rows="4" cols="" class="span2" name="description" id="descriptionEdit" ></textarea></span>
+									</td>
+       					</tr>
+       					</table>
+       					<div class="buttons">
+						<paper-button dialog-dismiss>取消/Cancel</paper-button>
+						<paper-button dialog-confirm autofocus on-click="editDocumentTool">开始上传/Ok</paper-button>
+					</div>
+					</paper-dialog>			
+				</form>
+			</div>
+		</td>
+       <!-- ******************************************************************************************************
+	 ------------------------------------------------Delete PopUp------------------------------------------------
+	****************************************************************************************************** -->   				
+		<td>
+			<div>
+				<form is="iron-form" content-type="application/json"
+					on-iron-form-response="ironformresponse"
+					id="documentManagementDelete" method="post">
+
+
+					<input type="hidden" id="deleteDocumentId"
+						name="deleteDocumentId" value="{{deleteDocumentId}}" />
+					<paper-button class="btn btn-large btn-primary" raised
+						on-click="deleteDocumentTool">Delete</paper-button>
+
+				</form>
+			</div>
+		</td>
+		<td>
+			<div class="input-append flR pull-right">
+				<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+					floatingLabel="Search" on-input="searchKeyChanged"
+					style="margin-left:500px;"></paper-input>
+			</div>
+		</td>
+	
+	</tr>
+</table>
+	<br>
+	 <!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+      <div class="module-body pull-left" style="width:100%">
+      
+      <!--<iron-ajax url="NewEq.json" last-response="{{data}}" auto></iron-ajax>-->
+            <!-- <iron-ajax id="test" url="/sample-data/document.json" last-response="{{minidata1}}" auto></iron-ajax> -->
+            
+            <byutv-jsonp id="test" url="http://localhost:8081/pmms-api/getAllDocumentDetails" on-response="handleResponse"
+				last-response="{{minidata1}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+	 	<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" on-px-row-click="selectedDocData" table-data="{{minidata1}}" id="documenttable">
+           <!-- <px-data-table  enable-column-resize selectable table-data="{{minidata1}}" id="documenttable">  -->
+	            <px-data-table-column name="equipmentId" id="equipmentId" label="设备编号/EQID"></px-data-table-column>
+	            <px-data-table-column name="equipmentModel" id="equipmentModel" label="设备型号/EQModel"></px-data-table-column>
+	         <!--    <px-data-table-column name="docId" id="docId" label="设备名称/EQName"></px-data-table-column> -->
+	            <px-data-table-column name="fileType" id="fileType" label="文档分类/DocType"></px-data-table-column>
+	            <px-data-table-column name="fileName" id="fileName" label="文档名称/DocName"></px-data-table-column>
+	            <px-data-table-column name="fileSize" id="fileSize" label="文档大小/Size"></px-data-table-column>
+	            <px-data-table-column name="description" id="description" label="备注/Desc"></px-data-table-column>
+	            <px-data-table-column name="image" label="下载/Download" type="html"></px-data-table-column>  
+	            <px-data-table-column name="fileCategoryEdit" label="fileCategoryEdit" hide></px-data-table-column> 
+	            <px-data-table-column name="equipmentIdEdit" label="equipmentIdEdit" hide></px-data-table-column>   
+	            <px-data-table-column name="selDocTypeEdit" label="selDocTypeEdit" hide></px-data-table-column>           
+        </px-data-table>
+        </div>
+       </px-card>
+</template>
+
+ <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'document-mngt',
+		selected : 0,
+		refreshData : function() {
+			this.$.test.generateRequest();
+		},
+
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			deleteDocumentId : {
+				type : String,
+				notify : true
+			}
+		},		
+		
+		selectedDocData : function(e) {
+			var clickedRow = e.detail.row;
+			//console.log("Clicked Row values for doc type are:"+clickedRow.row.description.value)
+				//console.log("fileType is :"+clickedRow.row.fileType.value)
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.id.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.id.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);	
+			  document.getElementById("deleteDocumentId").value = clickedRow.row.id.value;
+			  document.getElementById("editDocId").value = clickedRow.row.id.value;
+		 	  document.querySelector("#selDocTypeEdit").displayValue  = clickedRow.row.fileType.value;  
+			  document.getElementById("descriptionEdit").value = clickedRow.row.description.value;
+			  document.getElementById("fileCategoryEdit").value = clickedRow.row.fileCategory.value;
+			  document.getElementById("equipmentIdEdit").value = clickedRow.row.equipmentId.value;
+			  document.getElementById("equipmentModelEdit").value = clickedRow.row.equipmentModel.value;
+			  document.getElementById("fileNameEdit").value = clickedRow.row.fileName.value;
+			  document.getElementById("fileSizeEdit").value = clickedRow.row.fileSize.value;
+			  document.getElementById("selDocTypeEditVal").value = clickedRow.row.fileType.value; 
+			},
+		ironformresponse : function() {
+
+			document.querySelector('document-mngt').refreshData();
+		},
+
+		refreshData : function() {
+			this.$.equipmentData.generateRequest();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		searchKey : null,
+
+		searchKeyChanged : function(event) {
+			console.log(this.equipType);
+			this.searchKey = event.target.value;
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+		_fileChange: function(e) {
+			//this.files = this._toArray(e.target.files);
+		    alert(e.target.files);
+		    //this.fileArray=this.files;
+		    },
+ 		_toArray: function(obj) {
+		      return  Object.keys(obj).map(function(key) {
+		        return obj[key]
+		      });
+		    },
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+		hresponse : function(request) {
+			console.log(request.detail.response);
+			console.log(this.$.ajax.lastResponse);
+		},
+		addDocumentTool : function() {
+			
+			document.getElementById("documentManagementAdd").action = "http://localhost:8081/pmms-api/saveDocDetails";
+			document.getElementById('documentManagementAdd').submit();
+
+		},
+		editDocumentTool : function() {
+			document.getElementById('documentManagementEdit').action = "http://localhost:8081/pmms-api/editDoc";
+			document.getElementById('documentManagementEdit').submit();
+		},			
+		deleteDocumentTool : function() {
+		if (this.ids.length > 0) {
+			document.getElementById('documentManagementDelete').action = "http://localhost:8081/pmms-api/deleteDocument";
+			document.getElementById('documentManagementDelete').submit();
+		}
+
+		},
+       
+	});
+
+	HTMLImports.whenReady(function() {
+
+		//alert("Hello");
+// 		var combobox = document.querySelector('#cboPDequipType');
+		var selDocType = document.querySelector('#selDocType');
+		var pxDfileType = document.querySelector('#pxDfileType');
+		var pxDequipModel = document.querySelector('#pxDequipModel');
+		var pxDequipId = document.querySelector('#pxDequipId');
+		var inp = document.querySelector('#inp');
+		var inpedit = document.querySelector('#inpedit');
+		
+		inp.addEventListener('change',function(event)
+				
+		  {
+		    var files = event.target.files;
+		    var fileName = files[0].name;
+		    //alert(fileName);
+		    var filesize = (files[0].size/1024).toFixed(2)+"KB";
+		     //alert(filesize);
+		    document.querySelector("#fileName").value = fileName;
+		    document.querySelector("#fileSize").value = filesize;
+		  });
+		inpedit.addEventListener('change',function(event)
+				
+				  {
+				    var files = event.target.files;
+				    var fileName = files[0].name;
+				    //alert(fileName);
+				    var filesize = (files[0].size/1024).toFixed(2)+"KB";
+				    //var size = parseFloat(filesize/ 1024).toFixed(2);
+		            //alert(size);
+				     //alert(filesize);
+				    document.querySelector("#fileNameEdit").value = fileName;
+				    document.querySelector("#fileSizeEdit").value = filesize;
+				  });
+		/* var upload = document.querySelector('#upload').onchange = uploadOnChange;
+		
+		function uploadOnChange()
+		{
+			alert("Details of file:"+this.files.value);
+			alert("Details of file2:"+this.value);
+			alert("Details of file3:"+this.file.value);
+		}			 */
+		/*console.log(upload.files);*/		
+		selDocType.addEventListener('dropdown_content_value_changed',
+				function(event) {
+			if(event.detail.key === "1")
+			{
+			document.querySelector("#diveqipcat").style.visibility = "hidden";
+			document.querySelector("#divEqupMod").style.visibility = "hidden";
+			document.querySelector("#divEqupID").style.visibility = "hidden";
+			}
+		else
+			{
+			//alert('value is:'+event.detail.textValue);
+			document.querySelector("#diveqipcat").style.visibility = "visible";
+			document.querySelector("#divEqupMod").style.visibility = "visible";
+			document.querySelector("#divEqupID").style.visibility = "visible";
+			document.querySelector("#fileType").value = event.detail.textValue;
+			
+			}		
+		});
+						
+		pxDfileType.addEventListener('dropdown_content_value_changed',
+				function(event) {
+			/*  alert('key is:'+event.detail.key);
+			alert('value is:'+event.detail.textValue);	 */ // Testing by Kailash
+			document.querySelector("#fileCategory").value = event.detail.textValue;
+		});
+		
+		pxDequipModel.addEventListener('dropdown_content_value_changed',
+				function(event) {
+			/* alert('key is:'+event.detail.key);
+			alert('value is:'+event.detail.textValue); */	 	 //Testing by Kailash
+			document.querySelector("#equipmentModel").value = event.detail.textValue;
+		});
+		
+		pxDequipId.addEventListener('dropdown_content_value_changed',
+				function(event) {
+			/* alert('key is:'+event.detail.key);
+			alert('value is:'+event.detail.textValue);	 */// Testing by Kailash
+			document.querySelector("#equipmentId").value = event.detail.textValue;
+		});
+		
+	});
+	var counter = 0;
+	  //document.getElementById('upload').onchange = uploadOnChange;
+	  function uploadOnChange() {
+	      var filename = this.value;
+	      alert("Please work");
+	      var filesize = this.files[0].size;
+	      var lastIndex = filename.lastIndexOf("\\");
+	      if (lastIndex >= 0) 
+	      {
+	          filename = filename.substring(lastIndex + 1);        
+	      }
+	      document.getElementById('fileName').value = filename;
+	      document.getElementById('fileSize').value = filesize; 	      
+	  }
+	  function AddFileUpload()
+	  {
+	       var div = document.createElement('DIV');
+	       div.innerHTML = '<input id="upload' + counter/*  + '" name = "fileName' + counter */ +
+	                       '" type="file" />' +
+	                       '<input id="Button' + counter + '" type="button" ' +
+	                       'value="Remove" onclick = "RemoveFileUpload(this)" />';
+	       document.getElementById("FileUploadContainer").appendChild(div);
+	       counter++;
+	  }
+	  function RemoveFileUpload(div)
+	  {
+	       document.getElementById("FileUploadContainer").removeChild(div.parentNode);
+	  }
+	  function Upload() {
+		  var filename = this.value;
+	        var fileUpload = document.getElementById("fileUpload");
+	        alert(filename);
+	        if (typeof (fileUpload.files) != "undefined") {
+	            var size = parseFloat(fileUpload.files[0].size / 1024).toFixed(2);
+	            alert(size + " KB.");
+	        } else {
+	            alert("This browser does not support HTML5.");
+	        }
+	    }
+	  
+</script> </dom-module>
+
+
+              

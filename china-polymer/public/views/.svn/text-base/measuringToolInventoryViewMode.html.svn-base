@@ -1,0 +1,3 @@
+<link rel="import" href="views/measuringToolInventory-ViewMode.html"/>
+
+<measuringToolInventory-ViewMode></measuringToolInventory-ViewMode>

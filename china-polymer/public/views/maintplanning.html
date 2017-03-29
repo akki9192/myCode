@@ -1,0 +1,130 @@
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="fa-suitcase" header-text="计划维修制定" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>年滚动计划</px-tab>
+    <px-tab>当月保养计划</px-tab>
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}">
+    <section>
+    <br><br>
+    <table>
+      <tr>
+        <td style="align:right">
+          <label  class="control-label" style="width:200px">
+            <b>年份/MaintYear:</b>
+          </label>
+        </td>
+        <td style="align:left">
+          <px-dropdown display-value="--请选择--">
+          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"2014", "val":"2014"}, {"key":"2015", "val":"2015"},{"key":"2016", "val":"2016"},{"key":"2017", "val":"2017"},{"key":"2018", "val":"2018"},{"key":"2019", "val":"2019"},{"key":"2020", "val":"2020"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+        </td>
+        <td style="align:right">
+          <label  class="control-label" style="width:200px">
+            <b>设备类型/EQType:</b>
+          </label>
+        </td>
+        <td style="align:left">
+          <px-dropdown display-value="--所有类型--">
+          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"machine1", "val":"机加工设备"}, {"key":"machine2", "val":"铆焊设备"}, {"key": "machine3", "val":"电机设备"},{"key":"machine4","val":"特种设备"},{"key":"machine5","val":"其他设备"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="5"> <br></td>
+      </tr>
+      <tr>
+        <td colspan="5" style="align:left">
+          <button type="button" id="search1" class="btn btn-primary btn-lg btn-block">查询/Search</button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="5"> <br></td>
+      </tr>
+      <tr>
+        <td style="align:left">
+          <button type="button" id="add1" class="btn btn-primary btn-lg btn-block">新增/Add</button>
+        </td>
+        <td style="align:left">
+          <button type="button" id="edit1" class="btn btn-primary btn-lg btn-block" style="margin-left:20px">编辑/Edit</button>
+        </td>
+        <td style="align:left">
+          <button type="button" id="delete1" class="btn btn-primary btn-lg btn-block" style="margin-left:20px">删除/Delete</button>
+        </td>
+        <td style="align:right">
+          <button type="button" id="download1" class="btn btn-primary btn-lg btn-block" style="margin-left:30px">下载/Download</button>
+        </td>
+        <td style="align:right">
+          <div id="hoverDivTop" class="legendmain mb10 pull-left">
+            <span class="label" style="background-color:grey;display:inline-block;margin-left:50px">
+            <b>--注解--</b>
+            </span>
+          </div>
+          <px-tooltip for="hoverDivTop" orientation="bottom">
+            <h2><b>计划查看说明</b></h2>
+            <hr>
+            <b>保养计划类型</b>
+            <hr>
+            用Y,Q,M表示
+            <br>
+            <hr>
+            Y--年度保养
+            <hr>
+            Q--季度保养
+            <hr>
+            Y--月度保养
+          </px-tooltip> 
+        </td>
+      </tr>
+    </table>
+        <iron-ajax id="test" url="/sample-data/maint-year-plan.json" last-response="{{minidata1}}" auto></iron-ajax>
+        <px-data-table enable-column-resize selectable filterable table-data="{{minidata1}}">
+        <px-data-table-column filterable name="序号" ></px-data-table-column>
+        <px-data-table-column filterable name="计划编号" ></px-data-table-column>
+        <px-data-table-column filterable name="保养内容" type="html">
+          <!--<px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="wordContainsNo" import="/bower_components/px-data-table/px-example-highlight.html"></px-data-table-highlight>-->
+          <!--<px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="wordContainsYes" import="/bower_components/px-data-table/px-example-highlight.html"></px-data-table-highlight>-->
+        </px-data-table-column>
+        <px-data-table-column filterable name="设备编号" ></px-data-table-column>
+        <px-data-table-column filterable name="设备名称" ></px-data-table-column>
+        <px-data-table-column filterable name="设备型号" ></px-data-table-column>
+        <px-data-table-column filterable name="使用部门" ></px-data-table-column>
+        <px-data-table-column name="7月" ></px-data-table-column>
+        <px-data-table-column name="8月" ></px-data-table-column>
+        <px-data-table-column name="9月" ></px-data-table-column>
+        <px-data-table-column name="10月" ></px-data-table-column>
+        <px-data-table-column name="11月" ></px-data-table-column>
+        <px-data-table-column name="12月" ></px-data-table-column>
+        <px-data-table-column name="1月"></px-data-table-column>
+        <px-data-table-column name="2月" ></px-data-table-column>
+        <px-data-table-column name="3月" ></px-data-table-column>
+        <px-data-table-column name="4月" ></px-data-table-column>
+        <px-data-table-column name="5月" ></px-data-table-column>
+        <px-data-table-column name="6月" ></px-data-table-column>
+       </px-data-table>
+    </section>
+
+    <section>
+    <br><br>
+            <iron-ajax id="test" url="/sample-data/current-month-maintian.json" last-response="{{minidata2}}" auto></iron-ajax>
+            <px-data-table show-column-chooser enable-column-resize filterable table-data="{{minidata2}}">
+            <px-data-table-column filterable name="序号"></px-data-table-column>
+            <px-data-table-column filterable name="是否完成">
+              <px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="wordContainsNo" import="/bower_components/px-data-table/px-example-highlight.html"></px-data-table-highlight>
+            </px-data-table-column>
+            <px-data-table-column filterable name="设备名称"></px-data-table-column>
+            <px-data-table-column filterable name="设备型号"></px-data-table-column>
+            <px-data-table-column filterable name="设备编号"></px-data-table-column>
+            <px-data-table-column filterable name="负责人"></px-data-table-column>
+            <px-data-table-column filterable name="计划保养月份"></px-data-table-column>
+            <px-data-table-column filterable name="保养开始时间"></px-data-table-column>
+            <px-data-table-column filterable name="保养结束时间"></px-data-table-column>
+            
+            </px-data-table>
+    </section>
+  </px-tab-pages>
+  </px-card>
+</template>

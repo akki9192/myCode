@@ -1,0 +1,406 @@
+
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="SparePart-StorageTransaction"> <template>
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br> <br>	
+	<form is="iron-form" content-type="application/json" id="searchWithDatesAndParameters" on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">
+			
+			<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+	</form>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+			</label>
+
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="FacilityFromDate">
+				<paper-input id="FacilityFromDateFields" name="FacilityFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityFromDate" on-tap="triggerFacilityFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="FacilityToDate">
+				<paper-input id="FacilityToDateFields" name="FacilityToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityToDate" on-tap="triggerFacilityToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>ModelNo.:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="model" id="model" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>SSO.:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="createdByText" id="createdByText" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 130px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="FacilityTransactionDates">Search</paper-button>
+		</div>
+		</div>	
+	
+			<!--****************************SCANIN************************************ -->
+			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementSacnIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="scanIn.open()" class="btn btn-large btn-primary" >Sacn In</paper-button>				
+						<paper-dialog id="scanIn">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Code:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparePartNo1" id="sparePartNo1" on-change="showfield" selected-key="{{show}}" >
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Name:</b>
+										</label></td>
+										<td style="align: center; padding: 3px; visibility: hidden;" id="spn">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="name" id="name">
+										</paper-input></td>
+									</tr>
+									<tr style="visibility:hidden;" id="spc">
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Specification:</b>
+										</label></td>
+										<td style="align: center; padding: 3px; visibility: hidden;" id="spc">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="modelSpecifications" id="modelSpecifications">
+										</paper-input></td>
+									</tr>
+									<tr style="visibility: hidden;" id="mfgr">
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Manufacturer:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;" id="spm">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="source" id="source">
+										</paper-input></td>
+									</tr>									
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Unit Price:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="price" id="price">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Existing Stock:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="stock" id="stock">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Number of Storage:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="quantity" id="quantity">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Delivery Time:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="leadTime" id="leadTime">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Warehousing People:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="createdBy" id="createdBy" placeholder="1000001">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Remark:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-textarea type="text" class="paper-input-medium search-query span3" name="remark" id="remark">
+										</paper-textarea></td>
+									</tr>
+								</table>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+					   			<paper-button dialog-dismiss >Cancel</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="handleRequest">OK</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+				
+		<!--**************************************************SCAN OUT********************************************************************************-->			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementSacnIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="scanOut.open()" class="btn btn-large btn-primary" >Sacn Out</paper-button>				
+						<paper-dialog id="scanOut">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Code:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="sparePartNo" id="sparePartNo">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Spare Part Name:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="name" id="name">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Specification:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="modelSpecifications" id="modelSpecifications">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Manufacturer:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="source" id="source">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Current Stock:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="stock" id="stock">
+										</paper-input></td>
+									</tr>									
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Related WorkOrder:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="woId" id="woId">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>No. of libraries:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="suggestedLibrary" id="suggestedLibrary">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Warehousing People:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="createdBy" id="createdBy">
+										</paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>Remark:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3" name="remark" id="remark">
+										</paper-input></td>
+									</tr>
+								</table>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+					   			<paper-button dialog-dismiss >Cancel</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="handleRequest">OK</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+
+	<div  class="module-body pull-left" style="width: 100%">				
+			<byutv-jsonp id="spareTrans" url="http://localhost:8081/pmms-api/getSparePart" last-response="{{spareTransaction}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+				<px-data-table id="spareTable" enable-column-resize selectable table-data="{{spareTransaction}}" > 
+		
+			<px-data-table-column name="sparePartNo" label="Spare Part No." id="sapreNumber"></px-data-table-column> 
+			<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+			<px-data-table-column name="type" label="Type" id="spareType"></px-data-table-column>
+			<px-data-table-column name="source" label="Source" id="sapreSource"></px-data-table-column> 
+			<px-data-table-column name="createdBy" label="In/Out SSO" id="spareCreatedBy"></px-data-table-column> 
+			<px-data-table-column name="measurement" label="Measurement" id="spareMeasurement"></px-data-table-column>
+			<px-data-table-column name="price" label="Price" id="sparePrice"></px-data-table-column>
+			<px-data-table-column name="stock" label="Stock" id="sapreStock"></px-data-table-column> 
+			<px-data-table-column name="safteyStock" label="Saftey Stock" id="sapreSaftyStock"></px-data-table-column> 
+			<px-data-table-column name="sysSafteyStock" label="System Saftey Stock" id="sapreSysStock"></px-data-table-column> 
+			<px-data-table-column name="location" label="Loacation" id="spareLocation"></px-data-table-column> 
+			<px-data-table-column name="remark" label="Remark" id="sapreRemark"></px-data-table-column> 
+			 
+		</px-data-table>
+	</div>
+</section>
+</px-card>
+</template>
+<script>
+
+Polymer({
+    /* this is the element's prototype */
+    is: 'SparePart-StorageTransaction',
+    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+    FilteredData : {
+		type : String,
+		notify : true
+	},
+	FacilityFromDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	FacilityToDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	
+	spareId :{
+		type : String,
+		notify : true,
+		value : ""
+		
+	},
+	
+	model : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	createdBy : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	triggerFacilityFromDateField : function() {
+		//console.log("calibrationdate : " + this.$.StockFromDate);
+		this.FacilityFromDate = this.$.FacilityFromDate.dateTime.substring(0,
+				this.$.FacilityFromDate.dateTime.indexOf('T'));
+		this.FacilityFromDateField = this.FacilityFromDate;
+		document.getElementById("FacilityFromDateFields").value = this.FacilityFromDateField;
+	},
+	triggerFacilityToDate : function() {
+		//console.log("calibrationdate : " + this.$.StockToDate);
+		this.FacilityToDate = this.$.FacilityToDate.dateTime.substring(0,
+				this.$.FacilityToDate.dateTime.indexOf('T'));
+		this.FacilityToDateField = this.FacilityToDate;
+		document.getElementById("FacilityToDateFields").value = this.FacilityToDateField;
+	},
+	
+	FacilityTransactionDates : function() {
+		if ((this.FacilityToDateField == undefined
+				|| this.FacilityToDateField == null || this.FacilityToDateField == "")
+				|| (this.FacilityFromDateField == undefined
+						|| this.FacilityFromDateField == null || this.FacilityFromDateField == "") ||
+						(this.model == undefined
+								|| this.model == null || this.model == "")||
+								(this.createdBy == undefined
+										|| this.createdBy == null || this.createdBy == "")	)
+			alert("Please select From Date and To Date to search.");
+		else {
+			this.model = this.$.model.value;
+			this.createdBy = this.$.createdByText.value;
+			this.FilteredData = "{'fromDate':"
+					+ this.FacilityFromDateField + ",'toDate':"
+					+ this.FacilityToDateField + ",'modelNo':"
+					+ this.model + ",'sso':" + this.createdBy
+					+ "}";
+			document.getElementById("searchWithDatesAndParameters").action = "http://localhost:8081/pmms-api/searchWithDatesAndFields";
+			document.getElementById('searchWithDatesAndParameters').submit();
+		}
+
+	},
+	handleFilteredData : function(e) {
+		var details = e.detail;
+		if (details.status == 200) {
+			this.spareTransaction = details.response;
+			this._refreshTable("spareTrans");
+		} else {
+			alert("error in searching list!!!!");
+
+		}
+	},
+	_refreshTable : function() {
+
+		var array = [];
+		array = this.spareTransaction;
+		this.spareTransaction = array;
+	},
+	/* showfield : function()
+	{
+		alert("Here to hide");
+	},
+ */
+ showfield : function(e) {
+	 
+	 
+		if(document.getElementById("sparePartNo1").value === null)
+		{
+			
+			document.querySelector("#spn").style.visibility = "hidden";
+			document.querySelector("#spc").style.visibility = "hidden";
+			document.querySelector("#spm").style.visibility = "hidden";
+		}
+		
+		else{
+			document.querySelector("#spn").style.visibility = "visible";
+			document.querySelector("#spc").style.visibility = "visible";
+			document.querySelector("#mfgr").style.visibility = "visible";
+			document.querySelector("#modelSpecifications").style.visibility = "visible";
+			//document.querySelector("#show").value = event.detail.textValue;
+			var spareNoArr = new Object();
+			spareNoArr.spareId=document.getElementById("sparePartNo1").value;
+			$.ajax({
+			      type: "POST",
+			      contentType : 'application/json; charset=utf-8',
+			      dataType : 'json',
+			      url: "http://localhost:8081/pmms-api/getSparePartsDtls",
+			      data: JSON.stringify(spareNoArr), // Note it is important
+			      success :function(result) {
+			    	 // add.close();
+			    	console.log("result-->" + result);
+			    	  
+			     }
+			  });
+			
+			}		
+		},
+		
+
+});
+</script>
+</dom-module>

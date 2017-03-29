@@ -1,0 +1,25 @@
+<script>
+	PxHighlight = {
+			isPaused : function isPaused(value) {
+				console.log("IssuesRemaining");
+				return ((value == "暂停") ? true : false);
+			},
+			isStart : function isStart(value) {
+				console.log("Start");
+				return ((value == "进行中") ? true : false);
+			},
+			isInterrupted : function isInterrupted(value) {
+				console.log("OutageMode");
+				return ((value == "NW") ? true : false);
+			},
+			isNotStarted : function isNotStarted(value) {
+				console.log("Not Started");
+				return ((value == "未开始") ? true : false);
+			},
+			isClosed : function isClosed(value) {
+				console.log("ClosedWorkorders");
+				return ((value == "带遗留问题运行") ? true : false);
+			}
+		};
+</script>
+

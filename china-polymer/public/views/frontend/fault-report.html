@@ -1,0 +1,406 @@
+<!-- First Tab : Kailash -->
+<!-- First Tab comment by Kailash -->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/px-file-upload-master/px-file-upload.html"/>
+<dom-module id="fault-report"> <template>
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	<form is="iron-form" content-type="application/json"
+		id="saveBreakdown" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="ironformresponse" method="post">		
+		
+		<table>
+			<tr>
+				<td><label class="control-label"><b>员工编号/SSO*:</b></label></td>
+
+				<td><paper-input class="input-medium search-query span3"
+						id="creatorSSO" name="creatorSSO" style="width: 180px;" required
+						auto-validate error-message="{{localize('ssoid')}}">
+					</paper-input></td>
+
+
+			</tr>
+			<tr>
+				<td><label class="control-label" style="width: 200px"><b>设备代码/EQSN.*:</b></label></td>
+				<td><paper-input class="span3" id="BMequipId2" name="equipId2"
+						style="width: 180px;" required auto-validate
+						error-message="{{localize('equipid')}}"> </paper-input></td>
+
+
+			</tr>
+			<tr>
+				<td><label class="control-label" style="width: 200px;">
+						<b>故障描述/FaultDesc: </b>
+				</label></td>
+				<td style="width: 200px;"><paper-textarea id="faultdesc"
+						rows="3" name="faultDescription"
+						style="width: 181px; height: 59px;"></paper-textarea></td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<br>
+		<table>
+			<tr></tr>
+			<tr></tr>
+			<tr>
+				<td><label class="control-label" style="width: 200px;">
+						<b>涉及安全隐患/Safety:</b>
+				</label></td>
+				<td><paper-checkbox id="safety" name="safetyInvolved"></paper-checkbox></td>
+			</tr>
+			<tr>
+				<td><label class="control-label" style="width: 200px;">
+						<b>是否需停机/Shutdown:</b>
+				</label></td>
+				<td><paper-checkbox id="shutdown" name="shutdownFlag"></paper-checkbox></td>
+			</tr>
+	</table>
+		<br>
+		<br>
+		<div style="margin-left: 100px">
+			<!-- <button type="submit" class="btn btn-large btn-primary">Submit</button> -->
+			<!-- <paper-button class="btn btn-large btn-primary" on-click="saveBreakdownMain">开始维修/Submit</paper-button> -->
+			<paper-button raised on-click="validateFaultEquipData" class="btn">提交/Submit</paper-button>
+			<!-- 	<paper-button raised on-click="saveBreakdownMaint" class="btn btn-large btn-primary">	ä¿�å­˜/Save</paper-button> -->
+
+		</div>
+
+	</form>
+
+	<byutv-jsonp id="validateEquipID"
+		url="http://localhost:8081/pmms-api/isValidEquipId"
+		params='{{getParamsEq(BMequipId2,creatorSSO)}}'
+		on-response="handleEquipmentFaultResponse" last-response="{{equipData}}"
+		debounce-duration="300" auto="true"></byutv-jsonp>
+
+	<!-- <byutv-jsonp id="addRecords"
+		url="http://localhost:8081/pmms-api/saveFaultReport" method="POST"
+		last-response="{{addeddata}}" debounce-duration="300" auto="true"></byutv-jsonp> -->
+
+
+
+
+	<br> <br>
+	<div class="pull-left" style="margin-top:-21px">
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+			</label>
+		<div class="controls" style="width: 150px; display: inline-block; margin-left: 20px;">		
+				 <byutv-jsonp id="dropdpwndept" 
+                                  url="http://localhost:8081/pmms-api/getDepartmentName"
+                                  last-response="{{department}}" auto></byutv-jsonp>
+                                         <px-dropdown id="pxDdept" selected-key="{{deptId}}" display-value="--全部 Select --"> <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{department}}">
+                                         </px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>设备种类/EQType:</b>
+			</label>
+
+			<div style="width: 150px; display: inline-block; margin-left: 20px;">
+			<!-- <byutv-jsonp id="testdept"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getDocumentTypeNames" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								   <px-dropdown id="equiptDropDown" selected-key="{{equipType}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>  -->	
+                                  
+                                  <byutv-jsonp id="dropdownCategory"
+					params='{"Type":"Category"}'
+					url="http://localhost:8081/pmms-api/getEquipmentCategory"
+					last-response="{{dropdownCategory}}" auto></byutv-jsonp>
+				<px-dropdown display-value="--全部 Select --" id="equiptDropDown"
+					selected-key="{{equipType}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{dropdownCategory}}">
+				</px-dropdown-content> </px-dropdown>		
+			</div>
+		</div>
+		<div class="control-group pull-left" style="margin-top:-26px;margin-left:48px">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+
+	</div>
+	</div>
+	
+	<br><br>
+	
+	<div id="firstTime" class="module-body pull-left" style="width: 100%">
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getFaultDetails"
+			params='{{getParams("EQ",deptId,equipType)}}'
+			on-response="handleResponse" last-response="{{mydata}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+
+		<px-data-table id="myTable" table-data="{{filteredData}}">
+		<px-data-table-column name="widsequence" label="work order sequence"
+			hide></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.equipTypeDesc" label="Equipment Type" hide></px-data-table-column>
+		<px-data-table-column name="workOrderNumber" label="工单号/WOSN"></px-data-table-column>
+			<px-data-table-column name="wordOrderStatus" label="WorkOrderStatus">
+			<px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="condclose" highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="notstart" highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="closed"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<!-- <px-data-table-highlight highlight-type="row" highlight-value="low" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+          	<px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="condclose"  highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="medium"  highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+             -->
+		</px-data-table-column> 
+		<px-data-table-column name="equipmentInfo.equipId" label="设施代码/EQSN"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.deviceName"
+			label="设施名称/EQNM"></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.equipModel" label="设施型号/ EQModel"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.assetsID"
+			label="固定资产号/AssetSN"></px-data-table-column> <px-data-table-column
+			name="faultDescription" label="需求描述/Fault Description"></px-data-table-column>
+		<px-data-table-column name="creatorSSO" label="申报人/Requestor"></px-data-table-column>
+		<px-data-table-column name="createdDate" label="申报时间/ReqTime"></px-data-table-column>
+		<px-data-table-column name="safetyInvolved" label="涉及安全隐患/Safety"></px-data-table-column>
+		<px-data-table-column name="shutdownFlag" label="是否需停机/Shutdown"></px-data-table-column>
+		<px-data-table-column name="updaterSSO" label="维修工/Maintainer"></px-data-table-column>
+		<px-data-table-column name="maintStartDate" label="维修开始时间/MaintStart"></px-data-table-column>
+		<px-data-table-column name="equipmentInfo.deptInfo.deptName"
+			label="使用部门/Department"></px-data-table-column> <px-data-table-column
+			name="equipmentInfo.remark" label="备注/Remark"></px-data-table-column>
+		</px-data-table>
+	</div>
+
+
+	<br/><br/>
+	<div class="legendmain mb10 pull-center">
+		<span class="label wo_not_started_legend">未开始</span>
+		<span class="label wo_in_progress_legend">进行中</span>
+		<span class="label wo_pause_legend">暂停</span>
+		<span class="label wo_close_legend">关闭</span>
+		<span class="label wo_conditional_close_legend">带遗留问题运行</span>
+	</div>
+	
+</section>
+
+<paper-dialog heading="Dialog" modal role="alertdialog" transition="paper-dialog-transition-bottom" id="dialogBox">
+    <div id="alertHeader">Alert</div>
+    <div  id="alertContent"></div>
+    <paper-button affirmative autofocus raised on-click="hideAlert" class="btn px-modal" id="alertOKButton">Ok</paper-button>
+</paper-dialog>
+
+</template> 
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'fault-report',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+
+		searchKey : null,
+
+		equipId : {
+			type : String,
+			notify : true
+		},
+		BMequipId2: {
+  			type: String,
+  			notify: true
+  		},
+  		creatorSSO: {
+  			type: String,
+  			notify: true
+  		},
+  		
+		refreshData : function() {
+			this.$.test.generateRequest();
+		},
+
+		/* validateEquipID : function() {
+			this.equipId = document.getElementById('BMequipId2').value;
+			console.log(this.equipId);
+			this.$.validateEquipID.generateRequest();
+		}, */
+
+		searchKeyChanged : function(event) {
+			console.log(this.equipType);
+			this.searchKey = event.target.value;
+			//this.searchKey = event.target.value.toLowerCase();
+			this._refreshTable();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+	
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+
+					}
+
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+		ironformresponse : function() {			
+		 	document.querySelector('fault-report').refreshData();
+		 	//04-Jan-17: Added to reload the second tab data  
+		 	document.querySelector('fault-repair').refreshData();
+
+		 	this.showSubmitSuccessAlert();
+		},
+		getParams : function(workOrderType, deptId, equipType) {
+			return {
+				workOrderType : "EQ",
+				deptId : deptId,
+				equipType : equipType
+			};
+		},
+		/* Will call first */
+		getParamsEq : function(BMequipId2,creatorSSO) {
+			return {
+				equipid2 : BMequipId2,
+				creatorSSO : creatorSSO
+			};
+		},
+		/* From the submit wala function, this will be called */
+		validateEquipmentFaultData:function(){
+			this.BMequipId2=document.getElementById('BMequipId2').value;
+			this.creatorSSO=document.getElementById('creatorSSO').value;
+			//alertData="<div id='mainContent'>Please provide following mandatory data to create Work Order:</div>";
+			alertData="Please provide following mandatory data to create Work Order:";
+			if(!this.BMequipId2)
+				//alertData = alertData+"<div class='contentItems'>* Equipment Number</div>";
+				alertData = alertData+" Equipment Number";
+			if(!this.creatorSSO)
+				//alertData = alertData+"<div class='contentItems'>* SSO</div>";
+				alertData = alertData+", SSO";
+			if(alertData.indexOf("Equipment Number")>-1 || alertData.indexOf("SSO")>-1) {
+				/* var dialog = document.querySelector('paper-dialog[transition=paper-dialog-transition-bottom]');
+				document.getElementById("alertContent").innerHTML = alertData;
+			    dialog.open(); */
+			    alert(alertData);
+			    return;
+			}
+			if((this.BMequipId2 != undefined && this.BMequipId2!=null && this.BMequipId2 != "") && (this.creatorSSO != undefined && this.creatorSSO!=null && this.creatorSSO != ""))
+			{
+				console.log("Value of equipment id is:"+BMequipId2);
+				//this.$.validateEquipID.generateRequest();
+			}	
+				
+		},
+		showSubmitSuccessAlert : function() {
+			/* var dialog = document.querySelector('paper-dialog[transition=paper-dialog-transition-bottom]');
+			document.getElementById("alertContent").innerHTML = "Work Order has been created successfully.";
+		    dialog.open(); */
+			alert("Work Order has been created successfully.");
+		},
+		hideAlert : function() {
+			var dialog = document.querySelector('paper-dialog[transition=paper-dialog-transition-bottom]');
+		    dialog.close();
+		},
+		/* On Submit this function will be called */
+		validateFaultEquipData:function() {
+			document.querySelector('fault-report').validateEquipmentFaultData();
+		},
+		handleEquipmentFaultResponse :function(e){
+			var details=e.detail;
+			//check the details, on the basis of response proceed for form submit 
+			if(details.status==true && details.data=="SUCCESS")
+				{ 
+				 document.getElementById('saveBreakdown').action="http://localhost:8081/pmms-api/saveFaultReport";
+				 document.getElementById('saveBreakdown').submit();
+				}
+			else{			
+				var data = details.data;
+				var mandatoryFields="";			
+				
+				if(data != 'Fail')
+					{
+						//mandatoryFields = "<div id='mainContent'>Work Order can not be created as following mandatory fields are invalid:</div>";
+						mandatoryFields = "Work Order can not be created as following mandatory fields are invalid:";
+						if(details.data.indexOf("equipId") > -1)
+							mandatoryFields = mandatoryFields+" Equipment Number";
+						if(details.data.indexOf("creatorSSO") > -1)
+							mandatoryFields = mandatoryFields+", SSO";
+						if(mandatoryFields!="")
+							{
+								/* var dialog = document.querySelector('paper-dialog[transition=paper-dialog-transition-bottom]');
+								document.getElementById("alertContent").innerHTML = mandatoryFields;
+							    dialog.open(); */
+							    alert(mandatoryFields);
+								document.getElementById('BMequipId2').value="";
+								document.getElementById('creatorSSO').value="";
+							}
+					}
+				}
+			}		
+
+		/* saveBreakdownMaint : function() {
+			document.querySelector('fault-report').validateEquipID();
+
+		}, */
+		/* saveBreakdownMain : function() {
+			document.getElementById("saveBreakdown").action = "http://localhost:8081/pmms-api/saveFaultReport";
+			document.getElementById('saveBreakdown').submit();
+		}, */
+		/* listeners: {
+			'pxDdept.dropdown_content_value_changed': 'dropdeptDropDown'			
+			
+			},
+			dropdeptDropDown: function (event) {			
+				alert('key is:'+event.detail.key);
+				alert('value is:'+event.detail.textValue);	 // Testing by Kailash
+				/* document.getElementById("facilityArea").value = event.detail.textValue; */
+				/* if(event.detail.key === "1")
+				{
+					this.$.dropdpwndept.generateRequest();
+					alert("Value coming here");
+					//document.querySelector('#myTable').refreshData();
+					//document.querySelector('#myTable').refreshData();
+					//document.querySelector('test').refreshData();
+					//document.querySelector("#test").param.value = "{{getParams("EQ",deptId,equipType)}}";
+					
+				}
+			}	 */ 
+
+	});
+	
+</script> </dom-module>

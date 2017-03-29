@@ -1,0 +1,31 @@
+[
+    {
+    "工序/WorkSequence":"1",
+    "维护项/MaintainanceItem":"GB01",
+    "单元/Section": "Grit Blast Machine(Grit Blast System)",
+    "内容/WorkContent": "2016/07/07 AM",
+    "用时/分钟/SpendTime": "2016/07/07 AM",
+	"频率/天/Frequency/Day": "1",
+	"扫描值/ScanValue": "pmms1"
+     },
+    {
+    "工序/WorkSequence":"2",
+    "维护项/MaintainanceItem":"GB02",
+    "单元/Section": "Grit Blast Machine(Grit Blast System)",
+    "内容/WorkContent": "2016/07/07 AM",
+    "用时/分钟/SpendTime": "2016/07/07 AM",
+	"频率/天/Frequency/Day": "1",
+	"扫描值/ScanValue": "pmms2"
+     },
+	  {
+    "工序/WorkSequence":"3",
+    "维护项/MaintainanceItem":"GB03",
+    "单元/Section": "Grit Blast Machine(Grit Blast System)",
+    "内容/WorkContent": "2016/07/07 AM",
+    "用时/分钟/SpendTime": "2016/07/07 AM",
+	"频率/天/Frequency/Day": "1",
+	"扫描值/ScanValue": "pmms3"
+     }
+	
+  
+]

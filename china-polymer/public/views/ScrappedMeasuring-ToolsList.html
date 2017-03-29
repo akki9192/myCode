@@ -1,0 +1,199 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="ScrappedMeasuring-ToolsList"> <template>
+<px-card icon="fa-suitcase" header-text="Measuring Tool Inventory Scrapped List"chevron>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+<br><br>
+<form is="iron-form" content-type="application/json"
+		id="searchScrappedMeasuring" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="handleScrappedMeasuring" method="post">
+
+		<input type="hidden" id="ScrappedMeasuringData"
+			name="ScrappedMeasuringData" value="{{ScrappedMeasuringData}}">
+		</input>
+
+	</form>
+
+
+		<br>
+		<div class="pull-left" style="width: 900px";>
+			<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>åŒºåŸŸ/Department:</b>
+				</label>
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+					<px-dropdown id="deptDropDown" selected-Key="{{deptId}}">
+					<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+	<input type="hidden" name="deptDropDownScrapped" id="deptDropDownScrapped" />
+				</div>
+			</div>
+
+			<div class="control-group pull-left"
+				style="width: 300px; margin-left: 40px">
+
+				<label class="control-label" style="width: 130px;"> <b>çŠ¶æ€�/Status</b>
+				</label>
+
+				<div style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="measureinsstatus"
+						params='{"Type":"MEASURE_INS_STATUS"}'
+						url="http://localhost:8081/pmms-api/getMeasureInsStatus"
+						last-response="{{measinsstatus}}" auto></byutv-jsonp>
+					<px-dropdown id="measurestatus" selected-Key="{{status}}">
+					<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{measinsstatus}}">
+					<!-- items='[{"key":"L", "val": "Lost"},{"key":"I", "val": "In-use"},{"key":"S", "val": "Scrap"},{"key":"A", "val": "Archive"}]'> -->
+					</px-dropdown-content> </px-dropdown>
+						<input type="hidden" name="measureStatus" id="measureStatus" />
+				</div>
+			</div>
+		</div>
+		<br> <br>
+		<table>
+			<tr>
+				<td><label class="control-label"><b>Measurement
+							Name</b></label></td>
+
+				<td style="margin-left: 20px;"><paper-input
+						class="input-medium search-query span3" id="measurementName"
+						value="{{measurementName}}" name="measurementName"
+						style="width: 180px;"> </paper-input></td>
+			
+				
+				<td colspan="2" ><paper-button style="margin-left: 40px;" class="btn btn-icon"
+						type="button" style="display: inline-block;"
+						on-click="scrappedmeasuring">/Search</paper-button></td>
+			</tr>
+		</table>
+
+		<br> <br> <br>
+
+		<div id="measuringinfo" class="module-body pull-left"
+			style="width: 100%">
+
+			<byutv-jsonp id="measuringtooldata"
+				url="http://localhost:8081/pmms-api/getMeasuringToolInfo"
+				last-response="{{measuringtooldata}}" debounce-duration="300"
+				auto="true"></byutv-jsonp>
+
+			<px-data-table id="measuringtoolinfo"
+				table-data="{{measuringtooldata}}"
+				on-px-row-click="measuringToolInfoRow" selectable> <px-data-table-column
+				name="id" label="ID" hide></px-data-table-column> <px-data-table-column
+				name="instrumentNo" label="Instrument No"></px-data-table-column> <px-data-table-column
+				name="firstCalibDate" label="First Calibration Date"></px-data-table-column>
+			<px-data-table-column name="loScArDate"
+				label="Loose/Scrap/Archive Date"></px-data-table-column> <px-data-table-column
+				name="personResponsible" label="Responsible"></px-data-table-column>
+			<px-data-table-column name="transferDate" label="Transfer Date"></px-data-table-column>
+			<px-data-table-column name="calibrationFrequency"
+				label="Calibration Frequency"></px-data-table-column> <px-data-table-column
+				name="calibrationFee" label="Calibration Fee"></px-data-table-column>
+			<px-data-table-column name="department" label="Department"></px-data-table-column>
+			<px-data-table-column name="depository" label="Depository"></px-data-table-column>
+			<px-data-table-column name="instrumentName" label="Instrument Name"></px-data-table-column>
+			<px-data-table-column name="managementNos"
+				label="Type Management Nos"></px-data-table-column> <px-data-table-column
+				name="status" label="Status"></px-data-table-column> <px-data-table-column
+				name="calibrationDate" label="Calibration Date"></px-data-table-column>
+			<px-data-table-column name="planSubDate" label="Plan Submission Date"></px-data-table-column>
+			<px-data-table-column name="verificationResults"
+				label="Verification Results"></px-data-table-column> <px-data-table-column
+				name="createdBy" label="createdBy" hide></px-data-table-column> <px-data-table-column
+				name="createdDate" label="createdDate" hide></px-data-table-column>
+			<!-- <px-data-table-column name="lastUpdatedBy" label="lastUpdatedBy"></px-data-table-column> 
+		<!-- <px-data-table-column name="lastUpdatedDate" label="lastUpdatedDate"></px-data-table-column>   -->
+
+
+			</px-data-table>
+
+		</div>
+</section>
+</px-card> </template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'ScrappedMeasuring-ToolsList',
+		measurementName : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		measureStatus : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		deptDropDownScrapped : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		
+		ScrappedMeasuringData: {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		listeners : {
+			'measurestatus.dropdown_content_value_changed' : 'measurestatusValChanged',
+			'deptDropDown.dropdown_content_value_changed' : 'deptDropDownValChanged',
+			
+			
+
+		},
+		measurestatusValChanged : function(event) {
+
+			document.getElementById("measureStatus").value = event.detail.key;
+		},
+		deptDropDownValChanged : function(event) {
+
+			document.getElementById("deptDropDownScrapped").value = event.detail.key;
+		},
+		scrappedmeasuring : function() {
+			if ((this.measurementName == undefined
+					|| this.measurementName == null || this.measurementName == "")
+					|| (this.measureStatus == undefined
+							|| this.measureStatus == null || this.measureStatus == "") || (this.deptDropDownScrapped == undefined
+									|| this.deptDropDownScrapped == null || this.deptDropDownScrapped == "")
+							)
+				alert("Please select Department,Status And Name to Search.");
+			else {
+				this.measurementName = this.$.measurementName.value;
+				this.measureStatus = this.$.measureStatus.value;
+				this.deptDropDownScrapped=this.$.deptDropDownScrapped.value;
+				this.ScrappedMeasuringData = "{'department':"
+						+ this.deptDropDownScrapped + ",'measurementName':"
+						+ this.measurementName +",'measureStatus':"
+						+ this.measureStatus +"}";
+				document.getElementById("searchScrappedMeasuring").action = "http://localhost:8081/pmms-api/searchScrappedMeasuring";
+				document.getElementById('searchScrappedMeasuring')
+						.submit();
+			}
+
+		},
+		handleScrappedMeasuring : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.measuringtooldata = details.response;
+				this._refreshTable("measuringtooldata");
+			} else {
+				alert("error in searching!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.measuringtooldata;
+			this.calibrationscheme = array;
+		}
+
+	});
+</script> </dom-module>

@@ -1,0 +1,636 @@
+ <link rel="import" href="/../css/button-style.html">
+<dom-module id="fecility-wo">
+<template>
+<style include="button-style">
+</style>
+ <px-card icon="fa-suitcase" header-text="Facility WO" chevron> 
+  <px-tab-set id="tab-test" selected="{{selected}}">
+    <px-tab>Current Work Orders</px-tab>   
+    <px-tab>Maintenance Application Form </px-tab>
+    <px-tab>Work Order History</px-tab>
+	 
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}"> 
+
+  <!-- TAB-1 -->
+ <section> 	
+ 	
+ <form is="iron-form" content-type="application/json" id="searchFacilitiesCurrentWOWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSeachedData" method="post">
+	<input type="hidden" id="searchData" name="searchData" value="{{searchData}}"> </input>
+			
+			</form>
+			<br><br>
+			<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 400px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+			
+			
+
+			<div class="control-group pull-left" style="width: 400px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+			<button class="btn btn-icon" type="button" style="display: inline-block; margin-top: 30px;" on-click="searchWithDates">搜索/Search</button>
+		
+			</div>
+		</div>
+		<br><br>
+	<!-- 	 <div class="input-append flR pull-right">
+			<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+			
+		</div>  -->
+		<br> <br>
+				
+	<!-- -----------------------------Download------------------------------------------------- -->
+		
+		<form content-type="application/xls" id="downloadXl" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadXl">Download</paper-button> 
+		</div>		
+		</form>
+			<br>	
+			<div class="module-body pull-left" style="width:100%"> 
+                <byutv-jsonp id="CurrentWorkOrder"
+                     url="http://localhost:8081/pmms-api/getFacilitiesCurrentWorkOrder"
+                     last-response="{{mydata}}" debounce-duration="300" auto="true"></byutv-jsonp> 
+                 <px-data-table id="myTable" table-data="{{mydata}}" >  
+					 <px-data-table-column sortable name="workOrderNumber"  label="工单号/WOSN" ></px-data-table-column>
+					<px-data-table-column sortable name="wordOrderStatus" label="WorkOrderStatus" >
+		            <px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+                    <px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+                    <px-data-table-highlight highlight-type="row" highlight-value="condclose"  highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+                    <px-data-table-highlight highlight-type="row" highlight-value="notstart"  highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+				    </px-data-table-column>	 					
+					<px-data-table-column sortable name="facilityNumber"  label="设施代码/FacSN"></px-data-table-column>
+					<px-data-table-column sortable name="facilityName" label="设施名称/FacNM"></px-data-table-column>
+					<px-data-table-column sortable name="facilityArea"  label="区域/FacArea"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID"  label="固定资产号/AssetSN"></px-data-table-column>
+					<px-data-table-column sortable name="faultDescription" label="需求描述/FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO"  label="申报人/Requestor"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="申报时间/ReqTime"></px-data-table-column>					
+					<px-data-table-column sortable name="safetyInvolved" label="涉及安全隐患/Safety" ></px-data-table-column>
+<!-- 					<px-data-table-column sortable name="shutdownFlag"  label="是否需停机/Shutdown" ></px-data-table-column>
+ -->					<px-data-table-column sortable name="updaterSSO"label="维修工/Maintainer"></px-data-table-column>
+					<px-data-table-column sortable name="maintStartDate" label="维修开始时间/MaintStart"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.deptInfo.deptName" label="使用部门/Department"></px-data-table-column>
+				    <px-data-table-column sortable name="equipmentInfo.remark" label="备注/Remark"></px-data-table-column> 
+				</px-data-table> 				
+
+			</div>				
+	<div class="legendmain mb10 pull-center"
+		style="text-align: center; font-size: 12px; width: 320px ;white-space: nowrap;">
+		<span class="label"
+			style="width: 100px; background-color: blue; color: white; float: right;">
+			<h5>带遗留问题运行</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: #00FFFF; float: right;">
+			<h5>维修中断中</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: yellow; float: right;">
+			<h5>正在维修中</h5>
+		</span> <span class="label"
+			style="width: 60px; background-color: red; float: right;">
+			<h5>未开始维修</h5>
+		</span>
+	</div>			
+		</section>
+		
+		<!-- ------------------------------------------- Tab-2 ------------------------------------------------------------------->
+		<section>	
+			
+				<br>
+				
+				<div class="module-body pull-left" style="width:100%"> 
+                <byutv-jsonp id="FaciltyWOMaintReoprt"
+                     url="http://localhost:8081/pmms-api/getFaciltyWOMaintReoprt" on-response="handleMAFResponse"
+                     last-response="{{faciltyWOMaintReoprt}}" debounce-duration="300" auto="true"></byutv-jsonp> 
+                <px-data-table id="myTable"   table-data="{{faciltyWOMaintReoprt}}" >                 
+					<px-data-table-column sortable name="workOrderNumber"   label="工单号/WOSN"  type="html"></px-data-table-column>					
+					<px-data-table-column sortable name="facilityNumber"  label="设施代码/FacSN"  ></px-data-table-column>
+					<px-data-table-column sortable name="facilityName" label="设施名称/FacNM" type="html" ></px-data-table-column>
+					<px-data-table-column sortable name="facilityArea"  label="设施型号/FacModel"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID"  label="固定资产号/AssetSN"></px-data-table-column>
+					<px-data-table-column sortable name="faultDescription" label="需求描述/FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO"  label="申报人/Requestor"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="申报时间/ReqTime"></px-data-table-column>					
+					<px-data-table-column sortable name="safetyInvolved" label="涉及安全隐患/Safety" ></px-data-table-column>
+<!-- 					<px-data-table-column sortable name="shutdownFlag"  label="是否需停机/Shutdown" ></px-data-table-column>
+ -->					<px-data-table-column sortable name="updaterSSO"label="维修工/Maintainer"></px-data-table-column>
+					<px-data-table-column sortable name="maintStartDate" label="维修开始时间/MaintStart"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.deptInfo.deptName" label="使用部门/Department"></px-data-table-column>
+				    <px-data-table-column sortable name="equipmentInfo.remark" label="备注/Remark"></px-data-table-column> 
+				</px-data-table> 				
+
+			</div>
+
+
+	<div class="legendmain mb10 pull-left">
+		<form>
+			<paper-dialog id="WOfacility">
+			<paper-dialog-scrollable> <!-- <byutv-jsonp
+				id="form"
+				url="http://localhost:8081/pmms-api/getFaciltyWOMaintReoprt"
+				method="post" last-response="{{dataaa}}" debounce-duration="300"
+				auto="true"> </byutv-jsonp> -->		
+				<table cellspacing="10px" cellpadding="10px">
+					<tr>
+						<td><b>Workshop or Department</b></td>
+						<td><b>地点/Place</b></td>
+						<td><b>故障发生时间/Down Time</b></td>
+						<td><b>报修人员Demander</b></td>
+						<td><b>Mobile Phone</b></td>
+						<td><b>fault describe</b></td>
+
+					</tr>
+					<tr>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="15" maxlength="18"></td>
+					</tr>
+
+					<tr>
+						<td><b>Receive Demand Time</b></td>
+						<td><b>Start Repair Time</b></td>
+						<td><b>故障发生时间/Down Time</b></td>
+						<td><b>Receiver</b></td>
+
+					</tr>
+
+					<tr>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+					</tr>
+
+					<tr>
+						<td><b>检查位置，部件/Check Point</b></td>
+						<td><b>修复措施，行动/Solution and Action</b></td>
+						<td><b>维修人Responsible</b></td>
+
+					</tr>
+
+					<tr>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+						<td><input type="text" size="10" maxlength="12"></td>
+					</tr>
+
+					<tr>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">电气控制E</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">气体管道G&P</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">暖通空调H</label>
+
+						</td>
+					</tr>
+					<tr>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">机械传动M</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">上下水W</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">其它O</label>
+
+						</td>
+
+					</tr>
+
+					<tr>
+						<td><label class="control-label"><b>spare parts
+									record:</b></label></td>
+					</tr>
+					<px-data-table id="sparePartsRecord"
+						table-data="{{sparePartsRecords}}"> <px-data-table-grid
+						sortable name="name" label="名称/Name">
+					</px-data-table-column> <px-data-table-grid sortable name="type" label="型号/Type">
+					</px-data-table-column> <px-data-table-grid sortable name="waittime"
+						label="等待备件时间 /Wait Time">
+					</px-data-table-column> <px-data-table-grid sortable name="Quantity" label="数量/Quantity">
+					</px-data-table-column></px-data-table>
+
+					<tr>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">应急/Emergency</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">预防/Preventive</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">改善/Improvement</label>
+						</td>
+					</tr>
+
+					<tr>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">自然损坏/Old</label>
+						</td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">人为损坏/Manmade
+						</label></td>
+						<td><input id="basic-form-checkbox" type="checkbox">
+							<label class="label--inline" for="basic-form-checkbox">要求限定/Demand</label>
+						</td>
+
+
+					</tr>
+
+
+				</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button id="cancelAddModal" dialog-dismiss>Cancel</paper-button>
+				<paper-button raised on-tap="submitRoleRights"
+					class="btn btn-large btn-primary">Submit</paper-button>
+			</div>
+			</paper-dialog>
+
+		</form>
+
+	</div>
+				
+			</section>
+		
+     <!------------------------------------------------------- Tab-3 -------------------------------------------------------------->
+		<section>
+		<br>	
+		
+		<form is="iron-form" content-type="application/json" id="searchFacilitiesCurrentWOHWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleResponse" method="post">
+	   <input type="hidden" id="searchData1" name="searchData1" value="{{searchData1}}"> </input>
+				
+			</form>				
+			<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 400px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField1" name="fromDateField1" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate1" id="fromDate1" on-tap="triggerFromDate1" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+
+			<div class="control-group pull-left" style="width: 380px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField1" name="toDateField1" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate1" id="toDate1" on-tap="triggerToDate1" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block; margin-top: 30px;" on-click="searchHistoryWithDates">搜索/Search</button>
+			</div>
+		</div>
+		<br><br><br><br>
+				
+	 <!--- -----------------------------------------------------------Download_Start------------------------------------------------- -->
+		
+		<form content-type="application/xls" id="downloadExcel" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	       <paper-button class="btn btn-large btn-primary" raised on-click="downloadExcel">Download</paper-button> 
+		</div>		
+		</form>
+	 <!--- -----------------------------------------------------------Download_End------------------------------------------------- -->
+		
+	<!-- -------------------------------------------------------Print_Start------------------------------------------------- --------->
+				
+		<form  content-type="application/pdf" id="printTable" method="GET">
+		<div class="control-group pull-left" style="width: 130px">
+		<paper-button class="btn btn-large btn-primary" raised on-click="printData">Print</paper-button>
+		 
+		 <input type="hidden" id="datesData" name="datesData" value="{{datesData}}"> </input>
+		
+		</div>		
+		</form>
+	<!-- -------------------------------------------------------Print_End------------------------------------------------- --------->
+	
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponseEdit" id="editComment"
+			method="post">
+			<paper-button class="btn btn-large btn-primary"  raised
+				onclick="editTechInspection.open()">EditComment</button>
+			<paper-dialog id="editTechInspection"> <paper-dialog-scrollable>
+			<table>				
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Remark:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+					id="remarkEdit" name="remarkEdit" style="width: 180px;"> </paper-input></td>
+				</tr>
+				
+				<input type="hidden" name="workOrderNumberEdit"
+						id="workOrderNumberEdit"  />
+						<input type="hidden" name="EquipIdEdit"
+						id="EquipIdEdit"  />
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="editComment">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+				
+				<br>		
+				
+				<div class="module-body pull-left" style="width:100%"> 
+                <byutv-jsonp id="WorkOrderHistory"
+                     url="http://localhost:8081/pmms-api/getFacilitiesWorkOrderHistory"
+                     last-response="{{workOrderHistory}}"  debounce-duration="300" auto="true"></byutv-jsonp> 
+                <px-data-table id="myTable" table-data="{{workOrderHistory}}" selectable on-px-row-click="rowSelectedWOHistory">  
+					<px-data-table-column sortable name="workOrderNumber"  label="工单号/WOSN" ></px-data-table-column>					
+					<px-data-table-column sortable name="facilityNumber"  label="设施代码/FacSN"></px-data-table-column>
+					<px-data-table-column sortable name="facilityName" label="设施名称/FacNM"></px-data-table-column>
+					<px-data-table-column sortable name="facilityArea"  label="区域/FacArea"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID"  label="固定资产号/AssetSN"></px-data-table-column>
+					<px-data-table-column sortable name="faultDescription" label="需求描述/FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO"  label="申报人/Requestor"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="申报时间/ReqTime"></px-data-table-column>					
+					<px-data-table-column sortable name="safetyInvolved" label="涉及安全隐患/Safety" ></px-data-table-column>
+					<!-- <px-data-table-column sortable name="shutdownFlag"  label="是否需停机/Shutdown"></px-data-table-column> -->
+					<px-data-table-column sortable name="updaterSSO"label="维修工/Maintainer"></px-data-table-column>
+					<px-data-table-column sortable name="maintStartDate" label="维修开始时间/MaintStart"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.deptInfo.deptName" label="使用部门/Department"></px-data-table-column>
+				    <px-data-table-column sortable name="equipmentInfo.remark" label="备注/Remark"></px-data-table-column> 
+				</px-data-table> 				
+
+			</div>		
+				
+			</section>		
+			
+		</px-tab-pages>
+	 </px-card>
+
+</template>
+
+	<script>
+		Polymer({
+		    /* this is the element's prototype */
+		    is: 'fecility-wo',
+		    behaviors: [
+			             PmmsBehaviors.LanguageBehavior
+			           ],
+			searchKey : null,
+			
+			fromDate: {
+				type: String,
+	  			notify: true
+			},
+			
+			toDate: {
+				type: String,
+	  			notify: true
+			},
+			
+			toDateField: {
+	  			type: String,
+	  			notify: true,
+	  			value:""
+	  		},
+	  		
+			fromDateField: {
+	  			type: String,
+	  			notify: true,
+	  			value:""
+	  		},
+	  		
+	  		fromDate1: {
+				type: String,
+	  			notify: true
+			},
+			
+			toDate1: {
+				type: String,
+	  			notify: true
+			},
+			
+			toDateField1: {
+	  			type: String,
+	  			notify: true,
+	  			value:""
+	  		},
+	  		
+			fromDateField1: {
+	  			type: String,
+	  			notify: true,
+	  			value:""
+	  		},
+	  		triggerToDate: function(){
+				console.log("To date : "+this.$.toDate);
+				this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+				this.toDateField=this.toDate;
+				document.getElementById("toDateField").value=this.toDateField;
+			},
+			
+			triggerFromDate: function(){
+				console.log("From date : "+this.$.fromDate);
+				this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+				this.fromDateField=this.fromDate;
+				document.getElementById("fromDateField").value=this.fromDateField;
+			},
+			
+			triggerToDate1: function(){
+				console.log("To date : "+this.$.toDate);
+				this.toDate1 = this.$.toDate1.dateTime.substring(0,this.$.toDate1.dateTime.indexOf('T'));
+				this.toDateField1=this.toDate1;
+				document.getElementById("toDateField1").value=this.toDateField1;
+			},
+			
+			triggerFromDate1: function(){
+				console.log("From date : "+this.$.fromDate);
+				this.fromDate1 = this.$.fromDate1.dateTime.substring(0,this.$.fromDate1.dateTime.indexOf('T'));
+				this.fromDateField1=this.fromDate1;
+				document.getElementById("fromDateField1").value=this.fromDateField1;
+			},
+			
+			searchWithDates : function()
+			{
+				if
+					((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+					alert("Please select From Date and To Date to seach Equipment Issue List.");
+				  
+				else {
+					this.searchData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+"}";
+					document.getElementById('searchFacilitiesCurrentWOWithDates').action = "http://localhost:8081/pmms-api/searchFacilitiesCurrentWOWithDates";
+					document.getElementById('searchFacilitiesCurrentWOWithDates').submit();
+				}
+				
+			},
+			searchHistoryWithDates: function()
+			{
+				if
+					((this.toDateField1==undefined || this.toDateField1==null || this.toDateField1=="") || (this.fromDateField1==undefined || this.fromDateField1==null || this.fromDateField1=="") )
+					alert("Please select From Date and To Date to seach Equipment Issue List.");
+				  
+				else {
+					this.searchData1="{'fromDate':"+this.fromDateField1+",'toDate':"+this.toDateField1+"}";
+					document.getElementById('searchFacilitiesCurrentWOHWithDates').action = "http://localhost:8081/pmms-api/searchFacilitiesCurrentWOHistoryWithDates";
+					document.getElementById('searchFacilitiesCurrentWOHWithDates').submit();
+				}
+				
+			},
+			
+			editComment:function()
+			{
+				document.getElementById('editComment').action = "http://localhost:8081/pmms-api/editComment";
+				document.getElementById('editComment').submit();
+			},
+			
+			_refreshTable : function(tableId) {
+				var array = [];
+				if (!this.searchKey) {
+					console.log("in if")
+					array = this.mydata;
+				} else {
+					for ( var i in this.mydata) {
+						console.log("in else_______for")
+						var jsonObject = this.mydata[i];
+						if (this._matches(jsonObject, this.searchKey)) {
+							array.push(jsonObject);
+						
+						}
+
+					}
+				}
+
+				/* if(tableId == "getEquipmentIssueList"){
+					this.filteredData = [];
+					this.filteredData = array;
+				}
+				else if(tableId == "getClosedEquipmentIssueList"){
+					this.filteredData1 = [];
+					this.filteredData1 = array;
+				} */
+					
+			},
+			
+			_refreshTable1 : function(tableId) {
+				var array = [];
+				if (!this.searchKey) {
+					console.log("in if")
+					array = this.workOrderHistory;
+				} else {
+					for ( var i in this.mydata) {
+						console.log("in else_______for")
+						var jsonObject = this.mydata[i];
+						if (this._matches(jsonObject, this.searchKey)) {
+							array.push(jsonObject);
+						
+						}
+
+					}
+				}
+
+				/* if(tableId == "getEquipmentIssueList"){
+					this.filteredData = [];
+					this.filteredData = array;
+				}
+				else if(tableId == "getClosedEquipmentIssueList"){
+					this.filteredData1 = [];
+					this.filteredData1 = array;
+				} */
+					
+			},
+			
+			handleSeachedData : function(e) {
+				var details=e.detail;
+				if(details.status==200)
+				{
+					this.mydata=details.response;					
+					this._refreshTable("CurrentWorkOrder");
+				}
+				else{			
+					alert("error in searching Spare part list!!!!");
+				
+				}
+			},		
+			
+			
+			handleResponse : function(event) {
+				var details=event.detail;
+				if(details.status==200)
+				{
+					this.workOrderHistory=details.response;				
+					this._refreshTable1("WorkOrderHistory");
+				}
+				else{			
+					alert("error in searching Spare part list!!!!");
+				
+				}
+			},
+			
+			downloadXl : function() {
+
+				document.getElementById("downloadXl").action = "http://localhost:8081/pmms-api/getFacilityCWOlistDownlaod";
+				document.getElementById('downloadXl').submit();
+
+			},
+			downloadExcel : function() {
+			
+				document.getElementById("downloadExcel").action = "http://localhost:8081/pmms-api/getFacilityWOHlistDownlaod";
+				document.getElementById('downloadExcel').submit();
+
+			},
+			printData : function() {
+				 document.getElementById("printTable").action = "http://localhost:8081/pmms-api/printFacilityWOHlistorPdf"; 
+				 document.getElementById("printTable").submit();
+				   
+			},
+			
+			openModel : function() {
+				alert("hi");
+				
+				Polymer.dom(document).querySelector("#woForm").modalButtonClicked();
+			},
+			
+			
+			rowSelectedWOHistory : function(e) {
+				var clickedRow = e.detail.row;
+				this.currentRow = clickedRow;
+				if (this.ids == undefined)
+					this.ids = [];
+				var index = this.ids.indexOf((clickedRow.row.workOrderNumber.value));
+				if (clickedRow._selected == false && index == -1)//not present in ids list
+					this.ids.push(clickedRow.row.workOrderNumber.value);
+				else if (index > -1) //already there
+					this.ids.splice(index, 1);								
+				document.getElementById("workOrderNumberEdit").value = clickedRow.row.workOrderNumber.value;
+
+			}, 
+			
+			
+			
+		});
+	</script>
+</dom-module>

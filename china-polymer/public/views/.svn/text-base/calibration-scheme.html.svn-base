@@ -1,0 +1,144 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="calibration-scheme"> <template>
+<px-card chevron>
+
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<h2>Inside Calibration Scheme</h2>
+	<br> <br>
+	<form is="iron-form" content-type="application/json"
+		id="searchCalibrationScheme" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="handleCalibrationScheme" method="post">
+
+		<input type="hidden" id="CalibrationSchemeData"
+			name="CalibrationSchemeData" value="{{CalibrationSchemeData}}">
+		</input>
+
+	</form>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>区域/Department:</b>
+			</label>
+
+			<div class="controls"
+				style="margin-left: 5px; display: inline-block; width: 180px;">
+				<byutv-jsonp id="dropdpwndeptCalib"
+					url="http://localhost:8081/pmms-api/getDepartmentName"
+					last-response="{{department}}" auto></byutv-jsonp>
+				<px-dropdown id="deptDropDownCalibration"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{department}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="departmentCalib" id="departmentCalib" />
+			</div>
+		</div>
+		</div>
+		<br><br>
+		<table>
+			<tr>
+				<td><label class="control-label"><b>Name of
+							Measuring Tool</b></label></td>
+
+				<td style="margin-left: 20px;"><paper-input class="span3"
+						name="measuringtoolName" id="measuringtoolName"
+						style="width: 180px;"> </paper-input></td>
+
+
+				<td colspan="2"><paper-button class="btn btn-icon"
+						type="button" style="display: inline-block;margin-left: 40px;"
+						on-click="calibrationSchemeSearch">/Search</paper-button></td>
+			</tr>
+		</table>
+
+		<br> <br>
+		<div id="calibrationScheme" class="module-body pull-left"
+			style="width: 100%">
+			<byutv-jsonp id="calibrationSchemeInfo"
+				url="http://localhost:8081/pmms-api/getCalibrationScheme"
+				last-response="{{calibrationscheme}}" debounce-duration="300"
+				auto="true"></byutv-jsonp>
+			<px-data-table id="calibrationSchemeDetails"
+				table-data="{{calibrationscheme}}" selectable> <px-data-table-column
+				name="id" label="ID" hide></px-data-table-column> <px-data-table-column
+				name="measuringToolInfo.instrumentNo" label="Number"></px-data-table-column>
+			<px-data-table-column name="measuringToolInfo.instrumentName"
+				label="Name of appliances"></px-data-table-column> <px-data-table-column
+				name="measuringToolInfo.managementNos" label="Standard Model"></px-data-table-column>
+			<px-data-table-column name="measuringToolInfo.managementNos"
+				label="Management Number"></px-data-table-column> <px-data-table-column
+				name="measuringToolInfo.calibrationDate"
+				label="Workshop Submission Date"></px-data-table-column> <px-data-table-column
+				name="measuringToolInfo.calibrationDate" label="calibration date"></px-data-table-column>
+			<px-data-table-column name="testReturnDate" label="Test Return Date"></px-data-table-column>
+			<px-data-table-column name="takeBackDate" label="Take Back date"></px-data-table-column>
+			<px-data-table-column name="certValPeriod"
+				label="Certificate Validity Period"></px-data-table-column> </px-data-table>
+
+		</div>
+</section></template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'calibration-scheme',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		measuringtoolName : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		departmentCalib : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		CalibrationSchemeData : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		listeners : {
+			'deptDropDownCalibration.dropdown_content_value_changed' : 'deptDropDownCalibrationValChanged',
+
+		},
+		deptDropDownCalibrationValChanged : function(event) {
+
+			document.getElementById("departmentCalib").value = event.detail.key;
+		},
+		calibrationSchemeSearch : function() {
+			if ((this.measuringtoolName == undefined
+					|| this.measuringtoolName == null || this.measuringtoolName == "")
+					|| (this.departmentCalib == undefined
+							|| this.departmentCalib == null || this.departmentCalib == ""))
+				alert("Please select Department and Name to Search.");
+			else {
+				this.departmentCalib = this.$.departmentCalib.value;
+				this.measuringtoolName = this.$.measuringtoolName.value;
+				this.CalibrationSchemeData = "{'department':"
+						+ this.departmentCalib + ",'toolName':"
+						+ this.measuringtoolName + "}";
+				document.getElementById("searchCalibrationScheme").action = "http://localhost:8081/pmms-api/searchCalibrationScheme";
+				document.getElementById('searchCalibrationScheme').submit();
+			}
+
+		},
+		handleCalibrationScheme : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.calibrationscheme = details.response;
+				this._refreshTable("calibrationSchemeInfo");
+			} else {
+				alert("error in searching!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.calibrationscheme;
+			this.calibrationscheme = array;
+		}
+
+	});
+</script> </dom-module>

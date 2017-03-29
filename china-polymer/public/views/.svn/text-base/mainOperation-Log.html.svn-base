@@ -1,0 +1,345 @@
+<meta charset="utf-8">
+<link  rel="import" href="/../css/button-style.html">
+<dom-module id="mainOperation-Log">
+  <template>
+     	
+ <style include="button-style" >
+ 
+ </style>
+   <!-- local DOM goes here -->
+   	 
+	<section> <br>
+	
+		<form is="iron-form" content-type="application/json" id="searchingWithDatesAndParameters" on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">
+			
+			<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+	</form>
+	<div class="pull-left" style="width: 900px";>
+	<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;" required auto-validate error-message="{{localize('ssoid')}}">
+				<b>SSO :</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="createdBy" id="createdBy" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>SparePartID :</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="moduleId" id="moduleId" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+	
+
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+			</label>
+
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="FacilityFromDate">
+				<paper-input id="FacilityFromDateFields" name="FacilityFromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityFromDate" on-tap="triggerFacilityFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="FacilityToDate">
+				<paper-input id="FacilityToDateFields" name="FacilityToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FacilityToDate" on-tap="triggerFacilityToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="FacilityTransactionDates">SEARCH</button>
+			</div>
+		</div>
+		<div>
+			<label class="control-label" style="width: 20px;"><b>Search</b> </label>
+			<paper-input class="paper-input-medium search-query span3" name="searchKey" value="{{searchKey}}" on-input="searchKeyChanged">
+			
+		</div>
+				<br>
+				<br>
+		<!--**************************** ADD ************************************ -->
+		
+		
+		<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse"
+			  id="measuringToolInventorySystemAdd" method="post">
+										
+			<paper-button class="btn btn-large btn-primary" raised onclick="addMeasuringTool.open()">Add</paper-button>
+			<paper-dialog id="addMeasuringTool"> 
+			<paper-dialog-scrollable>
+			<table>
+				<!-- <tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>Module* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="module"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('module')}}"> </paper-input></td>
+				</tr> -->
+				
+			<tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>Operation* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="operation"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('operation')}}"> </paper-input></td>
+				</tr> 
+				<tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>ModuleID* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="moduleId"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('moduleId')}}"> </paper-input></td>
+				</tr> 
+				
+				<!-- <tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>OldValue* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="instrumentNo"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr>
+				
+				<tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>NewValue* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="instrumentNo"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr> -->
+				
+				<tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>Remark* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="remark"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('remark')}}"> </paper-input></td>
+				</tr>
+				
+				<!-- <tr>
+					<td style="padding: 5px">
+					<label class="control-label"><b>CreatedBy* :</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="instrumentNo"
+							style="width: 180px;" required auto-validate
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr>
+				
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Created Date:</b></label></td>
+					<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="firstCalibrationDate">
+				 <paper-input id="firstCalibDates" name="firstCalibDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="firstCalibrationDate"  on-tap="triggerfirstCalibrationDate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>				
+				</td>			
+				</tr> -->
+				
+				</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="saveMeasuringTool">SAVE</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+		&nbsp;&nbsp;&nbsp;
+	</div>
+		<!--**************************** PX-Table ************************************ -->
+					
+		<div id="firstTime" class="module-body pull-left" style="width: 100%">
+		
+	<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse" id="SearchEquipPart" method="post">
+							
+
+              	
+            <byutv-jsonp id="test" url="http://localhost:8081/pmms-api/getEquipmentLogs"
+                   last-response="{{sparePartOperationLog}}" auto on-response="handleResponse"></byutv-jsonp>
+
+<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{filteredData}}" on-px-row-click=measuringToolInfoRow>  
+			
+				<px-data-table-column sortable name="operation" label="Operator"></px-data-table-column>
+				<px-data-table-column sortable name="moduleId" label="ID">
+			<!-- 	<a name="moduleId" href="http://localhost:8081/pmms-api/getEquipmentLogs">ID</a> -->
+				</px-data-table-column>
+				<px-data-table-column sortable name="oldVlue" label="OldValue"></px-data-table-column>
+				<px-data-table-column sortable name="newValue" label="NewValue"></px-data-table-column>
+				<px-data-table-column sortable name="createdBy" label="SSOID"></px-data-table-column>
+				
+				</px-data-table> 
+		</form>
+	</div>	
+			
+				</section>
+				
+				</template>
+				<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'mainOperation-Log',
+		
+		 behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		 
+<!--**************************** searching by fields and dates ************************************ -->			   
+		 FilteredData : {
+				type : String,
+				notify : true
+			},
+			FacilityFromDateFields : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			FacilityToDateFields : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			moduleId : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			createdBy : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			refreshData : function() {
+				this.$.test.generateRequest();
+			},
+			
+			triggerFacilityFromDateField : function() {
+				//console.log("calibrationdate : " + this.$.StockFromDate);
+				this.FacilityFromDate = this.$.FacilityFromDate.dateTime.substring(0,
+						this.$.FacilityFromDate.dateTime.indexOf('T'));
+				this.FacilityFromDateField = this.FacilityFromDate;
+				document.getElementById("FacilityFromDateFields").value = this.FacilityFromDateField;
+			},
+		
+			
+			triggerFacilityToDate : function() {
+				//console.log("calibrationdate : " + this.$.StockToDate);
+				this.FacilityToDate = this.$.FacilityToDate.dateTime.substring(0,
+						this.$.FacilityToDate.dateTime.indexOf('T'));
+				this.FacilityToDateField = this.FacilityToDate;
+				document.getElementById("FacilityToDateFields").value = this.FacilityToDateField;
+			},
+			FacilityTransactionDates : function() {
+				if ((this.FacilityToDateField == undefined
+						|| this.FacilityToDateField == null || this.FacilityToDateField == "")
+						|| (this.FacilityFromDateField == undefined
+								|| this.FacilityFromDateField == null || this.FacilityFromDateField == "") ||
+								(this.model == undefined
+										|| this.model == null || this.model == "")||
+										(this.createdBy == undefined
+												|| this.createdBy == null || this.createdBy == "")	)
+					alert("Please select From Date and To Date to search.");
+				else {
+					this.model = this.$.model.value;
+					this.createdBy = this.$.createdByText.value;
+					this.FilteredData = "{'fromDate':"
+							+ this.FacilityFromDateField + ",'toDate':"
+							+ this.FacilityToDateField + ",'moduleId':"
+							+ this.moduleId + ",'sso':" + this.createdBy
+							+ "}";
+					document.getElementById("searchingWithDatesAndParameters").action = "http://localhost:8081/pmms-api/searchingWithDatesAndFields";
+					document.getElementById('searchingWithDatesAndParameters').submit();
+				}
+
+			},
+			
+			<!--**************************** ADDING ************************************ -->	
+			
+			measuringToolInfoRow : function(e) {
+				var clickedRow = e.detail.row;
+				this.currentRow = clickedRow;
+				if (this.ids == undefined)
+					this.ids = [];
+				var index = this.ids.indexOf((clickedRow.row.id.value));
+				if (clickedRow._selected == false && index == -1)//not present in ids list
+					this.ids.push(clickedRow.row.id.value);
+				else if (index > -1) //already there
+					this.ids.splice(index, 1);
+				
+				document.getElementById("operation").value = clickedRow.row.operation.value;
+				document.getElementById("moduleId").value = clickedRow.row.moduleId.value;
+				document.getElementById("remark").value = clickedRow.row.remark.value;
+			},
+			
+			saveMeasuringTool : function() {
+
+				document.getElementById('measuringToolInventorySystemAdd').action = "http://localhost:8081/pmms-api/saveCommonlogInfo";
+				document.getElementById('measuringToolInventorySystemAdd').submit();
+			},
+			
+			<!--**************************** searching ************************************ -->	
+		ironformresponse:function(){
+			
+			document.querySelector('mainOperation-Log').refreshData();
+		},
+	    searchData : function(){
+	    	document.getElementById("SearchEquipPart").action = "http://localhost:8081/pmms-api/getSearchDataa";
+			document.getElementById('SearchEquipPart').submit(); 
+	    },
+		
+		 searchKey : null,
+
+		    searchKeyChanged: function (event) {			     
+		                this.searchKey = event.target.value;
+		                this._refreshTable();
+		    },
+
+		    handleResponse : function(event) {
+				this._refreshTable();
+			},
+		    
+		    _matches: function (jsonObject, searchKey) {
+		                for (field in jsonObject) {
+		                            var fieldValue = jsonObject[field];
+
+		                            if (fieldValue === Object(fieldValue)
+		                                        && this._matches(fieldValue, searchKey)) {
+		                                        return true;
+		                            } else if (fieldValue && fieldValue.indexOf
+		                                        && fieldValue.indexOf(this.searchKey) >= 0) {
+		                                        return true;
+		                            }                                               
+		                }
+		                return false;
+		    },
+		    _refreshTable : function() {                                 
+                var array = [];
+                if (!this.searchKey) {
+                            array = this.sparePartOperationLog;
+                } else {
+                            for (var i in this.sparePartOperationLog) {
+                                        var jsonObject = this.sparePartOperationLog[i];                                                  
+                                        if (this._matches(jsonObject, this.searchKey)) {
+                                                    array.push(jsonObject);
+                                        }                                               
+                            }
+                }
+                
+                this.filteredData = [];
+                this.filteredData = array;
+    }  
+	});
+</script> </dom-module>

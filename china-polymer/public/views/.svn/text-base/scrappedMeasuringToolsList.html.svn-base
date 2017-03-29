@@ -1,0 +1,3 @@
+<link rel="import" href="views/scrappedMeasuring-ToolsList.html"/>
+
+<scrappedMeasuring-ToolsList></scrappedMeasuring-ToolsList>

@@ -1,0 +1,37 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="CurrentCycle-Record">
+<template> 
+<px-card icon="fa-suitcase" header-text="Inspection & SM Recording and Tracking" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Equipment SM Fulfillment Record</px-tab> 
+		<px-tab>Current PCM & QM Logbook</px-tab> 
+		<px-tab>Current PCM WO Fulfillment tracking</px-tab> 
+		<px-tab>Currently QM WO Fulfillment tracking</px-tab> 	
+		<px-tab>QM Data record</px-tab> 
+		<px-tab>Operator Inspection record Monthly </px-tab> 	
+		<px-tab>Maintenance Technician Inspection record Monthly</px-tab> 
+		
+	</px-tab-set> 
+	<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+	<px-tab-pages selected="{{selected}}">
+		<EquipmentSM-FulfillmentRecord></EquipmentSM-FulfillmentRecord>
+		<CurrentPCM-QMLogbook></CurrentPCM-QMLogbook>
+		<CurrentPCMWO-Fulfillmenttracking></CurrentPCMWO-Fulfillmenttracking>
+		<CurrentlyQMWO-Fulfillmenttracking></CurrentlyQMWO-Fulfillmenttracking>
+		<QMData-Record></QMData-Record>
+		<OperatorInspection-RecordMonthly></OperatorInspection-RecordMonthly>
+		<MaintenanceTechnicianInspection-RecordMonthly></MaintenanceTechnicianInspection-RecordMonthly>
+	</px-tab-pages>
+</px-card>
+</template>
+<script>
+
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'CurrentCycle-Record',
+			    
+			  });
+			
+			</script></dom-module>

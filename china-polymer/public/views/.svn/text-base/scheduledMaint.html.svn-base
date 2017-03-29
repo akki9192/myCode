@@ -1,0 +1,3 @@
+<link rel="import" href="views/scheduledMaint-elem.html"/>
+
+<scheduled-maint></scheduled-maint>

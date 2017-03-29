@@ -1,0 +1,393 @@
+<meta charset="utf-8">
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../validations/cats-only.html" />
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="../../bower_components/jquery/dist/jquery.js"></script>
+<script	src="../../bower_components/highcharts-dist-master/highcharts.js"></script>
+<script src="../../bower_components/highcharts-dist-master/highstock.js"></script>
+<script	src="../../bower_components/highcharts-dist-master/modules/map.js"></script>
+<script type="text/javascript" src="../../scripts/calendar.js"></script>
+<script type="text/javascript" src="../../bower_components/highcharts-dist-master/exporting.js" ></script>
+
+<dom-module id="maintainance-spareqty"> <template>
+<px-card icon="fa-suitcase" header-text="分析报表统计" chevron>
+<style include="button-style">
+			.cal_calendar {font-size:10pt;font-family:verdana;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_header {background-color:#CCCCCC;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_cell {padding:2px;margin:1px;border:2px groove;text-align:center;width:3ex}
+			.cal_labelcell {padding:2px;margin:1px;border:2px groove;text-align:center;}
+			.cal_oddweek {background-color:#AAAACC;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_evenweek {background-color:#CCCCEE;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_day {width:3ex;text-align:center;padding:0px;margin:0px;border:none; border-collapse:collapse;cursor:hand;}
+			.cal_today {color:black;font-weight:bold;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_disabled {color:#999999;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_common {color:black;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_holiday {color:red;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+			.cal_event {background-color:yellow;color:red;width:3ex;padding:0px;margin:0px;border:none; border-collapse:collapse;}
+</style>
+<!-- local DOM goes here -->
+
+	<section>
+
+			<div class="pull-left" style="width:100%">
+				
+			<form is="iron-form" on-iron-form-response="ironformresponseMnth"
+				content-type="application/json" id="mspc" method="post">
+				<input type="hidden" name="year" id="year">
+				<input type="hidden" name="month" id="month">
+				<input type="hidden" name="event" id="event">
+
+				<div class="pull-right"">
+					
+					<paper-button raised on-click="search1" id="btn-byYear" class="btn btn-large btn-primary">按年份统计/View Five Years </paper-button>
+					<div></div><div></div>
+				</div>
+				
+				
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+
+
+						<label class="col-sm-2 control-label pull-left" > <b>年份/Select Year： </b>
+						</label>
+ 					    <px-dropdown id="yearDropDown" selected-key="{{selectedYear}}"
+								display-value="--全部 Select --">
+				          		<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+				          		items='[{"key":"2014", "val":"2014"}, {"key":"2015", "val":"2015"},{"key":"2016", "val":"2016"},
+				          		{"key":"2017", "val":"2017"},{"key":"2018", "val":"2018"},{"key":"2019", "val":"2019"},
+				          		{"key":"2020", "val":"2020"}]'> 
+				          		</px-dropdown-content>
+				         	  </px-dropdown>
+
+					</div>
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<label class="col-sm-2 control-label pull-left"> <b>区域/Select Months:</b>
+						</label>
+						<px-dropdown id="monthDropDown" selected-key="{{selectedMonth}} display-value="--全部 Select --">
+				          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" items='[{"key":"1", "val":"January"}, 
+				          {"key":"2", "val":"February"},
+				          {"key": "3", "val":"March"},
+				          {"key":"4","val":"April"},
+				          {"key":"5","val":"May"},
+				          {"key":"6","val":"June"},
+				          {"key":"7","val":"July"},
+				          {"key":"8","val":"August"},
+				          {"key":"9","val":"September"},
+				          {"key":"10","val":"October"},
+				          {"key":"11","val":"November"},
+				          {"key":"12","val":"December"}
+				           ]'> 
+				          </px-dropdown-content>
+				          </px-dropdown>
+					</div>
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<label class="col-sm-2 control-label pull-left"> <b> 备件名称/EQNAME： </b>
+						</label>
+					
+						<paper-input class="input-medium search-query" id="spName"
+							name="spName" value={{spName}} raised onclick="selectSPID.open()">
+						</paper-input>
+						<paper-dialog id="selectSPID"> 
+								<byutv-jsonp id="dropdpwndept" 
+								url="http://localhost:8081/pmms-api/chart/getSparePartDetails"
+								last-response="{{spData}}" auto on-response="handleResponse"></byutv-jsonp>
+							<px-data-table id="DtlsSparePart" selectable  table-data="{{spData}}">
+								<px-data-table-column name="sparePartNo" label="Spare Part No"></px-data-table-column>
+								<px-data-table-column name="name" label="Spare Part Name"></px-data-table-column>
+							</px-data-table>
+							<div class="buttons">
+								<paper-button dialog-dismiss>Cancel</paper-button>
+							</div>
+						
+						</paper-dialog>
+	
+					</div>
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<label class="col-sm-2 control-label pull-left"> <b> 备件编号/SPNO.： </b>
+						</label>
+					
+	
+							<paper-input class="input-medium search-query" id="spId"
+								name="spId" value={{spId}} ></paper-input>
+	
+					</div>
+					<div class="controls" style="margin-left: 5px; display: inline-block; " >
+						<paper-button raised on-click="search2" class="btn btn-large btn-primary">查询/Search</paper-button>
+					</div>
+				<div id="container1" style="width: 100%; height: 400px;"	></div>
+				<div id="table1" style="display:none">
+					<px-data-table id="DtlsTableData" filterable	table-data="{{resultData}}">
+					<px-data-table-column filterable name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="jan" label="1月"></px-data-table-column>
+					<px-data-table-column name="feb" label="2月"></px-data-table-column>
+					<px-data-table-column name="mar" label="3月"></px-data-table-column>
+					<px-data-table-column name="apr" label="4月"></px-data-table-column>
+					<px-data-table-column name="may" label="5月"></px-data-table-column>
+					<px-data-table-column name="jun" label="6月"></px-data-table-column>
+					<px-data-table-column name="jul" label="7月"></px-data-table-column>
+					<px-data-table-column name="aug" label="8月"></px-data-table-column>
+					<px-data-table-column name="sep" label="9月"></px-data-table-column>
+					<px-data-table-column name="oct" label="10月"></px-data-table-column>
+					<px-data-table-column name="nov" label="11月"></px-data-table-column>
+					<px-data-table-column name="dec" label="12月"></px-data-table-column>
+				</px-data-table>
+				</div>
+				<div id="table2" style="display:none">
+				<px-data-table id="DtlsTableData1" filterable table-data="{{resultData}}">
+					<px-data-table-column filterable  name="name" label="设备编号/EQNO."></px-data-table-column>
+					<px-data-table-column name="jan" label="1月"></px-data-table-column>
+					<px-data-table-column name="feb" label="2月"></px-data-table-column>
+					<px-data-table-column name="mar" label="3月"></px-data-table-column>
+					<px-data-table-column name="apr" label="4月"></px-data-table-column>
+					<px-data-table-column name="may" label="5月"></px-data-table-column>
+					<px-data-table-column name="jun" label="6月"></px-data-table-column>
+					<px-data-table-column name="jul" label="7月"></px-data-table-column>
+					<px-data-table-column name="aug" label="8月"></px-data-table-column>
+					<px-data-table-column name="sep" label="9月"></px-data-table-column>
+					<px-data-table-column name="oct" label="10月"></px-data-table-column>
+					<px-data-table-column name="nov" label="11月"></px-data-table-column>
+					<px-data-table-column name="dec" label="12月"></px-data-table-column>
+				</px-data-table>
+				</div>
+				<div id="table3" style="display:none">
+				<px-data-table id="DtlsTableData2" filterable table-data="{{resultData}}">
+					<px-data-table-column filterable name="name" label="区域/Dept"></px-data-table-column>
+					<px-data-table-column name="jan" label="year1"></px-data-table-column>
+					<px-data-table-column name="feb" label="year2"></px-data-table-column>
+					<px-data-table-column name="mar" label="year3"></px-data-table-column>
+					<px-data-table-column name="apr" label="year4"></px-data-table-column>
+					<px-data-table-column name="may" label="year5"></px-data-table-column>
+					
+				</px-data-table>
+				</div>
+		</form>
+				<br>
+				<br>
+				<form content-type="application/xls" id="downloadExcel" method="GET">
+						<input type="hidden" name="year1" id="year1">
+						<input type="hidden" name="month1" id="month1">
+						<input type="hidden" name="event1" id="event1">
+						<input type="hidden" name="spId1" id="spId1">
+						<div id="download" class="control-group pull-left" style="width: 130px;display:none">
+						<paper-button  class="btn btn-large btn-primary" raised on-click="downloadExcel">Download</paper-button> 
+						</div>		
+				</form>
+				<br>
+
+		
+	</div>
+
+	</section>
+
+</px-card>
+</template>
+
+<script>
+
+	Polymer({
+		/* this is the element's prototype */
+		is : 'maintainance-spareqty',
+		equipNo : {
+			type : String,
+			notify : true,
+			value : ""
+	},
+	 listeners : {
+			'yearDropDown.dropdown_content_value_changed' : 'yearDropDownFunction',
+			'monthDropDown.dropdown_content_value_changed' : 'monthDropDownFunction',
+			'DtlsSparePart.px-row-click' : 'DtlsSparePartFunction',
+		},
+		yearDropDownFunction : function(event) {
+
+			document.getElementById("year").value = event.detail.key;
+		},
+		monthDropDownFunction : function(event) {
+
+			document.getElementById("month").value = event.detail.key;
+		},
+		DtlsSparePartFunction : function(event) {
+			var clickedRow = event.detail.row;
+			console.log("Row clicked", clickedRow, " _selected: ", clickedRow._selected);
+			if (!clickedRow._selected){
+				document.getElementById("spName").value=clickedRow.row.name.value;
+				document.getElementById("spId").value=clickedRow.row.sparePartNo.value;
+				document.getElementById("selectSPID").close();
+				this._refreshTable();
+			}
+		},
+	handleResponse :function(e){
+		console.log(e);
+	},
+	 _refreshTable : function() {                                 
+         var array = [];
+         
+          for (var i in this.spData) {
+                      var jsonObject = this.spData[i];                                                  
+                                  array.push(jsonObject);
+          }
+        
+			this.spData = [];
+			this.spData = array;
+} ,
+downloadExcel : function() {
+	document.getElementById("spId1").value = document.getElementById("spId").value;
+	document.getElementById("year1").value = document.getElementById("year").value;
+	 document.getElementById("event1").value = document.getElementById("event").value;
+	 document.getElementById("month1").value = document.getElementById("month").value;
+	document.getElementById("downloadExcel").action = "http://localhost:8081/pmms-api/chart/exportSpNumTable";
+	
+	document.getElementById('downloadExcel').submit();
+
+},
+	search2 : function() {
+		document.getElementById("event").value = "NoFive";
+		var sp_id = document.getElementById("spId").value;
+		document.getElementById("download").style.display ="block";
+		if (sp_id!=''){
+			document.getElementById("table3").style.display ="none";
+			document.getElementById("table2").style.display ="block";	
+			document.getElementById("table1").style.display ="none";	
+			document.getElementById("mspc").action = "http://localhost:8081/pmms-api/chart/getSpNumBySpId";
+			document.getElementById('mspc').submit();
+		}else{
+			document.getElementById("table3").style.display ="none";	
+			document.getElementById("table1").style.display ="block";
+			document.getElementById("table2").style.display ="none";
+			document.getElementById("mspc").action = "http://localhost:8081/pmms-api/chart/getSpNumBydept";
+			document.getElementById('mspc').submit();
+		}
+		
+		
+	},
+	search1 : function() {
+		document.getElementById("download").style.display ="block";
+		document.getElementById("event").value = "Five";
+		document.getElementById("table3").style.display ="block";	
+		document.getElementById("table1").style.display ="none";
+		document.getElementById("table2").style.display ="none";
+		document.getElementById("mspc").action = "http://localhost:8081/pmms-api/chart/getSpNumByYear";
+		document.getElementById('mspc').submit();
+	},
+
+	ironformresponseMnth : function(e) {
+		var details = e.detail;
+		console.log(e.detail.response);
+		var responseData = e.detail.response;
+		var backData = responseData.chart;
+		var yearsData = responseData.years;
+		this.resultData = responseData.table;
+		console.log("data.length : " + backData.length);
+		var sp_id = document.getElementById("spId").value;
+		if (details.status == 200) {
+			var container = "container1";
+			
+			//全局详细数据
+			
+			//全局设置highchart
+			
+			var options = {
+					chart : {
+						renderTo : container
+					},
+					credits:{
+						enabled:false                  //版权信息
+					},	
+					exporting: {
+                        buttons: {
+                            'myButton': {
+                                _id: 'myButton',
+                                symbol: 'url(http://geodev.grid.unep.ch/images/button_download.png)',
+                                onclick: function () {
+                                    alert('click!')
+                                }
+                            }
+                        }
+                    },
+
+					title : {
+						text : '维修配件使用数量统计<br>Maintenance Spare-Part Quantity Used',
+						x : -20
+					//center
+					},
+					subtitle : {
+						text : '五大部门',
+						x : -20
+					},
+					xAxis : {
+						categories : [ '1月', '2月', '3月', '4月' , '5月' , '6月' , '7月' , '8月' , '9月' , '10月' , '11月' , '12月' ]
+					},
+					yAxis : {
+						title : {
+							text : '维修配件使用数量（个）/月'
+						},
+						plotLines : [ {
+							value : 0,
+							width : 1,
+							color : '#808080'
+						} ]
+					},
+					tooltip : {
+						valueSuffix : ''
+					},
+					tooltip : {
+						headerFormat : '<span style="font-size:15px">{point.key}配件使用数量</span><table>',
+						pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+								+ '<td style="padding:0"><b>{point.y:.2f} 个</b></td></tr>',
+						footerFormat : '</table>',
+						shared : true,
+						useHTML : true
+					},
+					plotOptions: {
+					    series: {
+					        step: 'left' 
+					    }
+					},
+					legend : {//图示说明 配置
+						layout : 'vertical',
+						align : 'right',
+						verticalAlign : 'middle',
+						borderWidth : 0
+					},
+					series : [{"name":"无数据","data":[null,null,null,null,null,null,null,null,null,null,null,null]}]
+				};
+
+			if(backData.length==1){//单个备件
+				if(backData[0]==null){
+					backData[0] = [null,null,null,null,null,null,null,null,null,null,null,null];
+				}
+			}else{//几大部门
+				for(var i=0;i<backData.length;i++){
+					if(backData[i]==null){
+						backData[i] = [null,null,null,null,null,null,null,null,null,null,null,null];
+					}
+				}
+			}
+			
+			var event= document.getElementById("event").value;
+			
+			if (event == "Five"){
+				options.xAxis.categories = yearsData;
+				options.series = backData;
+			}else{
+				options.series = backData;
+			}
+			var chart = new Highcharts.Chart(options);
+
+
+		} else {
+			alert("error in searching equipment issues list!!!!");
+
+		}
+	},
+	 _refreshDataTable : function() {                                 
+         var array = [];
+         
+          for (var i in this.resultData) {
+                      var jsonObject = this.resultData[i];                                                  
+                                  array.push(jsonObject);
+          }
+        
+			this.resultData = [];
+			this.resultData = array;
+	} 
+	});
+</script> </dom-module>

@@ -1,0 +1,93 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ <link rel="import" href="/../css/button-style.html">
+<dom-module id="QMData-Record">
+ <template id="addPaperDialog">
+<px-card icon="fa-suitcase" header-text="" chevron>
+<section>
+<br><br>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="QMDataRecordAdd" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+				<paper-button raised onclick="addQmRecord.open()" class="btn btn-large btn-primary" >Add</paper-button>				
+					<paper-dialog id="addQmRecord">
+				 		<paper-dialog-scrollable>	
+								<table>
+						           <tr>
+						             <td style="padding: 5px"><label class="control-label"><b>Work Order Number:*</b></label></td>
+						              <td style="padding: 5px">
+						              <paper-input class="paper-input-medium search-query span3" name="woId" style="width: 180px;" required auto-validate error-message ="{{localize('sparePartNo')}}">
+						              </paper-input>   
+						              </td>
+						           </tr>
+						           <tr>
+						             <td style="padding: 5px"><label class="control-label"><b>HDR Id:*</b></label></td>
+						              <td style="padding: 5px">
+						              <paper-input class="paper-input-medium search-query span3" name="hrdId1" style="width: 180px;" required auto-validate error-message ="{{localize('sparePartNo')}}">
+						              </paper-input>   
+						              </td>
+						           </tr>
+						            <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Component Name*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3"  name="componentName" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Standard*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3"  name="standard" style="width: 180px;"  required auto-validate error-message="{{localize('spareType')}}"> 
+						                   </paper-input>        
+						                </td>
+						             </tr>  
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Frequency*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3"  name="frequency" style="width: 180px;" required auto-validate error-message="{{localize('source')}}"> 
+						                   </paper-input>  
+						                </td>
+						             </tr>                   						             
+						          </table>
+						       </paper-dialog-scrollable>
+					  				<div class="buttons">
+					   					 <paper-button dialog-dismiss >Cancel</paper-button>
+					    				 <paper-button dialog-confirm autofocus on-click="handleQMDataAddRequest">OK</paper-button>
+					 				 </div>
+					   </paper-dialog>		
+				</form>
+			</div>
+		<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp url="http://localhost:8081/pmms-api/getQMDataRecordFromWO" last-response="{{qmDataRecord}}" auto>
+		</byutv-jsonp>
+		<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{qmDataRecord}}">  
+		
+			<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+			<px-data-table-column name="workOrderNumber" label="WO"></px-data-table-column> 
+			<px-data-table-column name="equipmentInfo.equipId" label="Equipment Number"></px-data-table-column>
+			<px-data-table-column name="creatorSSO" label="Employee Sso"></px-data-table-column>
+			<px-data-table-column name="createdDate" label="Date"></px-data-table-column> 			
+			 
+		</px-data-table>		
+	</div>				
+</section>
+</px-card>
+</template>
+<script>
+Polymer({
+	/* this is the element's prototype */
+	is : 'QMData-Record',	
+	behaviors : [ PmmsBehaviors.LanguageBehavior ],
+	
+	handleQMDataAddRequest : function() {			    	
+    	document.getElementById("QMDataRecordAdd").action = "http://localhost:8081/pmms-api/addQMDataRecord";
+		document.getElementById('QMDataRecordAdd').submit(); 
+		
+    },
+    
+    ironformresponse : function(){
+		
+		document.querySelector('QMData-Record').refreshData();
+	 },
+	 
+});
+</script>
+</dom-module>

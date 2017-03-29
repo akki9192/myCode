@@ -1,0 +1,1049 @@
+<!-- <head>
+<style>
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
+</head> -->
+
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="fa-suitcase" header-text="故障维修工单信息" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>BM工单</px-tab>
+    <px-tab>设施工单</px-tab>
+	 <px-tab>SI</px-tab>
+  </px-tab-set>
+  
+  <px-tab-pages selected="{{selected}}">
+  
+		<!-- TAB-1 -->
+		<section>
+        <br>
+        <br>	
+				 <div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>产生时间FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+				
+				<div class="module-body pull-left">				
+				<table><tr><td>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<b>区域/Department:</b>					
+						</td>			
+						<td><px-dropdown display-value="---全部---">
+							<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+								items='[{"key":"变压器制造部", "val": "变压器制造部"}, 
+										{"key":"变压器制造部", "val": "变压器制造部"}, 
+										{"key":"机械加工部", "val": "机械加工部"},
+										{"key":"开关制造部","val":"开关制造部"},
+										{"key":"其他部门","val":"其他部门"}]'> 
+							</px-dropdown-content>
+						</px-dropdown>	</td></tr></table>
+				</div>
+				
+				<br>
+				<br>
+				<br>
+				
+				<div class="module-body pull-left">			
+					<label class="control-label" style="width:100px;">
+					<b>产生时间TO:</b>
+					</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+																			
+				<div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>	
+				</div>
+				
+				
+				<br>
+				<br>
+
+				
+			<div class="module-body pull-left" style="width:100%"> 
+                <iron-ajax id="test" url="/sample-data/hard-coded-data.json" last-response="{{minidata6}}" auto>
+				</iron-ajax>
+				
+				<px-data-table  enable-column-resize table-data="{{minidata6}}">
+					<px-data-table-column name="工单号/WOSN"></px-data-table-column>
+					<px-data-table-column name="设备编号/EQSN"></px-data-table-column>
+					<px-data-table-column name="设备名称/EQNM"></px-data-table-column>    
+					<px-data-table-column name="设备型号/EQModel"></px-data-table-column>
+					<px-data-table-column name="固定资产号/AssetSN"></px-data-table-column>
+					<px-data-table-column name="故障描述/FaultDesc"></px-data-table-column>
+					<px-data-table-column name="申报人/Requestor"></px-data-table-column>
+					<px-data-table-column name="申报时间/RestTime"></px-data-table-column>
+					<px-data-table-column name="涉及安全隐患/Safety"></px-data-table-column> 
+					<px-data-table-column name="是否需停机/Shutdown"></px-data-table-column>
+					<px-data-table-column name="维修工/Maintainer"></px-data-table-column>
+					<px-data-table-column name="维修开始时间/MaintStart"></px-data-table-column> 
+					<px-data-table-column name="是否等备件/WaitSP"></px-data-table-column>
+					<px-data-table-column name="是否等外部服务/WaitService"></px-data-table-column>
+					<px-data-table-column name="故障类型/FaultType"></px-data-table-column> 
+					<px-data-table-column name="使用部门/Department"></px-data-table-column>
+					<px-data-table-column name="备注/Remark"></px-data-table-column>						
+				</px-data-table>
+			</div>	
+			
+			<div class="legendmain mb10 pull-center" style="text-align:center; font-size:12px;width:285px">
+				<span class="label" style="width:80px;background-color:blue;color:white;float: right;">
+					<h5>带遗留问题运行</h5>
+				</span>
+				<span class="label" style="width:60px;background-color:#00FFFF;float: right;">
+					<h5>维修中断中</h5>
+				</span>
+			    <span class="label" style="width:60px;background-color:yellow;float: right;">
+					<h5>正在维修中</h5>
+				</span>
+			    <span class="label" style="width:60px;background-color:red;float: right;">
+					<h5>未开始维修</h5>
+				</span>
+			</div> 
+			
+		</section>
+		
+		<!-- TAB-2 -->
+		
+		<section>
+			<br>
+			<br>
+				<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>产生时间FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>								
+				
+				<div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+					<label class="control-label" style="width:100px;">
+					<b>产生时间TO:</b>
+					</label>
+					&nbsp;&nbsp;
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>								
+				
+				<div module-body pull-left> 
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>	
+				</div>
+				
+				<br>
+				<br>
+				
+				<div class="input-append flR pull-right">							
+					<button type="button" id="download" class="btn btn-primary btn-lg btn-block">下载/Download</button>														
+				</div>
+				
+				<br>
+				<br>
+				
+				<div class="module-body pull-left" style="width:100%"> 
+					<iron-ajax id="test" url="/sample-data/hard-coded-data.json" last-response="{{minidata6}}" auto>
+					</iron-ajax>
+				
+					<px-data-table  enable-column-resize  table-data="{{minidata6}}">
+						<px-data-table-column name="工单号/WOSN"></px-data-table-column>
+						<px-data-table-column name="设备编号/EQSN"></px-data-table-column>
+						<px-data-table-column name="设备名称/EQNM"></px-data-table-column>    
+						<px-data-table-column name="设备型号/EQModel"></px-data-table-column>
+						<px-data-table-column name="固定资产号/AssetSN"></px-data-table-column>
+						<px-data-table-column name="故障描述/FaultDesc"></px-data-table-column>
+						<px-data-table-column name="申报人/Requestor"></px-data-table-column>
+						<px-data-table-column name="申报时间/RestTime"></px-data-table-column>
+						<px-data-table-column name="涉及安全隐患/Safety"></px-data-table-column> 
+						<px-data-table-column name="是否需停机/Shutdown"></px-data-table-column>
+						<px-data-table-column name="维修工/Maintainer"></px-data-table-column>
+						<px-data-table-column name="维修开始时间/MaintStart"></px-data-table-column> 
+						<px-data-table-column name="是否等备件/WaitSP"></px-data-table-column>
+						<px-data-table-column name="是否等外部服务/WaitService"></px-data-table-column>
+						<px-data-table-column name="故障类型/FaultType"></px-data-table-column> 
+						<px-data-table-column name="使用部门/Department"></px-data-table-column>
+						<px-data-table-column name="备注/Remark"></px-data-table-column>						
+					</px-data-table>
+				</div>		
+				
+			</section>
+		
+			<!-- Tab-3 -->
+			<section>
+				<template id="my-subtabs" is="dom-bind">					
+					
+						<br>
+						<br> 	
+						
+					<px-tab-set selected="{{selected}}">
+						<px-tab>SI Outage Work Orders (SI工单)</px-tab>
+						<px-tab>SI Root Cause Tracking (SI故障根本原因追踪)</px-tab>				
+					</px-tab-set>
+					<px-tab-pages selected="{{selected}}">				
+					
+					<!-- Sub tab-1 -->
+					<section>
+						<br><br>
+						
+						<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>产生时间FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+				
+				<div class="module-body pull-left">				
+				<table><tr><td> 
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<b>区域/Department:</b>					
+						</td>			
+						<td><px-dropdown display-value="---全部---">
+							<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+								items='[{"key":"变压器制造部", "val": "变压器制造部"}, 
+										{"key":"变压器制造部", "val": "变压器制造部"}, 
+										{"key":"机械加工部", "val": "机械加工部"},
+										{"key":"开关制造部","val":"开关制造部"},
+										{"key":"其他部门","val":"其他部门"}]'> 
+							</px-dropdown-content>
+						</px-dropdown>	</td></tr></table>
+				</div>
+				
+				<br>
+				<br>
+				<br>
+				
+				<div class="module-body pull-left">			
+					<label class="control-label" style="width:100px;">
+					<b>产生时间TO:</b>
+					</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+																			
+				<div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>	
+				</div>
+				
+				<br><br>
+						
+						<div class="module-body pull-left" style="width:100%"> 
+							<iron-ajax id="test" url="/sample-data/hard-coded-data.json" last-response="{{minidata6}}" auto>
+							</iron-ajax>				
+							<px-data-table  enable-column-resize  table-data="{{minidata6}}">
+								<px-data-table-column name="工单号/WOSN"></px-data-table-column>
+								<px-data-table-column name="设备编号/EQSN"></px-data-table-column>
+								<px-data-table-column name="设备名称/EQNM"></px-data-table-column>    
+								<px-data-table-column name="设备型号/EQModel"></px-data-table-column>
+								<px-data-table-column name="固定资产号/AssetSN"></px-data-table-column>
+								<px-data-table-column name="故障描述/FaultDesc"></px-data-table-column>
+								<px-data-table-column name="申报人/Requestor"></px-data-table-column>
+								<px-data-table-column name="申报时间/RestTime"></px-data-table-column>
+								<px-data-table-column name="涉及安全隐患/Safety"></px-data-table-column> 
+								<px-data-table-column name="是否需停机/Shutdown"></px-data-table-column>
+								<px-data-table-column name="维修工/Maintainer"></px-data-table-column>
+								<px-data-table-column name="维修开始时间/MaintStart"></px-data-table-column> 
+								<px-data-table-column name="是否等备件/WaitSP"></px-data-table-column>
+								<px-data-table-column name="是否等外部服务/WaitService"></px-data-table-column>
+								<px-data-table-column name="故障类型/FaultType"></px-data-table-column> 
+								<px-data-table-column name="使用部门/Department"></px-data-table-column>
+								<px-data-table-column name="备注/Remark"></px-data-table-column>						
+							</px-data-table>
+						</div>
+					
+						  <div class="legendmain mb10 pull-left">  					
+							<px-modal btn-modal-negative="Cancel" btn-modal-positive="Save" modal-heading="5 WHY!!">
+							<button type="button" id="wo" class="btn btn--primary modal-trigger">SI Historical WO</button>
+								<form>								
+								<div class="module-body pull-left">
+									<label class="control-label" style="width:100px;">
+										<b>Place of Anomaly:</b>
+									</label>
+									<input type="text" class="input-medium search-query span3"> 									
+								</div>
+								
+								<div class="module-body pull-left">
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<label class="control-label" style="width:100px;">
+										<b>Date:</b>
+									</label>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	
+									<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+										time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+											time-zone="America/Los_Angeles">
+									</px-datetime-picker>	
+								</div>
+								
+								<br><br>
+								
+									<table><tr><td>	
+									 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<!--&nbsp;&nbsp; --> 
+									<b>Members:</b>					
+									</td>	
+									<td><input type="text" class="input-medium search-query span3"></td>
+									</tr></table>
+																														
+									<table><tr><td>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+										<b>Section:</b>					
+									</td>		
+									<td><input type="text" class="input-medium search-query span3"> </td>
+									</tr></table>
+								
+								
+								<br>
+								
+								<div>
+									<table cellspacing="10px" cellpadding="10px">										
+										<tr>
+											<td></td>
+											<td><b>1st Attempt</b></td>
+											<td><b>2nd Attempt</b></td>
+											<td><b>3rd Attempt</b></td>
+											<td><b>4th Attempt</b></td>
+											<td><b>5th Attempt</b></td>
+											<td><b>Suggestions of Improvement</b></td>
+										</tr>
+										<tr>
+											<td><b>A</b></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td><b>B</b></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td><b>C</b></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td><b>D</b></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td><b>E</b></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="10" maxlength="12"></td>
+											<td><input type="text" size="15" maxlength="18"></td>
+										</tr>
+									</table>
+								</div>
+							</px-modal>
+							</form>
+						</div> 
+					<!-- <input onclick="inputLostFocus()" type="button" placeholder="test" value="popup">
+						
+					<px-modal
+					  id="three"
+					  btn-modal-positive="Continue"
+					  btn-modal-negative="Back"
+					  modal-heading="Sign-in required">
+						<p>
+						  <b>Please sign-in to access this part of the application.</b>
+						</p>
+						<p><em>Two</em>Lorem ipsum dolor sit amet, </p>
+						
+					</px-modal> -->
+							 <div class="scroll-body">
+						 <div class="legendmain mb10 pull-left">
+					
+							<px-modal btn-modal-negative="Cancel" btn-modal-positive="Save"  scrolling-disabled="true" modal-heading="Measurement Plan">
+							<button type="button" id="si" class="btn btn--primary modal-trigger">SI WO</button>								
+							<table>
+								<tr>
+									<td style="align:right">
+									<label class="control-label" style="width:100px;">
+										<b>车间 (Workshop):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>设备 (Equipment):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>故障发生时间 (Failure time):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>操作人员 (Operator):</b>
+									</label>
+									</td>	
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>									
+								</tr>
+							</table>
+							
+							<br>
+							
+							<table>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>Received Repair time:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>Start Repair time:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>Start Maintenance staff:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>Start Repair time:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>End Maintenance staff:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<input type="text" class="input-medium search-query span3">
+									</td>
+								</tr>
+							</table>
+							
+							
+							
+							<div class="input-append flR pull-right" style="margin-right:30px;"> 
+								<button type="button" id="add" class="btn btn-primary btn-lg btn-block" >Add</button>
+							</div>
+							
+							<br><br>
+							
+							
+							<div class="module-body pull-left" style="width:100%"> 	
+							<iron-ajax id="test" last-response="{{minidata6}}" auto>
+							</iron-ajax>							
+								<px-data-table  enable-column-resize >
+									<px-data-table-column name="检查位置，部件(Position Number)"></px-data-table-column>
+									<px-data-table-column name="√/×"></px-data-table-column>
+									<px-data-table-column name="修复措施，行动(Restoration measures,action)"></px-data-table-column>    								
+								</px-data-table>																					
+							</div>	
+							
+							<br><br>	
+							
+							<div class="input-append flR pull-right" style="margin-right:30px;"> 
+								<button type="button" id="add" class="btn btn-primary btn-lg btn-block">Add</button>
+							</div>
+							<br><br>
+							
+							
+							<div class="module-body pull-left" style="width:100%">	
+							<iron-ajax id="test" last-response="{{minidata6}}" auto>
+							</iron-ajax>	
+								<px-data-table  enable-column-resize>
+									<px-data-table-column name="名称"></px-data-table-column>
+									<px-data-table-column name="型号"></px-data-table-column>
+									<px-data-table-column name="等待备件时间"></px-data-table-column>    
+									<px-data-table-column name="数量"></px-data-table-column> 
+									<px-data-table-column name="名称"></px-data-table-column> 
+									<px-data-table-column name="型号"></px-data-table-column>
+									<px-data-table-column name="等待备件时间"></px-data-table-column>
+									<px-data-table-column name="数量"></px-data-table-column>
+								</px-data-table>						
+							</div>	
+							
+					</px-modal>
+				</div>
+				</div>
+					</section>
+					
+					<!-- sub tab-2 -->
+					<section>
+						<br><br>
+						
+					<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>产生时间FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+				
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+					
+				<div class="module-body pull-left">			
+					<label class="control-label" style="width:100px;">
+					<b>产生时间TO:</b>
+					</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+																			
+				<div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">查询/Search</button>	
+				</div>
+									
+				<br><br>
+				
+				<!-- ADD FUNCTIONALITY -->
+				
+				<px-modal btn-modal-positive="Save" btn-modal-negative="Cancel"  modal-heading="ADD"> 
+					<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Add</button> 
+						<table>
+							<tr>								
+								<td><b>序号</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障时间</b></td>
+								<td><input type="text" name="ab" size="20"></td>							
+							</tr>
+							
+							<tr>
+								<td><b>编号</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障现象</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>根本原因</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障追踪次数（维修报告上）</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+						</table>
+						
+						<table>
+							<tr>
+								<td>            
+									<b>Year:</b>
+								</td>
+								<td>              
+									<px-dropdown display-value="--全部--">
+										<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+											items='[{"key":"F1", "val": "F1"}, 
+											{"key":"2011", "val": "2011"}, 
+											{"key":"2012", "val": "2012"},
+											{"key":"2013", "val": "2013"},
+											{"key":"2014", "val": "2014"},
+											{"key":"2015", "val": "2015"},
+											{"key":"2016", "val": "2016"}]'> 
+										</px-dropdown-content>
+									</px-dropdown>         
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+							</tr>
+							
+							<tr>
+								<td></td>
+								<td></td>
+								<td>1</td>
+								<td>2</td>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+								<td>8</td>
+								<td>9</td>
+								<td>10</td>
+								<td>11</td>
+								<td>12</td>																
+							</tr>
+							
+							<tr>
+								<td>            
+									<b>Year:</b>
+								</td>
+								<td>              
+									<px-dropdown display-value="--全部--">
+										<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+											items='[{"key":"F1", "val": "F1"}, 
+											{"key":"2011", "val": "2011"}, 
+											{"key":"2012", "val": "2012"},
+											{"key":"2013", "val": "2013"},
+											{"key":"2014", "val": "2014"},
+											{"key":"2015", "val": "2015"},
+											{"key":"2016", "val": "2016"}]'> 
+										</px-dropdown-content>
+									</px-dropdown>         
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+							</tr>
+							
+							<tr>
+								<td></td>
+								<td></td>
+								<td>1</td>
+								<td>2</td>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+								<td>8</td>
+								<td>9</td>
+								<td>10</td>
+								<td>11</td>
+								<td>12</td>																
+							</tr>						
+						</table>
+					</px-modal>
+						
+			<!-- EDIT FUNCTIONALITY -->
+			
+			<px-modal btn-modal-positive="Save" btn-modal-negative="Cancel"  modal-heading="EDIT"> 
+					<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Edit</button> 
+						<table style=>
+							<tr>								
+								<td><b>序号</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障时间</b></td>
+								<td><input type="text" name="ab" size="20"></td>							
+							</tr>
+							
+							<tr>
+								<td><b>编号</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障现象</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>根本原因</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+							
+							<tr>
+								<td><b>故障追踪次数（维修报告上）</b></td>
+								<td><input type="text" name="ab" size="20"></td>
+							</tr>
+						</table>
+						
+						<table>
+							<tr>
+								<td>            
+									<b>Year:</b>
+								</td>
+								<td>              
+									<px-dropdown display-value="--全部--">
+										<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+											items='[{"key":"F1", "val": "F1"}, 
+											{"key":"2011", "val": "2011"}, 
+											{"key":"2012", "val": "2012"},
+											{"key":"2013", "val": "2013"},
+											{"key":"2014", "val": "2014"},
+											{"key":"2015", "val": "2015"},
+											{"key":"2016", "val": "2016"}]'> 
+										</px-dropdown-content>
+									</px-dropdown>         
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+							</tr>
+							
+							<tr>
+								<td></td>
+								<td></td>
+								<td>1</td>
+								<td>2</td>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+								<td>8</td>
+								<td>9</td>
+								<td>10</td>
+								<td>11</td>
+								<td>12</td>																
+							</tr>
+							
+							<tr>
+								<td>            
+									<b>Year:</b>
+								</td>
+								<td>              
+									<px-dropdown display-value="--全部--">
+										<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" 
+											items='[{"key":"F1", "val": "F1"}, 
+											{"key":"2011", "val": "2011"}, 
+											{"key":"2012", "val": "2012"},
+											{"key":"2013", "val": "2013"},
+											{"key":"2014", "val": "2014"},
+											{"key":"2015", "val": "2015"},
+											{"key":"2016", "val": "2016"}]'> 
+										</px-dropdown-content>
+									</px-dropdown>         
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+								<td>
+									<input type="checkbox" name="month">
+								</td>
+							</tr>
+							
+							<tr>
+								<td></td>
+								<td></td>
+								<td>1</td>
+								<td>2</td>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+								<td>8</td>
+								<td>9</td>
+								<td>10</td>
+								<td>11</td>
+								<td>12</td>																
+							</tr>						
+						</table>
+					</px-modal>
+					
+					<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Delete</button> 
+						<br><br>
+						<div class="module-body pull-left" style="width:100%"> 
+							<!-- <iron-ajax id="test" url="/sample-data/WO-coded-data.json" last-response="{{minidata6}}" auto>
+							</iron-ajax>				
+							<px-data-table  enable-column-resize  table-data="{{minidata6}}">
+								<px-data-table-column name="DownTime"></px-data-table-column>
+								<px-data-table-column name="WorkOrderNo."></px-data-table-column>
+								<px-data-table-column name="MachineIssues"></px-data-table-column>    
+								<px-data-table-column name="RootCause"></px-data-table-column>
+								<px-data-table-column name="TrackingTheNo.OfFailures"></px-data-table-column>
+								<px-data-table-column name="2016"></px-data-table-column> 
+								<px-data-table-column name="2017"></px-data-table-column>											
+							</px-data-table> -->
+							
+							<table width="100%" style="border: 1px solid black;"  "border-collapse: collapse;">
+								<tr>								
+									<td>
+										<table border="1" width="100%">
+											<tr>
+												<th style="border:1px solid red;">序号
+												</th>
+												<th style="border:1px solid red;">故障时间
+												</th>
+												<th style="border:1px solid red;">编号
+												</th>
+												<th style="border:1px solid red;">故障现象（维修报告上）
+												</th>
+												<th style="border:1px solid red;">根本原因
+												</th>
+												<th style="border:1px solid red;">故障追踪次数
+												</th>
+												<th style="border:1px solid red;">2016
+												</th>
+												<th style="border:1px solid red;">2017
+												</th>
+											</tr>
+										</table>
+								</tr>
+							</table>															
+						</div>
+					</section>
+					</px-tab-pages>
+				</template>
+								
+				<script>
+						var t = document.querySelector('#my-tabs');
+						t.addEventListener('dom-change', function() {
+					// auto-binding template is ready.
+					this.selected = 0;      
+					});	
+					
+					var t1 = document.querySelector('#my-subtabs');
+					t1.addEventListener('dom-change', function() {
+				// auto-binding template is ready.
+				this.selected = 0;      
+				});	
+				 <!-- function inputLostFocus(evt){
+					<!-- Polymer.dom(document).querySelector("#three").modalButtonClicked();
+				  <!-- } - -->->
+					 -->
+				</script>
+				
+			</section>
+			
+			
+		</px-tab-pages>
+	</px-card>
+</template>
+
+

@@ -1,0 +1,123 @@
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="HistoryPCMWO-Fulfillmenttracking">
+<template> 
+<px-card icon="fa-suitcase" header-text="" chevron>
+<section>
+<br><br>
+
+<form is="iron-form" content-type="application/json" id="searchPcmQmTransactionDate" on-iron-form-invalid="ironforminvalid"
+on-iron-form-response="handleFilteredData" method="post">
+			
+<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+</form>
+    <div class="pull-left" style="width: 900px";>
+	   <div class="control-group pull-left" style="width: 450px">
+	<label class="control-label" style="width: 80px;"> <b>Date:</b>
+	</label>
+   <div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="Date">
+<paper-input id="DateFields" name="DateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+</paper-input>
+<px-datetime-picker id="Date" on-tap="triggerDateField"style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+</px-datetime-picker>
+</div>
+</div>
+<div class="control-group pull-left" style="width: 130px">
+<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="PcmQmTransactionDate">Search</paper-button>
+		</div>
+		</div>	
+
+<br><br><br><br>
+<!-- -------------------------------------------------------------------------------------------------------------------
+*************************************Px-datatable*******************************************************************
+-------------------------------------------------------------------------------------------------------------------- -->
+
+	<div class="module-body pull-left" style="width: 100%">
+	<byutv-jsonp url="http://localhost:8081/pmms-api/getPcmQmFullTrackingRcrd" last-response="{{pcmQmDataRecord}}" auto>
+	</byutv-jsonp>
+	<px-data-table id="pcmQmDataRecordId" enable-column-resize selectable  table-data="{{pcmQmDataRecord}}" on-px-row-click="rowClick">  
+
+	<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+	<px-data-table-column name="hrdId" label="Id" hide></px-data-table-column>
+	<px-data-table-column name="woId" label="WorkOrder Number"></px-data-table-column>
+	<px-data-table-column name="woCategory" label="Category"></px-data-table-column> 
+	<px-data-table-column name="date" label="Date"></px-data-table-column>
+	<px-data-table-column name="equipIdTrans" label="Device Number"></px-data-table-column>
+	<px-data-table-column name="technicianName" label="Technician"></px-data-table-column> 
+	<px-data-table-column name="noOfPorsonel" label="No Of Person"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.maintItemId" label="Maintainence No."></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.plannedDate" label="Scheduled Date"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.plannedHalfDay" label="Scheduled Half Day"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.plannedFullDay" label="Scheduled Full Day"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.mainDate" label="Maintainence Date"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.maintHalfDay" label="Maintainence Half Day"></px-data-table-column>
+	<px-data-table-column name="pcmQmFullTrackingDtls.maintFullDay" label="Maintainence Full Day"></px-data-table-column>
+	<px-data-table-column name="createdBy" label="Creator"></px-data-table-column> 
+	<px-data-table-column name="createdDate" label="Created Date"></px-data-table-column>
+	<px-data-table-column name="lastUpdatedBy" label="Updater"></px-data-table-column>
+	<px-data-table-column name="lastUpdatedDate" label="Updated Date"></px-data-table-column>
+
+	</px-data-table> 
+	</div>
+</section>
+</px-card>
+</template>
+<script>
+Polymer({
+    /* this is the element's prototype */
+    is: 'HistoryPCMWO-Fulfillmenttracking',
+    FilteredData : {
+		type : String,
+		notify : true
+	},
+	DateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	triggerDateField : function() {
+		this.Date = this.$.Date.dateTime.substring(0,
+				this.$.Date.dateTime.indexOf('T'));
+		this.DateField = this.Date;
+		document.getElementById("DateFields").value = this.DateField;
+	},
+	
+	PcmQmTransactionDate : function() {
+		if  ((this.DateField == undefined
+						|| this.DateField == null || this.DateField == ""))
+			alert("Please select Date to search.");
+		else {
+			this.FilteredData = "{'Date':"
+					+ this.DateField + "}";
+			document.getElementById("searchPcmQmTransactionDate").action = "http://localhost:8081/pmms-api/searchPcmQmFullTrackingRcrd";
+			document.getElementById('searchPcmQmTransactionDate').submit();
+		}
+
+	},
+	handleFilteredData : function(e) {
+		var details = e.detail;
+		if (details.status == 200) {
+			this.pcmQmDataRecord = details.response;
+			this._refreshTable("pcmQmDataRecordId");
+		} else {
+			alert("error in searching list!!!!");
+
+		}
+	},
+
+	_refreshTable : function() {
+
+		var array = [];
+		array = this.pcmQmDataRecord;
+		this.pcmQmDataRecord = array;
+	}
+	
+    	
+  	 
+  });
+
+
+
+
+</script>
+</dom-module>

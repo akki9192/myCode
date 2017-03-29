@@ -1,0 +1,173 @@
+<template id="my-tabs" is="dom-bind">
+ 	<px-card icon="fa-suitcase" header-text="Facility Equipment" chevron>
+ 	
+ 		<section>
+		    <br>
+		    <br>
+			<div>
+			
+			<!-- ADD FUNCTIONALITY -->
+				<px-modal btn-modal-positive="Save" btn-modal-negative="Cancel" modal-heading="ADD"> 
+          			<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Add</button> 
+				
+					<table>
+						<tr>
+							<td>设施编码<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>设备名称<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>规格型号<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>设备类型<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>生产厂商<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>出厂编号<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>所在部门<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>安装地点<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>启用时间<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>相关技术参数<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>数量<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>备注<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>																						
+					</table>
+				</px-modal>
+		
+				<!-- EDIT FUNCTIONALITY -->
+				<px-modal btn-modal-positive="Save" btn-modal-negative="Cancel" modal-heading="EDIT" > 
+          			<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Edit</button> 
+				
+					<table>
+						<tr>
+							<td>设施编码<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>设备名称<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>规格型号<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>设备类型<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>生产厂商<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>出厂编号<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>所在部门<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>安装地点<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>启用时间<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>相关技术参数<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>数量<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>
+						
+						<tr>
+							<td>备注<td>		
+							<td><input type="text" name="a"></td>					
+						</tr>				
+																	
+					</table>
+				</px-modal>
+			
+				<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Delete</button>
+		
+		 <br>  
+	<br>	
+ <br> 
+				
+				<div class="module-body pull-left" style="width:100%"> 
+					<iron-ajax id="test" last-response="{{minidata6}}" auto>
+					</iron-ajax>				
+					<px-data-table  enable-column-resize table-data="{{minidata6}}">
+						<px-data-table-column name="设施编码"></px-data-table-column>
+						<px-data-table-column name="设备名称"></px-data-table-column>
+						<px-data-table-column name="规格型号"></px-data-table-column>
+						<px-data-table-column name="设备类型"></px-data-table-column>
+						<px-data-table-column name="生产厂商"></px-data-table-column>
+						<px-data-table-column name="出厂编号"></px-data-table-column>
+						<px-data-table-column name="所在部门"></px-data-table-column>
+						<px-data-table-column name="安装地点"></px-data-table-column>
+						<px-data-table-column name="启用时间"></px-data-table-column>
+						<px-data-table-column name="相关技术参数"></px-data-table-column>
+						<px-data-table-column name="数量"></px-data-table-column>
+						<px-data-table-column name="备注"></px-data-table-column>
+					</px-data-table>
+				</div>	
+				
+			
+ 	
+ 	</px-card>
+ </template>	  
+ 

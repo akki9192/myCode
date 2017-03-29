@@ -1,0 +1,419 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="facilitySparePart-elem">
+<template> 
+<px-card icon="fa-suitcase" header-text="Facility Spare Part Management" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Facility Spare parts inventory</px-tab> 
+		<px-tab>Facility Spare part Safety Stock</px-tab> 
+		<px-tab>Facility Spare part Storage transaction</px-tab> 
+		<px-tab>Spare part not used/turnover rate</px-tab>
+		<px-tab>Operation Log</px-tab>
+	</px-tab-set> 
+	<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+	<px-tab-pages selected="{{selected}}">
+	<Facility-SparePart-Stock></Facility-SparePart-Stock>
+	<Facility-Safety-Stock></Facility-Safety-Stock>
+	<Facility-SparePart-StorageTransaction></Facility-SparePart-StorageTransaction>
+	<Facility-SparePart-NotUsed></Facility-SparePart-NotUsed>
+	<Facility-SparePart-OperationLog></Facility-SparePart-OperationLog>
+
+</px-tab-pages>
+</px-card>
+
+</template> <script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'facilitySparePart-elem',
+			    
+			  });
+			
+			</script></dom-module>
+
+<!-- <!--******************************************TAB-1***********************************************************-->
+<!-- 	<section>
+		<br>					
+			<byutv-jsonp id="facilitySparePart" url="http://localhost:8081/pmms-api/getMaintenanceType" params='{"Type":"REPAIR_TYPE"}'
+					last-response="{{facilitySparePartType}}" debounce-duration="300" auto="true"></byutv-jsonp>
+					
+			 <px-dropdown display-value="Select" id="maintypeDropDown" selected-key="{{Key}}"> 
+				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{maintenanceType}}">
+				 </px-dropdown-content> 
+			</px-dropdown>	 
+				
+			<div class="module-body pull-left" style="width: 100%">
+			<byutv-jsonp id="stockTable" url="http://localhost:8081/pmms-api/getSparePart" last-response="{{minidata1}}" auto on-response="handleResponse">
+			</byutv-jsonp>
+			<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{filteredData}}" on-px-row-click="selectedRow">  
+			
+				<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+				<px-data-table-column name="sparePartNo" label="SNo." id="modelNo"></px-data-table-column> 
+				<px-data-table-column name="name" label="Name" id="name"></px-data-table-column>
+				<px-data-table-column name="type" label="Type" id="type"></px-data-table-column>
+				<px-data-table-column name="source" label="Source" id="manufacturer"></px-data-table-column> 
+				<px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column>
+				<px-data-table-column name="price" label="Price" id="price"></px-data-table-column>
+				<px-data-table-column name="stock" label="Stock" id="stock"></px-data-table-column> 
+				 <px-data-table-column name="safteyStock" label="Saftey Stock" id="safty"></px-data-table-column> 
+				 <px-data-table-column name="sysSafteyStock" label="Sys Saftey Stock" id="system"></px-data-table-column> 			
+				 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column> 
+				 
+			</px-data-table>
+		</div>
+				
+	</section>
+**************************************TAB-2****************************************************************
+	<section>
+			
+		<br> 
+		<table>
+			<tr><td>
+				<label class="control-label" style="width: 20px;"><b>Search</b> </label></td>
+				<td><paper-input class="paper-input-medium search-query span3" name="searchKey" value="{{searchKey}}" on-input="searchKeyChanged">
+				</paper-input></td>
+			</tr>
+		</table>
+			<br><br>
+		<div class="module-body pull-left" style="width: 100%">
+			<byutv-jsonp id="stockTable" url="http://localhost:8081/pmms-api/getSparePart" last-response="{{minidata1}}" auto on-response="handleResponse">
+			</byutv-jsonp>
+			<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{filteredData}}" on-px-row-click="selectedRow">  
+			
+				<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+				<px-data-table-column name="sparePartNo" label="SNo." id="modelNo"></px-data-table-column> 
+				<px-data-table-column name="name" label="Name" id="name"></px-data-table-column>
+				<px-data-table-column name="type" label="Type" id="type"></px-data-table-column>
+				<px-data-table-column name="source" label="Source" id="manufacturer"></px-data-table-column> 
+				<px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column>
+				<px-data-table-column name="price" label="Price" id="price"></px-data-table-column>
+				<px-data-table-column name="stock" label="Stock" id="stock"></px-data-table-column> 
+				 <px-data-table-column name="safteyStock" label="Saftey Stock" id="safty"></px-data-table-column> 
+				 <px-data-table-column name="sysSafteyStock" label="Sys Saftey Stock" id="system"></px-data-table-column> 			
+				 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column> 
+				 
+			</px-data-table>
+		</div>
+	</section>
+*********************************************TAB-3****************************************************************
+	<section>
+		<br>
+		<table>
+			<tr><td>
+				<label class="control-label" style="width: 20px;"><b>Search</b> </label></td>
+				<td><paper-input class="paper-input-medium search-query span3" name="searchKey" value="{{searchKey}}" on-input="searchKeyChanged">
+				</paper-input></td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td style="align: center; padding: 3px;">
+				<label class="control-label" style="width: 100px;"> <b>From Date:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;">
+				<paper-input  class="paper-input-medium search-query span3"></paper-input></td>
+			
+				<td style="align: right">
+				<label class="control-label" style="width: 100px;"> <b>End Date:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;">
+				<paper-input  class="paper-input-medium search-query span3"></paper-input></td>
+			</tr>
+			<tr>
+				<td style="align: right">
+				<label class="control-label" style="width: 100px;"> <b>Model No.:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;">
+				<paper-input  class="paper-input-medium search-query span3"></paper-input></td>
+
+				<td style="align: right">
+				<label class="control-label" style="width: 100px;"> <b>Stock In/Out:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;">
+				<paper-input  class="paper-input-medium search-query span3"></paper-input></td>
+			</tr>
+			<tr>
+				<td style="align: right">
+				<label class="control-label" style="width: 100px;"> <b>SSO Id:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;">
+				<paper-input  class="paper-input-medium search-query span3"></paper-input></td>
+			</tr>
+			</table>
+			
+			****************************SCANIN************************************
+			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementSacnIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="scanIn.open()" class="btn btn-large btn-primary" >Sacn In</paper-button>				
+						<paper-dialog id="scanIn">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+								</table>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+					   			<paper-button dialog-dismiss >Cancel</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="handleRequest">OK</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+				
+		**************************************************SCAN OUT********************************************************************************			
+			<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json" id="FacilitySpaerPartManagementSacnIn" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="scanOut.open()" class="btn btn-large btn-primary" >Sacn In</paper-button>				
+						<paper-dialog id="scanOut">
+				 			<paper-dialog-scrollable>	
+								<table>			
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+									<tr>
+										<td style="align: center; padding: 3px;">
+										<label class="control-label" style="width: 100px;"> <b>field-1:</b>
+										</label></td>
+										<td style="align: center; padding: 3px;">
+										<paper-input type="text" class="paper-input-medium search-query span3"></paper-input></td>
+									</tr>
+								</table>
+							</paper-dialog-scrollable>
+							<div class="buttons">
+					   			<paper-button dialog-dismiss >Cancel</paper-button>
+					    		<paper-button dialog-confirm autofocus on-click="handleRequest">OK</paper-button>
+					 		</div>
+					   </paper-dialog>		
+				</form>
+			</div>	
+	************************************************************DATATABLE****************************************************************
+	      <div  class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="test" last-response="{{minidata1}}" auto selected-rows="{{selectedRows6}}" >
+				</byutv-jsonp>
+				<px-data-table id="spareTable" enable-column-resize selectable table-data="{{minidata1}}" > 
+				
+					<px-data-table-column name="sparePartNo" label="SN" id="sapreNumber"></px-data-table-column> 
+					<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+					<px-data-table-column name="type" label="Category" id="spareType"></px-data-table-column>
+					<px-data-table-column name="source" label="Model" id="sapreSource"></px-data-table-column> 				
+					<px-data-table-column name="price" label="Amount" id="sparePrice"></px-data-table-column>				
+					<px-data-table-column name="safteyStock" label="In/Out SSO" id="sapreSaftyStock"></px-data-table-column> 
+					<px-data-table-column name="sysSafteyStock" label="Time" id="sapreSysStock"></px-data-table-column> 					
+					 
+				</px-data-table>
+		 </div>
+	</section>
+	***************************************************************TAB-4*******************************************************************************************
+	<section>
+		<br>
+		
+		<div class="module-body pull-left" style="width: 100%">
+			<label class="control-label" style="width: 20px;"><b>From:</b> </label>
+			
+			<label class="control-label" style="width: 20px;"><b>To:</b> </label>
+			
+			<label class="control-label" style="width: 20px;"><b>Search</b> </label>
+			
+			<div id="spareElemt" class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="test" last-response="{{minidata1}}" auto selected-rows="{{selectedRows6}}" >
+				</byutv-jsonp>
+				<px-data-table id="spareTable" enable-column-resize selectable table-data="{{minidata1}}" > 
+				
+					<px-data-table-column name="sparePartNo" label="Spare Part No." id="sapreNumber"></px-data-table-column> 
+					<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+					<px-data-table-column name="type" label="Type" id="spareType"></px-data-table-column>
+					<px-data-table-column name="source" label="Source" id="sapreSource"></px-data-table-column> 
+					<px-data-table-column name="measurement" label="Measurement" id="spareMeasurement"></px-data-table-column>
+					<px-data-table-column name="price" label="Price" id="sparePrice"></px-data-table-column>
+					<px-data-table-column name="stock" label="Stock" id="sapreStock"></px-data-table-column> 
+					<px-data-table-column name="safteyStock" label="Saftey Stock" id="sapreSaftyStock"></px-data-table-column> 
+					<px-data-table-column name="sysSafteyStock" label="System Saftey Stock" id="sapreSysStock"></px-data-table-column> 
+					<px-data-table-column name="location" label="Loacation" id="spareLocation"></px-data-table-column> 
+					<px-data-table-column name="remark" label="Remark" id="sapreRemark"></px-data-table-column> 
+					 
+				</px-data-table>
+			</div>
+	</div>
+	</section>
+	
+	**********************************************TAB-5*************************************************************************
+
+	<section>
+	<br>
+		<div id="spareElemt" class="module-body pull-left" style="width: 100%">
+			<byutv-jsonp id="test" last-response="{{minidata1}}" auto selected-rows="{{selectedRows6}}" >
+			</byutv-jsonp>
+			<px-data-table id="spareTable" enable-column-resize selectable table-data="{{minidata1}}" > 
+			
+				<px-data-table-column name="sparePartNo" label="Spare Part No." id="sapreNumber"></px-data-table-column> 
+				<px-data-table-column name="name" label="Name" id="spareName"></px-data-table-column>
+				<px-data-table-column name="type" label="Type" id="spareType"></px-data-table-column>
+				<px-data-table-column name="source" label="Source" id="sapreSource"></px-data-table-column> 
+				<px-data-table-column name="measurement" label="Measurement" id="spareMeasurement"></px-data-table-column>
+				<px-data-table-column name="price" label="Price" id="sparePrice"></px-data-table-column>
+				<px-data-table-column name="stock" label="Stock" id="sapreStock"></px-data-table-column> 
+				<px-data-table-column name="safteyStock" label="Saftey Stock" id="sapreSaftyStock"></px-data-table-column> 
+				<px-data-table-column name="sysSafteyStock" label="System Saftey Stock" id="sapreSysStock"></px-data-table-column> 
+				<px-data-table-column name="location" label="Loacation" id="spareLocation"></px-data-table-column> 
+				<px-data-table-column name="remark" label="Remark" id="sapreRemark"></px-data-table-column> 
+				 
+			</px-data-table>
+	   </div>
+	</section>
+</px-tab-pages>
+</px-card>
+</template> 
+
+<script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'facilitySparePart-elem'
+			   
+			  });
+			
+			</script>
+
+</dom-module>-->

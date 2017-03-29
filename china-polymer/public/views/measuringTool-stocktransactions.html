@@ -1,0 +1,563 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="measuringTool-stocktransactions"> <template>
+<px-card icon="fa-suitcase" header-text="Measuring Tool Stock Transaction"chevron>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br> <br>
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="measuringToolStockTransStockIn" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="stockInTransactions.open()">Stock IN</paper-button>
+			<paper-dialog id="stockInTransactions"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"><b>Transaction
+								Id*:</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3"
+							name="transactionId" style="width: 180px;" required auto-validate
+							error-message="{{localize('transactionId')}}"></paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>InstrumentId:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="instrumentId2" style="width: 180px;"
+							error-message="{{localize('instrumentNo')}}"></paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Department:</b></label></td>
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwndept" params='{"Type":"DEPT"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{factory}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="deptNameStockIn">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{factory}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="department" id="department" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Depository Code</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="depositoryCode" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Type:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="type" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Management No</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="managementNo" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Frequency</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibFrequency" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Fee</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibFee" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Date.:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="calibrationdate">
+				 <paper-input id="calibrationdates" name="calibDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="calibrationdate"  on-tap="triggercalibrationdate" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+				
+				</td>		
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Status:</b></label></td>
+
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwnstatus"
+								params='{"Type":"MEASURE_STATUS"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{measurestatus}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="measuringStatusStockIn">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{measurestatus}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="status" id="status" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Plan Submission Date:</b></label></td>
+					<td style="padding: 5px">
+						<div class="controls"
+							style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+							name="plansubmissiondate">
+							<paper-input id="plansubmissiondates" name="planSubmissionDate"
+								style="display: inline-block; width: 100px;"></paper-input>
+							<px-datetime-picker id="plansubmissiondate"
+								on-tap="triggerplansubmissiondate"
+								style="margin-left: 10px; display: inline-block; 
+					width: 80px; height: 50px;"></px-datetime-picker>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Transaction Type</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="transType" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="stockInTransactionSave">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	&nbsp;&nbsp;&nbsp;
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			on-iron-form-response="ironformresponse"
+			id="measuringToolStockTransStockOut" method="post">
+			<paper-button class="btn btn-large btn-primary" raised
+				onclick="stockOutTransactions.open()">Stock Out</paper-button>
+			<paper-dialog id="stockOutTransactions"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"><b>Transaction
+								Id*:</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3"
+							name="transactionId" style="width: 180px;" required auto-validate
+							error-message="{{localize('transactionId')}}"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>InstrumentId:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="instrumentId2" style="width: 180px;"
+							error-message="{{localize('instrumentNo')}}"> </paper-input></td>
+				</tr>
+				<tr>
+				<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Department:</b></label></td>
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwndept" params='{"Type":"DEPT"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{factory}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="deptNameStockOut">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{factory}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="department" id="departmentStOut" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Depository Code</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="depositoryCode" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Type:</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="type" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Management No</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="managementNo" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Frequency</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibFrequency" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Fee</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="calibFee" style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+				<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Calibration Date.:</b></label></td>
+						<td style="padding: 5px">	
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="calibrationdate">
+				 <paper-input id="calibrationdatesStOut" name="calibDate" style="display: inline-block; width: 100px;"></paper-input>
+					<px-datetime-picker id="calibrationdateStockOut"  on-tap="triggercalibrationdateStockOut" style="display: inline-block; 
+					width: 80px;"></px-datetime-picker>
+				</div>
+				
+				</td>		
+				</tr>
+				<tr>
+				<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Status:</b></label></td>
+
+					<td style="padding: 5px"><div
+							style="width: 200px; display: inline-block;">
+							<byutv-jsonp id="dropdpwnstatus"
+								params='{"Type":"MEASURE_STATUS"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{measurestatus}}" auto></byutv-jsonp>
+							<px-dropdown display-value="Select" id="measuringStatusStockOut">
+							<px-dropdown-content extend-dropdown="true"
+								extend-dropdown-by="25" max-cont-character-width="5"
+								items="{{measurestatus}}"> </px-dropdown-content> </px-dropdown>
+						</div> <input type="hidden" name="status" id="statusStOut" /></td>
+				</tr>
+				<tr>
+				<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Plan Submission Date:</b></label></td>
+					<td style="padding: 5px">
+						<div class="controls"
+							style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+							name="plansubmissiondate">
+							<paper-input id="plansubmissiondatesStOut" name="planSubmissionDate"
+								style="display: inline-block; width: 100px;"></paper-input>
+							<px-datetime-picker id="plansubmissiondateStOut"
+								on-tap="triggerplansubmissiondateStOut"
+								style="margin-left: 10px; display: inline-block; 
+					width: 80px; height: 50px;"></px-datetime-picker>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px"><label class="control-label"
+						style="width: 200px"><b>Transaction Type</b></label></td>
+					<td style="padding: 5px"><paper-input class="span3"
+							name="transType" style="width: 180px;"> </paper-input></td>
+				</tr>
+
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus
+					on-click="stockOutTransactionSave">OK</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+
+	<br> <br>
+	<br>
+	<form is="iron-form" content-type="application/json"
+		id="searchStockTransactionsWithDates"
+		on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="handleStockTransactionData" method="post">
+
+		<input type="hidden" id="StockTransactionData"
+			name="StockTransactionData" value="{{StockTransactionData}}">
+		</input>
+
+	</form>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>ä»Žæ—¥æœŸ/From
+					Date:</b>
+			</label>
+
+			<div class="controls"
+				style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;"
+				name="StockFromDate">
+				<paper-input id="StockFromDateFields" name="StockFromDateFields"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="StockFromDate"
+					on-tap="triggerStockFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>è‡³ä»Š/To Date:</b>
+			</label>
+			<div class="controls"
+				style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;"
+				name="StockToDate">
+				<paper-input id="StockToDateFields" name="StockToDateFields"
+					style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+				<px-datetime-picker id="StockToDate" on-tap="triggerStockToDate"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+	<!-- 	<div class="control-group pull-left" style="width: 130px">
+			<button class="btn btn-icon" type="button"
+				style="display: inline-block;" on-click="stockTransactionDates">ÃƒÂ¦Ã…Â¸Ã‚Â¥ÃƒÂ¨Ã‚Â¯Ã‚Â¢/Search</button>
+		</div> -->
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<!-- <table>
+			<tr>
+				<td><label class="control-label"><b>Measurement
+							Name</b></label></td>
+
+				<td style="margin-left: 20px;"><byutv-jsonp id="dropdpwndeptStock"
+					url="http://localhost:8081/pmms-api/getDepartmentName"
+					last-response="{{department}}" auto></byutv-jsonp>
+				<px-dropdown id="deptDropDownStock"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{department}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="departmentStock" id="departmentStock" /></td>
+			
+				<td><label class="control-label"><b>SSO</b></label></td>
+				
+				<td> <paper-input class="span3" name="stocksso" id="stocksso"
+					style="width: 180px;"> </paper-input></td>
+				<td colspan="2" ><paper-button style="margin-left: 40px;" class="btn btn-icon"
+						type="button" style="display: inline-block;"
+						on-click="scrappedmeasuring">/Search</paper-button></td>
+			</tr>
+		</table> -->
+	
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>åŒºåŸŸ/Department:</b>
+			</label>
+
+			<div class="controls"
+				style="margin-left: 5px; display: inline-block; width: 180px;">
+				<byutv-jsonp id="dropdpwndeptStock"
+					url="http://localhost:8081/pmms-api/getDepartmentName"
+					last-response="{{department}}" auto></byutv-jsonp>
+				<px-dropdown id="deptDropDownStock"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{department}}">
+				</px-dropdown-content> </px-dropdown>
+				<input type="hidden" name="departmentStock" id="departmentStock" />
+			</div>
+		</div>
+
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>SSO:</b>
+			</label>
+			<div class="controls"
+				style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="stocksso" id="stocksso"
+					style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+	
+	<div class="module-body pull-left" style="width: 900px";>
+	<paper-button class="btn btn-icon" type="button"
+				style="display: inline-block;" on-click="stockTransactionDates">/Search</paper-button></td>
+	</div>
+	<div id="measuringToolStock" class="module-body pull-left"
+		style="width: 100%">
+		<byutv-jsonp id="measuringToolStockTrans"
+			url="http://localhost:8081/pmms-api/getMeasuringToolStockTransactions"
+			last-response="{{measuringtoolstock}}" debounce-duration="300"
+			auto="true"></byutv-jsonp>
+		<px-data-table id="measuringToolStockTransactions"
+			table-data="{{measuringtoolstock}}" selectable> <px-data-table-column
+			name="id" label="ID" hide></px-data-table-column><!--  <px-data-table-column
+			name="transactionId" label="transactionId"></px-data-table-column> <px-data-table-column
+			name="instrumentId" label="instrumentId"></px-data-table-column>  -->
+		<px-data-table-column name="department" label="Department"></px-data-table-column>
+		<px-data-table-column name="depositoryCode" label="Depository Code"></px-data-table-column>
+		<px-data-table-column name="type" label="Type"></px-data-table-column>
+		<px-data-table-column name="managementNo" label="Management No."></px-data-table-column>
+		<px-data-table-column name="calibFrequency"
+			label="Calibration Frequency"></px-data-table-column> <px-data-table-column
+			name="calibFee" label="Calibration Fee"></px-data-table-column> <px-data-table-column
+			name="calibDate" label="Calibration Date"></px-data-table-column> <px-data-table-column
+			name="status" label="Status"></px-data-table-column> <px-data-table-column
+			name="planSubmissionDate" label="Plan Submission date"></px-data-table-column>
+		<!-- <px-data-table-column name="transType" label="transType"></px-data-table-column> -->
+		<!-- 	<px-data-table-column name="createdBy" label="createdBy"></px-data-table-column> -->
+		<px-data-table-column name="createdDate" label="Creation Date/Time"></px-data-table-column>
+		<!-- 		<px-data-table-column name="lastUpdatedBy" label="lastUpdatedBy"></px-data-table-column>
+		<px-data-table-column name="lastUpdatedDate " label="lastUpdatedDate"></px-data-table-column> -->
+		</px-data-table>
+
+	</div>
+
+</section></template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'measuringTool-stocktransactions',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		
+		StockTransactionData : {
+			type : String,
+			notify : true
+		},
+		StockFromDateFields : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		StockToDateFields : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		departmentStock : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		stocksso : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+		listeners : {
+			'deptDropDownStock.dropdown_content_value_changed' : 'deptNameStockValChanged',
+			'deptNameStockIn.dropdown_content_value_changed' : 'deptNameStockInValChanged',
+			'measuringStatusStockIn.dropdown_content_value_changed' : 'measuringStatusStockInValChanged',
+			'deptNameStockOut.dropdown_content_value_changed' : 'deptNameStockOutValChanged',
+			'measuringStatusStockOut.dropdown_content_value_changed' : 'measuringStatusStockOutValChanged',
+
+		},
+		deptNameStockValChanged : function(event) {
+
+			document.getElementById("departmentStock").value = event.detail.key;
+		},
+		deptNameStockInValChanged : function(event) {
+
+			document.getElementById("department").value = event.detail.key;
+		},
+		measuringStatusStockInValChanged : function(event) {
+
+			document.getElementById("status").value = event.detail.key;
+		},
+		
+		measuringStatusStockOutValChanged : function(event) {
+
+			document.getElementById("statusStOut").value = event.detail.key;
+		},
+		deptNameStockOutValChanged : function(event) {
+
+			document.getElementById("departmentStOut").value = event.detail.key;
+		},
+		
+		stockInTransactionSave : function() {
+
+			document.getElementById('measuringToolStockTransStockIn').action = "http://localhost:8081/pmms-api/saveStockInTransaction";
+			document.getElementById('measuringToolStockTransStockIn').submit();
+		},
+		stockOutTransactionSave : function() {
+
+			document.getElementById('measuringToolStockTransStockOut').action = "http://localhost:8081/pmms-api/saveStockInTransaction";
+			document.getElementById('measuringToolStockTransStockOut').submit();
+		},
+		triggerStockFromDateField : function() {
+			console.log("calibrationdate : " + this.$.StockFromDate);
+			this.StockFromDate = this.$.StockFromDate.dateTime.substring(0,
+					this.$.StockFromDate.dateTime.indexOf('T'));
+			this.StockFromDateField = this.StockFromDate;
+			document.getElementById("StockFromDateFields").value = this.StockFromDateField;
+		},
+		triggerStockToDate : function() {
+			console.log("calibrationdate : " + this.$.StockToDate);
+			this.StockToDate = this.$.StockToDate.dateTime.substring(0,
+					this.$.StockToDate.dateTime.indexOf('T'));
+			this.StockToDateField = this.StockToDate;
+			document.getElementById("StockToDateFields").value = this.StockToDateField;
+		},
+		triggercalibrationdate : function() {
+			console.log("calibrationdate : " + this.$.calibrationdate);
+			this.calibrationdate = this.$.calibrationdate.dateTime.substring(0,
+					this.$.calibrationdate.dateTime.indexOf('T'));
+			this.calibrationdateField = this.calibrationdate;
+			document.getElementById("calibrationdates").value = this.calibrationdateField;
+		},
+		triggercalibrationdateStockOut : function() {
+			console.log("calibrationdate : " + this.$.calibrationdateStockOut);
+			this.calibrationdateStockOut = this.$.calibrationdateStockOut.dateTime.substring(0,
+					this.$.calibrationdateStockOut.dateTime.indexOf('T'));
+			this.calibrationdateField = this.calibrationdateStockOut;
+			document.getElementById("calibrationdatesStOut").value = this.calibrationdateField;
+		},
+		triggerplansubmissiondate: function(){
+			console.log("plansubmissiondate : "+this.$.plansubmissiondate);
+			this.plansubmissiondate = this.$.plansubmissiondate.dateTime.substring(0,this.$.plansubmissiondate.dateTime.indexOf('T'));
+			this.plansubmissiondateField=this.plansubmissiondate;
+			document.getElementById("plansubmissiondates").value=this.plansubmissiondateField;
+		},
+		
+		triggerplansubmissiondateStOut: function(){
+			console.log("plansubmissiondate : "+this.$.plansubmissiondateStOut);
+			this.plansubmissiondateStOut = this.$.plansubmissiondateStOut.dateTime.substring(0,this.$.plansubmissiondateStOut.dateTime.indexOf('T'));
+			this.plansubmissiondateField=this.plansubmissiondateStOut;
+			document.getElementById("plansubmissiondatesStOut").value=this.plansubmissiondateField;
+		},
+		stockTransactionDates : function() {
+			if ((this.StockToDateField == undefined
+					|| this.StockToDateField == null || this.StockToDateField == "")
+					|| (this.StockFromDateField == undefined
+							|| this.StockFromDateField == null || this.StockFromDateField == "") ||
+							(this.departmentStock == undefined
+									|| this.departmentStock == null || this.departmentStock == "")||
+									(this.stocksso == undefined
+											|| this.stocksso == null || this.stocksso == "")	)
+				alert("Please select From Date and To Date to search.");
+			else {
+				this.stocksso = this.$.stocksso.value;
+				this.departmentStock = this.$.departmentStock.value;
+				this.StockTransactionData = "{'fromDate':"
+						+ this.StockFromDateField + ",'toDate':"
+						+ this.StockToDateField + ",'department':"
+						+ this.departmentStock + ",'sso':" + this.stocksso
+						+ "}";
+				document.getElementById("searchStockTransactionsWithDates").action = "http://localhost:8081/pmms-api/searchStockTransactionsWithDates";
+				document.getElementById('searchStockTransactionsWithDates')
+						.submit();
+			}
+
+		},
+		handleStockTransactionData : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.measuringtoolstock = details.response;
+				this._refreshTable("measuringToolStockTrans");
+			} else {
+				alert("error in searching equipment issues list!!!!");
+
+			}
+		},
+		_refreshTable : function() {
+
+			var array = [];
+			array = this.measuringtoolstock;
+			this.measuringtoolstock = array;
+		}
+
+	});
+</script> </dom-module>

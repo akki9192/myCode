@@ -1,0 +1,4 @@
+<link rel="import" href="views/CurrentCycleRecord.html"/>
+
+<CurrentCycle-Record></CurrentCycle-Record>
+

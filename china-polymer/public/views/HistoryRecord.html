@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="views/EquipmentSM-FulfillmentHistoryRecord.html"/>
+
+<dom-module id="History-Record">
+<template> 
+<px-card icon="fa-suitcase" header-text="Inspection & SM Recording and Tracking" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Equipment SM Fulfillment Historical record </px-tab> 
+		<px-tab>PCM & QM log book list </px-tab> 
+		<px-tab>PCM WO fulfillment tracking yearly </px-tab> 
+		<px-tab>QM WO fulfillment tracking yearly </px-tab> 	
+		<px-tab>QM Data record</px-tab> 
+		<px-tab>Operator check List</px-tab> 	
+		<px-tab>Technician Inspection record </px-tab> 
+		
+	</px-tab-set> 
+	<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+	<px-tab-pages selected="{{selected}}">
+		<EquipmentSM-FulfillmentHistoryRecord></EquipmentSM-FulfillmentHistoryRecord>
+		<HistoryPCM-QMLogbook></HistoryPCM-QMLogbook>
+		<HistoryPCMWO-Fulfillmenttracking></HistoryPCMWO-Fulfillmenttracking>
+		<HistoryQMWO-Fulfillmenttracking></HistoryQMWO-Fulfillmenttracking>
+		<HistoryQMData-Record></HistoryQMData-Record>
+		<HistoryOperatorInspection-RecordMonthly></HistoryOperatorInspection-RecordMonthly>
+		<HistoryTechnicianInspection-RecordMonthly></HistoryTechnicianInspection-RecordMonthly>
+	</px-tab-pages>
+</px-card>
+</template>
+<script>
+ 
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'History-Record',
+			    
+			  });
+			
+			</script></dom-module>

@@ -1,0 +1,501 @@
+<template id="my-tabs" is="dom-bind"> <px-card
+	icon="fa-suitcase" header-text="Role Management2" chevron>
+ <section>
+	<!--<iron-ajax url="/sample-data/hard-codedSystem-data.json"
+		last-response="{{minidata6}}" auto> </iron-ajax>
+
+	<byutv-jsonp url="http://localhost:8081/pmms-api/getRoleInfo"
+		last-response="{{mydata}}" debounce-duration="300" auto>
+	</byutv-jsonp> -->
+
+	<br> <br>
+
+	<div class="legendmain mb10 pull-left">
+
+		<!-- ADD FUNCTIONALITY -->
+		<px-modal btn-modal-positive="Save" btn-modal-negative="Cancel">
+		<!-- modal-heading="Add new role" -->
+		<button class="btn btn--primary modal-trigger"
+			style="margin-left: 10px;">Add</button>
+		<!-- 		 
+          <table>
+            <tr>
+              <td style="align:center; padding:3px;">
+                <label class="control-label" style="width:100px;">
+                <b>Role Id:</b>
+              </label>
+              </td>
+              <td style="align:center; padding:3px;">
+                <input type="text" class="input-medium search-query span3">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>Role Name:</b>
+              </label>
+              </td>
+              <td style="align:center;padding:3px;">
+                <input type="text" class="input-medium search-query span3">
+              </td>
+            </tr>
+            <tr>
+              <td style="align:right">
+                <label class="control-label" style="width:100px;">
+                <b>Role Description:</b>
+              </label>
+              </td>
+              <td style="align:center;padding:3px;">
+                <input type="text" class="input-medium search-query span3">
+              </td>
+            </tr>          
+          </table> -->
+		<div class="info remove bottom margin"=0>
+			<h3>Role Permission Information</h3>
+		</div>
+		<table>
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b> Work
+						order Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Fault maintenance
+					order</td>
+				<td><input type="checkbox" name="fm">Planned
+					Maintenance Work Order</td>
+				<td><input type="checkbox" name="fm">Planned
+					maintenance work order processing</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm"> Maintainance
+					Program Management:</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Annual maintenance
+					plan</td>
+				<td><input type="checkbox" name="fm">Produce year-round
+					maintenance program</td>
+				<td><input type="checkbox" name="fm">Maintenance
+					Content Management</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b>Maintainance
+						Spare Parts Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Spare Parts
+					Management</td>
+				<td><input type="checkbox" name="fm">Safety Stock</td>
+				<td><input type="checkbox" name="fm">Out of storage
+					records management</td>
+				<td><input type="checkbox" name="fm">See spare parts
+					inventory</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Analysis
+						and Reporting:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Planned
+					maintenance completion rate statistics</td>
+				<td><input type="checkbox" name="fm">Equipment
+					availability statistics</td>
+				<td><input type="checkbox" name="fm">The average time
+					between<br> repair statistics</td>
+				<td><input type="checkbox" name="fm">The average repair
+					time<br> statistics</td>
+				<td><input type="checkbox" name="fm">Spare Parts cost
+					statistics</td>
+				<td><input type="checkbox" name="fm">Number of spare
+					parts for maintenance use statistics</td>
+			</tr>
+
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Equipment
+						and Facility and document Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Equipment and
+					facilities management</td>
+				<td><input type="checkbox" name="fm">Device file upload
+				</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b>Indirect
+						Material Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Indirect Materials
+					Management</td>
+				<td><input type="checkbox" name="fm">Safety Stock</td>
+				<td><input type="checkbox" name="fm">Out of storage
+					records management</td>
+				<td><input type="checkbox" name="fm">Check indirect
+					materials inventor</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Users and
+						Rights Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">User Management</td>
+				<td><input type="checkbox" name="fm">Role Management</td>
+				<td><input type="checkbox" name="fm">System
+					configuration parameters</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+		</table>
+		</px-modal>
+
+		<!--   EDIT FUNCTIONALITY -->
+
+		<px-modal btn-modal-negative="Cancel" btn-modal-positive="Save">
+		<button class="btn btn--primary modal-trigger"
+			style="margin-left: 10px;">Edit</button>
+
+		<table>
+			<tr>
+				<td style="align: center; padding: 3px;"><label
+					class="control-label" style="width: 100px;"> <b>Role
+							Id:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;"><input type="text"
+					class="input-medium search-query span3"></td>
+			</tr>
+			<tr>
+				<td style="align: right"><label class="control-label"
+					style="width: 100px;"> <b>Role Name:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;"><input type="text"
+					class="input-medium search-query span3"></td>
+			</tr>
+			<tr>
+				<td style="align: right"><label class="control-label"
+					style="width: 100px;"> <b>Role Description:</b>
+				</label></td>
+				<td style="align: center; padding: 3px;"><input type="text"
+					class="input-medium search-query span3"></td>
+			</tr>
+		</table>
+		-->
+		<div class="info remove bottom margin"=0>
+			<h3>Role Permission Information</h3>
+		</div>
+		<table>
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b> Work
+						order Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Fault maintenance
+					order</td>
+				<td><input type="checkbox" name="fm">Planned
+					Maintenance Work Order</td>
+				<td><input type="checkbox" name="fm">Planned
+					maintenance work order processing</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm"> Maintainance
+					Program Management:</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Annual maintenance
+					plan</td>
+				<td><input type="checkbox" name="fm">Produce year-round
+					maintenance program</td>
+				<td><input type="checkbox" name="fm">Maintenance
+					Content Management</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b>Maintainance
+						Spare Parts Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Spare Parts
+					Management</td>
+				<td><input type="checkbox" name="fm">Safety Stock</td>
+				<td><input type="checkbox" name="fm">Out of storage
+					records management</td>
+				<td><input type="checkbox" name="fm">See spare parts
+					inventory</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Analysis
+						and Reporting:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Planned
+					maintenance completion rate statistics</td>
+				<td><input type="checkbox" name="fm">Equipment
+					availability statistics</td>
+				<td><input type="checkbox" name="fm">The average time
+					between<br> repair statistics</td>
+				<td><input type="checkbox" name="fm">The average repair
+					time<br> statistics</td>
+				<td><input type="checkbox" name="fm">Spare Parts cost
+					statistics</td>
+				<td><input type="checkbox" name="fm">Number of spare
+					parts for maintenance use statistics</td>
+			</tr>
+
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Equipment
+						and Facility and document Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Equipment and
+					facilities management</td>
+				<td><input type="checkbox" name="fm">Device file upload
+				</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+
+			<tr>
+				<td><input type="checkbox" name="fm"> <b>Indirect
+						Material Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">Indirect Materials
+					Management</td>
+				<td><input type="checkbox" name="fm">Safety Stock</td>
+				<td><input type="checkbox" name="fm">Out of storage
+					records management</td>
+				<td><input type="checkbox" name="fm">Check indirect
+					materials inventor</td>
+			</tr>
+			<tr>
+
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm"><b> Users and
+						Rights Management:</b></td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">User Management</td>
+				<td><input type="checkbox" name="fm">Role Management</td>
+				<td><input type="checkbox" name="fm">System
+					configuration parameters</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+				<td><input type="checkbox" name="fm">A <input
+					type="checkbox" name="fm">E <input type="checkbox"
+					name="fm">D</td>
+			</tr>
+		</table>
+		</px-modal>
+		<button type="button" id="search"
+			class="btn btn-primary btn-lg btn-block" align="center"
+			style="margin-left: 10px;">Delete</button>
+	</div>
+	<br> <br> <br>
+
+
+	<div class="module-body pull-left" style="width: 100%"
+		data-ng-controller="StartController">
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getRoleInfo"
+			last-response="{{minidata1}}" auto></byutv-jsonp>
+
+		<px-data-table enable-column-resize selectable
+			table-data="{{minidata1}}" id="usertable"> <px-data-table-column
+			name="id" label="Role Id"></px-data-table-column> <px-data-table-column
+			name="roleName" label="Role Name"></px-data-table-column> <px-data-table-column
+			name="roleDescription" label="Role Description"></px-data-table-column>
+
+		</px-data-table>
+	</div>
+
+</section>
+</px-card> </template>

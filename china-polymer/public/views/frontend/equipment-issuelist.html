@@ -1,0 +1,627 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="equipment-issuelist">
+<template>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+	<br>
+	 <br>
+	 <px-tab-set id="tab-set1" selected="{{selected}}">
+		<px-tab>Equipment Issue List</px-tab> 
+		<px-tab>Equipment Issue List History</px-tab> 
+	</px-tab-set> <px-tab-pages
+		selected="{{selected}}">
+	<section>
+		<br>
+		<h2>Equipment Issue List</h2>
+		<form is="iron-form" content-type="application/json" id="saveEquipmentIssueList" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+			<table>
+				<tr>
+					<td><label class="control-label"><b>关联工单号/Related Work Order No.*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="woId" name="woId" style="width: 180px;" required>
+						</paper-input>
+				   </td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>设备代码/Equipment No*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="equipmentId" name="equipmentId" style="width: 180px;" required auto-validate error-message="{{localize('equipmentId')}}">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>问题描述/Problem Description:</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="faultDescription" name="faultDescription" style="width: 180px;">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>员工编号/SSO*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="requestorSSO" name="requestorSSO" style="width: 180px;" required auto-validate error-message="{{localize('ssoid')}}">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>负责人/Principal:</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="technicianSSO" name="technicianSSO" style="width: 180px;">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>预计完成时间/Estimated Finish Time(YYYY-MM-DD):</b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="actualEndDate" name="actualEndDate" style="width: 180px;">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>备注/Remarks: </b></label></td>
+					<td><paper-input class="input-medium search-query span3" id="remark" name="remark" style="width: 180px;">
+						</paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>问题类型/Issue Type: </b></label></td>
+					<td><px-dropdown id="issuetypesDropDown" display-value="--全部 Select --">
+							<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5"
+								items='[{"key":"O", "val": "Operator"}, 
+										{"key":"T", "val": "Technician"}]'>
+							</px-dropdown-content> 
+						</px-dropdown>  
+					</td>
+					<input type="hidden" name="issueType" id="issueTypeID">	
+				</tr>
+			</table>
+			<br><br>
+		</form>
+		<byutv-jsonp id="validateSSO" url="http://localhost:8081/pmms-api/isValidUserSSO" params='{{getParamsEq(creatorSSO)}}' on-response="handleUserSSOResponse" last-response="{{equipData}}"
+						debounce-duration="300" auto="true">
+		</byutv-jsonp>
+		
+		
+		<byutv-jsonp id="isEquipDataValid" url="http://localhost:8081/pmms-api/checkEquipDataValidity" params='{{getParamsEquipData(woId,equipmentId,requestorSSO)}}' on-response="handleEquipmentResponse"
+						last-response="{{equipData}}" debounce-duration="300" auto="true">
+		</byutv-jsonp>
+			
+			<form is="iron-form" content-type="application/json" id="startAndCloseEquipmentIssue" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleStartEquipIssueList" method="post">
+				<input type="hidden" id="equipIssueListIds" name="equipIssueListIds" value="{{equipIssueListIds}}">
+			</form>
+		<br> <br>
+		<table>
+			<tr>
+				<td><input type="hidden" id="ID" name="id"></td>
+				<!-- <td style="align: center;">
+					<paper-button id="submitButton" raised on-click="validateEquipData" class="btn btn-icon">提交/Submit</paper-button>
+				</td> -->
+				<td style="align: center;">
+					<paper-button id="startButton" raised on-click="startEquipIssueListFirst" class="btn btn-icon">开始/Start</paper-button>
+				</td>
+				
+				<td style="align: center;">
+					<paper-button raised id="closeButton" on-click="validateUSerSSO" class="btn btn-icon">关闭/Close</paper-button>
+				</td>		
+			</tr>
+		</table>
+	
+		<br> <br>
+		<div class="pull-left" style="width: 900px";>
+			<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>区域/Department: </b>
+				</label>
+				<div class="controls" style="width: 150px; display: inline-block; margin-left: 20px;">
+				 <byutv-jsonp id="dropdpwndept" url="http://localhost:8081/pmms-api/getDepartmentName" last-response="{{department}}" auto></byutv-jsonp>
+                 	<px-dropdown id="pxDdept" selected-key="{{deptId}}" display-value="--全部 Select --">
+                 		 <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{department}}">
+                         </px-dropdown-content>
+                     </px-dropdown>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 300px; margin-left: 40px">
+				<label class="control-label" style="width: 130px;"> <b>设备种类/EQType:</b>
+				</label>
+				<div class="controls" style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="eqipId" url="http://localhost:8081/pmms-api/getEquipment" params='{"Type":"equipment"}' last-response="{{equipmentType}}" auto></byutv-jsonp>
+						<px-dropdown id="equiptDropDown" display-value="--全部 Select --" selected-key="{{equipType}}">
+							<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{equipmentType}}">
+							</px-dropdown-content> 
+					   </px-dropdown>
+				</div>
+			</div>			
+		</div>
+		
+		<div class="control-group pull-right">
+			<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+			<div style="width: 200px; display: inline-block; margin-left: 20px;">
+				<paper-input floatingLabel id="searchId" value="{{searchKey}}" floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+			</div>
+		</div>
+	<br> <br>
+	<div id="firstTime" class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="getEquipmentIssueList" url="http://localhost:8081/pmms-api/getEquipmentIssueList" params='{{getParams(deptId,equipType)}}' on-response="handleResponse"
+							last-response="{{mydata}}" debounce-duration="300" auto="true">
+		</byutv-jsonp>
+			
+		<px-data-table id="equipIssueListtable" selectable on-px-row-click="rowSelected" selected-rows="{{selectedRows6}}" table-data="{{filteredData}}" >		
+		
+			<px-data-table-column name="id" 		  				   label="序号"></px-data-table-column>
+			<px-data-table-column name="createdDate" 				   label="发现时间"></px-data-table-column>
+			<px-data-table-column name="woId" 		 				   label="关联工单号"></px-data-table-column>
+			<px-data-table-column name="issueType" 	  				   label="问题种类"></px-data-table-column>
+			<px-data-table-column name="requestorSSO" 				   label="发现人SSO"></px-data-table-column>
+			<px-data-table-column name="equipmentInfo.deptInfo.deptId" label="车间"></px-data-table-column>
+			<px-data-table-column name="equipId" 					   label="设备"></px-data-table-column>
+			<px-data-table-column name="faultDescription" 			   label="问题描述"></px-data-table-column>
+			<px-data-table-column name="createdBy" 					   label="发现人员"></px-data-table-column>
+			<px-data-table-column name="actualEndDate"				   label="预计完成时间"></px-data-table-column> 
+			<px-data-table-column name="technicianSSO" 				   label="关闭人员SSO"></px-data-table-column>
+			<px-data-table-column name="user.fullName" 				   label="关闭人员"></px-data-table-column> -->
+			<px-data-table-column name="lastUpdatedDate" 			   label="实际完成时间"></px-data-table-column>
+			<px-data-table-column name="remark" 					   label="备注"></px-data-table-column>
+			
+		</px-data-table>
+	</div>
+	</section>
+	
+	<!-----------------------------------------------------TAB-2------------------------------------------------------------------------------->
+	
+	<section>
+		<br>
+		<h2>Equipment Issue List History</h2>
+		<form is="iron-form" content-type="application/json" id="searchEquipmentIssuesWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSeachedData" method="post">			
+			<input type="hidden" id="searchData" name="searchData" value="{{searchData}}">
+		</form>			
+		<div class="pull-left" ;>
+			<table>
+				<tr>
+					<td><label class="control-label" style="width: 80px;"> <b>从日期/From Date:</b></label></td>
+					<td>
+						<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+						<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+					</td>
+					<td><label class="control-label" style="width: 80px; margin-left: 40px;"> <b>至今/To Date:</b></label></td>
+					<td>
+						<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+						<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+					</td>
+					<td>
+						 <paper-button raised on-click="searchWithDates" class="btn btn-large btn-primary"  style="margin-left: 40px;">查询/Search</paper-button> 
+					</td>
+				</tr>
+			</table>
+		</div>
+		<br><br>
+		
+		<div class="control-group pull-right">
+			<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+			<div style="width: 200px; display: inline-block; margin-left: 20px;">
+				<paper-input floatingLabel id="searchId1" value="{{searchKey}}" floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+			</div>
+		</div>
+		<br> <br>
+		
+		<div  class="module-body pull-left" style="width: 1313px;" >
+			<byutv-jsonp id="getClosedEquipmentIssueList" url="http://localhost:8081/pmms-api/getClosedEquipmentIssueList" on-response="handleResponse"
+							last-response="{{mydata}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+			<px-data-table id="closedEquipIssueListtable" selected-rows="{{selectedRows6}}" table-data="{{filteredData1}}">
+				<px-data-table-column name="id" label="id" hide></px-data-table-column>
+				<px-data-table-column name="actualStartDate" label="实际开始日期"></px-data-table-column>
+				<px-data-table-column name="woId" label="工作订单ID"></px-data-table-column>
+				<px-data-table-column name="requestorSSO" label="请求者sso"></px-data-table-column>
+				<px-data-table-column name="equipId" label="装备标识"></px-data-table-column>
+				<px-data-table-column name="faultDescription" label="故障描述"></px-data-table-column>
+				<px-data-table-column name="technicianSSO" label="技术员sso"></px-data-table-column>
+				<px-data-table-column name="actualEndDate" label="实际结束日期"></px-data-table-column>
+				<px-data-table-column name="status" label="状态"></px-data-table-column>
+				<!--  Below column will be mapped to lastUpdatedDate when the issue will be closed this will be blank as of now-->
+				<px-data-table-column name="actualEndDate" label="实际结束日期"></px-data-table-column>
+				<px-data-table-column name="remark" label="备注"></px-data-table-column>
+			</px-data-table>
+		</div>
+	</section>
+</px-tab-pages>
+</template>
+
+
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'equipment-issuelist',
+		
+		 behaviors: [
+		             PmmsBehaviors.LanguageBehavior
+		           ],
+
+		searchKey : null,
+		ready: function() {
+  			 this.selected = 0;
+ 		},
+		equipmentId: {
+  			type: String,
+  			notify: true
+  		},
+  		woId: {
+  			type: String,
+  			notify: true
+  		},
+  		requestorSSO: {
+  			type: String,
+  			notify: true
+  		},
+  		currentRow: {
+			type: Object,
+			notify: true,
+			value: function() {
+				return {};
+			}
+		}, 
+		fromDate: {
+			type: String,
+  			notify: true
+		},
+		toDate: {
+			type: String,
+  			notify: true
+		},
+		toDateField: {
+  			type: String,
+  			notify: true,
+  			value:""
+  		},
+		fromDateField: {
+  			type: String,
+  			notify: true,
+  			value:""
+  		},
+		
+		equipIssueListIds: {
+			type: String,
+  			notify: true
+		},  
+		searchData: {
+			type: String,
+  			notify: true
+		},  
+		triggerToDate: function(){
+			this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+			this.toDateField=this.toDate;// to pass it to server side
+			document.getElementById("toDateField").value=this.toDateField;// To show it in input field
+		},
+		
+		triggerFromDate: function(){
+			this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+			this.fromDateField=this.fromDate;
+			document.getElementById("fromDateField").value=this.fromDateField;
+		},
+		
+		triggerActualEndDate : function()
+		{
+			this.actualEndDate = this.$.actualEndDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+			this.actualEndDateField = this.actualEndDate;
+			document.getElementById("actualEndDateField").value = this.actualEndDateField;
+		},
+		
+  		rowSelected:function(e){  			
+	  	        var clickedRow = e.detail.row;
+	  	  		 this.currentRow = clickedRow.row;
+	  	  		if(this.ids == undefined)
+					this.ids=[];
+				 var index = this.ids.indexOf((clickedRow.row.id.value));
+				 if(clickedRow._selected==false && index == -1)//not present in ids list
+					  this.ids.push(clickedRow.row.id.value);
+				  else if(index > -1) //already there
+					  this.ids.splice(index,1); 
+		    document.getElementById("ID").value = clickedRow.row.id.value;
+			document.getElementById("woId").value = clickedRow.row.woId.value;
+			document.getElementById("equipmentId").value = clickedRow.row.equipmentId.value;
+			document.getElementById("faultDescription").value = clickedRow.row.faultDescription.value;
+			document.getElementById("requestorSSO").value = clickedRow.row.requestorSSO.value;
+			document.getElementById("technicianSSO").value = clickedRow.row.technicianSSO.value;
+			document.getElementById("actualEndDate").value = clickedRow.row.actualEndDate.value;
+			document.getElementById("remark").value = clickedRow.row.remark.value;
+
+  			},
+			startEquipIssueListFirst : function(){
+			    	document.getElementById("saveEquipmentIssueList").action = "http://localhost:8081/pmms-api/startEquipIssueList";
+					document.getElementById('saveEquipmentIssueList').submit(); 
+			    },
+			/* var issueTypeKey = clickedRow.row.issueType.value.trim();
+	    	if(issueTypeKey == "O")
+	    		{
+	    			document.getElementById("issuetypesDropDown").displayValue = "Operator";
+	    			document.getElementById("issuetypesDropDown").selectedKey = "O";
+	    		}
+	    	else if(issueTypeKey == "T")
+    		{
+    			document.getElementById("issuetypesDropDown").displayValue = "Technician";
+    			document.getElementById("issuetypesDropDown").selectedKey = "T";
+    		}
+				  
+	    	
+	    	clickedRow.row.status.value
+	    	
+	    	var statusOfIssue = (clickedRow.row.status.value == null) ? "" : clickedRow.row.status.value;
+
+			if (statusOfIssue == "Not Started") 
+			{
+				document.getElementById("startButton").disabled = false;
+			}
+			else
+			{
+				document.getElementById("startButton").disabled = true;
+			} */
+	    	
+	
+		
+		startEquipIssueList:function() {
+			/* if(this.ids.length>0){
+				this.equipIssueListIds=this.ids.toString(); */
+				/* this.wordOrderStatus = "进行中"; */
+				document.getElementById("startAndCloseEquipmentIssue").action = "http://localhost:8081/pmms-api/startEquipIssueList";
+				 document.getElementById('startAndCloseEquipmentIssue').submit();
+				 alert("Work Order has been started.");
+		},		
+		refreshData : function() {
+			this.$.getEquipmentIssueList.generateRequest();
+			this.$.getClosedEquipmentIssueList.generateRequest();
+		},
+		
+		searchKeyChanged : function(event) {
+			var tableid="getEquipmentIssueList";
+			if(event.currentTarget.id == "searchId1")
+				tableid="getClosedEquipmentIssueList";
+			this.searchKey = event.target.value;
+			this._refreshTable(tableid);
+		},
+		
+		handleResponse : function(event) {
+			var details=event.detail;
+			this._refreshTable(event.target.id);
+		},
+		
+		_refreshTable : function(tableId) {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					
+					}
+
+				}
+			}
+
+			if(tableId == "getEquipmentIssueList"){
+				this.filteredData = [];
+				this.filteredData = array;
+			}
+			else if(tableId == "getClosedEquipmentIssueList"){
+				this.filteredData1 = [];
+				this.filteredData1 = array;
+			}
+				
+		},
+		
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		
+		
+		ironformresponse : function() {
+			
+		 	document.querySelector('equipment-issuelist').refreshData();
+		 	alert("Data Saved Succefully");
+			 document.getElementById("saveEquipmentIssueList").reset();
+		}, 
+		
+		getParams : function(deptId, equipType) {
+			return {
+				deptId : deptId,
+				equipType : equipType
+			};
+		},
+		
+		getParamsEquipData : function(woId,equipmentId,requestorSSO) {
+			return {
+				woId: woId,
+				equipmentId : equipmentId,
+				requestorSSO:requestorSSO
+			};
+		},
+		getParamsEquipIssueIds : function(equipIssueListIds) {
+			return {
+				equipIssueListIds: equipIssueListIds
+			};
+		},
+		
+		searchWithDates : function(){
+			if((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+				alert("Please select From Date and To Date to seach Equipment Issue List.");
+			else {
+				this.searchData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+"}";
+				document.getElementById("searchEquipmentIssuesWithDates").action = "http://localhost:8081/pmms-api/searchEquipmentIssuesWithDates";
+				 document.getElementById('searchEquipmentIssuesWithDates').submit();
+			}
+			
+		},
+		
+		 validateEquipmentData:function(){
+
+			  var dateRegex=/^\d{4}-((0\d)|(1[012]))-(([012]\d)|3[01])$/;  
+		   var dateRegex=	/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01]) (0\d|1\d|2[0-3]):[0-5]\d:[0-5]\d$/;
+			this.woId=document.getElementById('woId').value;
+			this.equipmentId=document.getElementById('equipmentId').value;
+			this.requestorSSO=document.getElementById('requestorSSO').value;
+			this.actualEndDate=document.getElementById('actualEndDate').value;
+			if(this.actualEndDate!="")
+			{
+			    if(!this.actualEndDate.match(dateRegex))
+			{
+			   alert('Please enter  Estimated Finish Time in YYYY-MM-DD HH:MM:ss format');
+			   return;
+			}
+			}
+			alertData="Please provide mandatory data";
+			if(this.woId=="")
+			alertData = alertData+" WorkOrder Number";
+			if(this.equipmentId=="")
+			alertData = alertData+" Equipment Id";
+			if(this.requestorSSO=="")
+			alertData = alertData+" SSO";
+			if(this.actualEndDate=="")
+			alertData = alertData+" Estimated Finish Time";
+
+			if(alertData.indexOf("WorkOrder Number")>-1 || alertData.indexOf("Equipment Id")>-1 || alertData.indexOf("SSO")>-1 || alertData.indexOf("Estimated Finish Time")>-1) 
+			{
+			alert(alertData);
+			return; 
+			}
+			if((this.woId != undefined && this.woId!=null && this.woId != "") &&
+			(this.equipmentId != undefined && this.equipmentId!=null && this.equipmentId != "") &&
+			(this.requestorSSO != undefined && this.requestorSSO!=null && this.requestorSSO != "") &&
+			(this.actualEndDate != undefined && this.actualEndDate!=null && this.actualEndDate != "")
+			){
+			   this.$.isEquipDataValid.generateRequest();
+			} 
+
+			},
+		validateEquipData : function() {
+			document.querySelector('equipment-issuelist').validateEquipmentData();
+		},
+		 
+		
+		/* closeEquipIssueList:function() {
+			if(this.ids.length>0){
+				this.equipIssueListIds=this.ids.toString();
+				document.getElementById("startAndCloseEquipmentIssue").action = "http://localhost:8081/pmms-api/closeEquipIssueList";
+				 document.getElementById('startAndCloseEquipmentIssue').submit();
+			}
+				
+		},	 */
+		
+		handleEquipmentResponse :function(e){
+			var details=e.detail;
+			//check the details, on the basis of response proceed for form submit 
+			if(details.status==true && details.data=="SUCCESS")
+				{ 
+					document.getElementById("saveEquipmentIssueList").action = "http://localhost:8081/pmms-api/saveEquipmentIssueList";
+					document.getElementById('saveEquipmentIssueList').submit();
+					 
+				}
+			else{			
+				var data = details.data;
+				var mandatoryFields="";
+				if(details.data.indexOf("woId") > -1)
+					mandatoryFields=mandatoryFields+"Work Order No ";
+				if(details.data.indexOf("equipId") > -1)
+					mandatoryFields=mandatoryFields+"Equipment Id ";
+				if(details.data.indexOf("requestorSSO") > -1)
+					mandatoryFields=mandatoryFields+"SSO ";
+				if(mandatoryFields!=""){
+					alert("Mandatory fields "+mandatoryFields+" are invalid.");
+				
+				}
+			}
+			return false;	
+		},
+		
+		handleStartEquipIssueList : function(e){
+			var details=e.detail;
+			this.equipIssueListIds="";
+			this.ids=[];
+			//check the details, on the basis of response proceed for form submit 
+			if(details.status==200 && e.target.id=='startAndCloseEquipmentIssue')
+				{
+				document.querySelector('equipment-issuelist').refreshData();
+				}
+			else{			
+				alert("error on starting equipment issues!!!!");
+			
+			}
+		},
+		handleSeachedData : function(e) {
+			var details=e.detail;
+			if(details.status==200)
+			{
+				this.mydata=details.response;
+				this._refreshTable("getClosedEquipmentIssueList");
+			}
+			else{			
+				alert("error in searching equipment issues list!!!!");
+			
+			}
+		},
+		listeners: {
+			
+			'issuetypesDropDown.dropdown_content_value_changed': 'issuetypesDropDownValChanged'
+		},
+		issuetypesDropDownValChanged: function (event) {			
+			//alert('key is:'+event.detail.key);
+			//alert('value is:'+event.detail.textValue);	 
+			document.getElementById("issueTypeID").value = event.detail.key;
+		},
+		
+		validateSSOofUser  : function(){
+			
+			this.creatorSSO=document.getElementById('requestorSSO').value;
+			alertData="Please provide mandatory data";
+			
+			if(!this.creatorSSO)
+				alertData = alertData+" SSO";
+			if(alertData.indexOf("Equipment Number")>-1 || alertData.indexOf("SSO")>-1) {
+				alert(alertData);
+				return;
+			}
+			if(this.creatorSSO != undefined && this.creatorSSO!=null && this.creatorSSO != "")
+			{
+				console.log("Value of sso is:"+creatorSSO);
+				//this.$.validateEquipID.generateRequest();
+			}	
+				
+		},
+		validateUSerSSO :function() {
+			document.querySelector('equipment-issuelist').validateSSOofUser();
+		},
+		handleUserSSOResponse :function(e){
+			var details=e.detail;
+			//check the details, on the basis of response proceed for form submit 
+		
+				this.equipIssueListIds="";
+				this.ids=[]
+				if(this.ids.length>0){
+					this.equipIssueListIds=this.ids.toString();
+					document.getElementById("startAndCloseEquipmentIssue").action = "http://localhost:8081/pmms-api/closeEquipIssueList";
+					 document.getElementById('startAndCloseEquipmentIssue').submit();
+				}
+				
+			else{			
+				var data = details.data;
+				var mandatoryFields="";				
+				if(details.data.indexOf("creatorSSO") > -1)
+					mandatoryFields=mandatoryFields+"SSO ";
+				if(mandatoryFields!="")
+					{
+					alert("Mandatory fields "+mandatoryFields+" are invalid.");
+					document.getElementById('creatorSSO').value="";
+					return;
+					}
+					
+			
+				}
+			}		
+		
+	});			
+</script> </dom-module>

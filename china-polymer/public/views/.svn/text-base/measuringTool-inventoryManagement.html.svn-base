@@ -1,0 +1,32 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="views/MeasuringTool-Inventory.html"/>
+<link rel="import" href="views/Operation-Log.html"/>
+<link rel="import" href="views/ScrappedMeasuring-ToolsList.html"/>
+<dom-module id="measuringTool-inventoryManagement"> <template>
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+ <px-card icon="fa-suitcase" header-text="measuringTool Inventory Management"
+	 chevron>
+	 <br>
+	<px-tab-set id="tab-set1" selected="{{selected}}"> <px-tab>Measuring
+	Tool Inventory</px-tab> <px-tab>Operation Log</px-tab> <px-tab>Scrapped
+	Measuring Tools List </px-tab> </px-tab-set>
+	<px-tab-pages selected="{{selected}}">
+
+<MeasuringTool-Inventory></MeasuringTool-Inventory>
+
+<Operation-Log></Operation-Log>
+
+<ScrappedMeasuring-ToolsList></ScrappedMeasuring-ToolsList>
+	</px-tab-pages>
+</px-card>
+
+</template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'measuringTool-inventoryManagement',
+
+	});
+</script> </dom-module>

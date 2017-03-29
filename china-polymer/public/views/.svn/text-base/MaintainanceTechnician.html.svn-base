@@ -1,0 +1,3 @@
+<link rel="import" href="views/Maintainance-Technician-elem.html"/>
+
+<Maintainance-Technician-elem></Maintainance-Technician-elem>

@@ -1,0 +1,3 @@
+<link rel="import" href="views/mainOperation-Log.html"/>
+
+<mainOperation-Log></mainOperation-Log>

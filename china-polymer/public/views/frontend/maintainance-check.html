@@ -1,0 +1,548 @@
+<meta charset="utf-8">
+<link  rel="import" href="/../css/button-style.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button-master/paper-button.html">
+
+
+<dom-module id="maintainance-check">  <template>
+   <style include="button-style" >
+ 
+ </style>
+    <!-- local DOM goes here -->
+   <section>
+	<br> <br> <br>
+	<div class="pull-left" style="margin-top:20px;margin-bottom:20px">
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+			</label>
+
+
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="dropdpwndept"
+					url="http://localhost:8081/pmms-api/getDepartmentName"
+					last-response="{{factory}}" auto></byutv-jsonp>
+				<px-dropdown  display-value="--全部 Select --" id="factoryName"
+					selected-key="{{deptId}}" > <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{factory}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+
+		</div>
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>设备种类/EQType:</b>
+			</label>
+
+
+
+			
+
+
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<byutv-jsonp id="dropdownCategory"
+					params='{"Type":"Category"}'
+					url="http://localhost:8081/pmms-api/getEquipmentCategory"
+					last-response="{{dropdownCategory}}" auto></byutv-jsonp>
+				<px-dropdown display-value="--全部 Select --" id="factoryName"
+					selected-key="{{equipCategory}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{dropdownCategory}}">
+				</px-dropdown-content> </px-dropdown>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="margin-left:50px;margin-top:-25px">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+
+	</div>
+	</div>
+
+	
+	<div id="maintainCheck" class="module-body pull-left" style="width: 100%">
+
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getMaintainanceDetails"
+			params='{{getParams("MC",deptId,equipCategory)}}'
+			on-response="handleResponse" last-response="{{mydata}}"
+			debounce-duration="300" auto="true"></byutv-jsonp>
+
+		<px-data-table id="dataTable4" enable-column-reorder selectable
+			on-px-row-click="rowSelected"
+			selectedRows="{{mySelectedItems}}" table-data="{{filteredData}}">
+		<px-data-table-column name="maintId" label="工单号/WorkOrderNo"></px-data-table-column>		
+		<px-data-table-column name="equipId" label="设备编号/EQNumber"></px-data-table-column>
+		<px-data-table-column name="equipName" label="设备名称/EQName"></px-data-table-column>
+		<px-data-table-column name ="plannedStartDt" label="维修时间/MaintainanceTime"></px-data-table-column>
+		<px-data-table-column name="plannedEndDt" label="开始时间/StartTime"></px-data-table-column> 
+		
+		 <!-- ******************************************************************************************************
+	 		--------------------------------- Here start hide column -Kailash--------------------------------------
+			****************************************************************************************************** -->
+		<px-data-table-column name="id" label="工序/WorkId" hide></px-data-table-column>
+		<px-data-table-column name="status" label="Status" hide></px-data-table-column> 
+		<px-data-table-column name="maintType" label="MaintainanceType" hide></px-data-table-column>
+		<px-data-table-column name="frequency" label="Frequency" hide></px-data-table-column>
+		<px-data-table-column name="equipId" label="EquipmentId" hide></px-data-table-column>
+		</px-data-table>
+		<br>
+		<form is="iron-form" content-type="application/json" id="maintainanceCheck"
+			on-iron-form-presubmit="ironformpresubmit"
+			on-iron-form-response="ironformresponse" method="post">
+			<figure class="code u-mb+"
+				style="background-color: white; color: black; margin-bottom: 0px;">
+				<label for="SSO"><b>员工编号/SSO*:</b></label>
+
+				<paper-input class="input-medium search-query span3" id="ssoid"
+					name="sso" style="width: 180px;" required auto-validate
+					error-message="{{localize('ssoid')}}"> </paper-input>
+
+				<input type="hidden" id="equipId" name="equipId"
+					value="{{currentRow.equipId.value}}">
+		
+
+				<input type="hidden" id="id" name="id"
+					value="{{currentRow.id.value}}">
+		
+
+				<input type="hidden" id="maintId" name="maintId"
+					value="{{currentRow.maintId.value}}">
+				
+
+				<input type="hidden" id="equipName" name="equipName"
+					value="{{currentRow.equipName.value}}">
+				
+
+				<input type="hidden" id="maintType" name="maintType"
+					value="{{currentRow.maintType.value}}">
+				
+				<input type="hidden" id="createdDt" name="createdDt"
+					value="{{currentRow.createdDt.value}}">
+				
+				<input type="hidden" id="createdBy" name="createdBy"
+					value="{{currentRow.createdBy.value}}">
+				
+
+				<input type="hidden" id="status" name="status" value="{{status}}">
+
+
+				<input type="hidden" id="mainArrString" name="mainArrString"
+					value="{{maintainanceArr}}">
+					
+				<input type="hidden" id="maintItemId" name="maintItemId"
+					value="{{maintItemId}}">
+					
+
+				
+
+
+				<div id="resultDataTable4" class="hide">
+					<byutv-jsonp
+						url="http://localhost:8081/pmms-api/getMaintainanceinfoDtls"
+						params='{{getMaintId(maintId)}}'	last-response="{{resultData}}" debounce-duration="300"
+						auto="true"></byutv-jsonp>
+ 			<!-- ******************************************************************************************************
+	 		-----------------On-click table starts from here -  Kailash----------------------------
+			****************************************************************************************************** -->
+					<px-data-table id="resultPxDataTable4" enable-column-reorder
+						hide-pagination-control table-data="{{resultData}}">
+					<px-data-table-column name="seqNumber" label="Sequence Number"></px-data-table-column>
+					<px-data-table-column name="maintId" label="工序/WorkSequence" hide></px-data-table-column>
+					<px-data-table-column name="maintItemId" label="维护项/MaintainanceItem"></px-data-table-column> 
+					<px-data-table-column name="location" label="单元/Section"></px-data-table-column> 
+					<px-data-table-column name="maintItem" label="内容/WorkContent"></px-data-table-column>
+					<px-data-table-column name="frequency" label="频率/天/Frequency/Day"></px-data-table-column>
+					<px-data-table-column name="spendTime" label="用时/分钟/SpendTime" editable></px-data-table-column> 
+					<px-data-table-column name="scanValue" label="扫描值/ScanValue" editable></px-data-table-column>
+					
+					 <!-- ******************************************************************************************************
+	 		--------------------------------- Here start another hide column -Kailash--------------------------------------
+			****************************************************************************************************** -->
+					<px-data-table-column name="workSequence" label="workSequence" hide></px-data-table-column>
+					<px-data-table-column name="id" label="id" hide></px-data-table-column>
+					<px-data-table-column name="maintId" label="maintId" hide></px-data-table-column>
+					<px-data-table-column name="createdDt" label="createdDt" hide></px-data-table-column>
+					<px-data-table-column name="maintType" label="maintType" hide></px-data-table-column>
+					<px-data-table-column name="createdBy" label="createdBy" hide></px-data-table-column>
+					</px-data-table>
+				</div>
+				<br>
+				<br>
+				<table>
+					<tr>
+						<td style="align: center">
+						<paper-button raised on-click="startTask" id="maintainanceCheckStartButton"  class="btn btn-large btn-primary" disabled>
+							开始维修/Start
+						</paper-button></td>
+						<td style="align: center"><paper-button raised id="maintainanceCheckCloseButton"
+								on-click="closeTask" class="btn btn-large btn-primary" disabled>
+							结束维修/Close</paper-button></td>
+						<td style="align: center"><paper-button raised  id="maintainanceCheckSaveButton" 
+								on-click="saveTask" class="btn btn-large btn-primary" disabled>
+							保存/Save</paper-button></td>
+
+					</tr>
+				</table>
+
+			</figure>
+		</form>
+	</div>
+
+</section>
+   
+  </template>
+  <script>
+    Polymer({
+      /* this is the element's prototype */
+       is: 'maintainance-check',
+      /* handleTap: function() {
+          alert('Ow!');
+        }, */
+        searchKey : null,
+    	properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			maintId : {
+				type : String,
+				notify : true
+			},
+
+			status : {
+				type : String,
+				notify : true
+			},
+			maintainanceArr : {
+				type : Array,
+				notify : true
+			}
+
+		},
+
+		ironformresponse:function(e) {
+
+			var equipIssueObject = {};
+			var resultsData = document.getElementById("resultPxDataTable4");
+			var length = resultsData.__data__.tableData.length;
+			var notOK_Flag = false;
+			equipIssueObject.requestorSSO = e.srcElement[7].defaultValue;
+			equipIssueObject.inspectionWoId = e.srcElement[3].defaultValue;
+			equipIssueObject.inspectionSSO = e.currentTarget["0"].__data__.bindValue;
+			equipIssueObject.inspectionEquipId = e.currentTarget[1].defaultValue;
+			equipIssueObject.inspectionStatus = "未开始";
+			
+			for (var i = 0; i < length; i++) {
+				var scanValue = resultsData.__data__.tableData[i]['scanValue'];
+				
+				if(scanValue!= null){
+				if(!notOK_Flag && scanValue.substring(scanValue.length-2) == "01")
+					{
+						notOK_Flag =true;
+						break;
+					}
+				}
+			}
+			 if(notOK_Flag)
+				{
+				
+				  $.ajax({
+				      type: "POST",
+				      contentType : 'application/json; charset=utf-8',
+				      dataType : 'json',
+				      url: "http://localhost:8081/pmms-api/autoEquipmentIssueCreation",
+				      data: JSON.stringify(equipIssueObject), // Note it is important
+				      success :function(result) {
+				    	 if(result.status == true){
+				    		 alert(result.data);
+				    		 return;
+						}
+				    }
+				  }); 
+				
+				} 
+			
+			if(e.detail.__data__.response.status)
+				{
+					alert("Your data saved successfully.");
+					document.getElementById("inspectionResultData").classList.add('hide');
+					this.$.inspection.generateRequest();
+				}
+			else
+				{
+					alert("There was an issue in processing your data. Please try again with valid data.");
+				}
+
+			
+			
+
+		},
+        ready: function() {
+           			 this.selected = 0;
+          },
+      	rowSelected: function(e) {
+			        var clickedRow = e.detail.row;
+			  		this.currentRow = clickedRow.row;
+			  		this.maintId = this.currentRow.maintId.value;
+			  		if (!clickedRow._selected) {
+						document.getElementById("resultDataTable4").classList.remove('hide');
+					} else {
+						document.getElementById("resultDataTable4").classList.add('hide');
+					}
+			  		
+			  		if(!clickedRow._selected){
+				  		
+						var statusOfOperatorCheckWorkorder = clickedRow.row.status.value;
+
+		  				if (statusOfOperatorCheckWorkorder == null || statusOfOperatorCheckWorkorder == "未开始" || statusOfOperatorCheckWorkorder == "") {
+		  					document.getElementById("maintainanceCheckStartButton").disabled = false;
+		  				} else {
+		  					document.getElementById("maintainanceCheckStartButton").disabled = true;
+		  				}
+
+		  				if (statusOfOperatorCheckWorkorder == "进行中") {
+		  					document.getElementById("maintainanceCheckCloseButton").disabled = false;
+		  					document.getElementById("maintainanceCheckSaveButton").disabled = false;
+		  				} else {
+		  					document.getElementById("maintainanceCheckCloseButton").disabled = true;
+		  					document.getElementById("maintainanceCheckSaveButton").disabled = true;
+		  				}
+		  				
+			  		}else{
+			  			document.getElementById("maintainanceCheckStartButton").disabled = true;
+				  		document.getElementById("maintainanceCheckCloseButton").disabled = true;
+				  		document.getElementById("maintainanceCheckSaveButton").disabled = true;
+			  		}
+			  		
+        	},
+        	getMaintId : function(maintId) {
+		     	       return {
+		     	    	   maintId : maintId
+		     	       };
+     	  },
+     	 refreshData : function() {
+ 			this.$.test.generateRequest();
+ 		},
+
+     	 searchKeyChanged : function(event) {
+ 			this.searchKey = event.target.value;
+ 			this._refreshTable();
+ 		},
+
+ 		handleResponse : function(event) {
+ 			this._refreshTable();
+ 		},
+
+ 		_matches : function(jsonObject, searchKey) {
+ 			for (field in jsonObject) {
+ 				var fieldValue = jsonObject[field];
+
+ 				if (fieldValue === Object(fieldValue)
+ 						&& this._matches(fieldValue, searchKey)) {
+ 					return true;
+ 				} else if (fieldValue && fieldValue.indexOf
+ 						&& fieldValue.indexOf(this.searchKey) >= 0) {
+ 					return true;
+ 				}
+ 			}
+ 			return false;
+ 		},
+
+ 		_refreshTable : function() {
+ 			var array = [];
+ 			if (!this.searchKey) {
+ 				array = this.mydata;
+ 			} else {
+ 				for ( var i in this.mydata) {
+ 					var jsonObject = this.mydata[i];
+ 					if (this._matches(jsonObject, this.searchKey)) {
+ 						array.push(jsonObject);
+ 					}
+ 				}
+ 			}
+
+ 			this.filteredData = [];
+ 			this.filteredData = array;
+ 		},
+
+     	  
+     	 getParams : function(maintType, deptId, equipCategory) {
+ 			return {
+ 				maintType : "MC",
+ 				deptId : deptId,
+ 				equipCategory : equipCategory
+
+ 			};
+ 		},
+     	
+ 		startTask : function() {
+
+		var selectedRowArray = document.getElementById("dataTable4").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			var resultPxDataTable4 = document.getElementById("resultPxDataTable4");
+			var ssoValue = document.getElementById("ssoid").value;
+			if(ssoValue != "" )
+			{
+				var isValid = this.isValidSSO(ssoValue);
+				if(isValid){
+				var length = resultPxDataTable4.__data__.tableData.length;
+				var inspectArr = [];
+	
+				for (var i = 0; i < length; i++) {
+					var inspectionArr = [				      
+							this.maintItemId = resultPxDataTable4.__data__.tableData[i]['maintItemId'],
+							this.scanValue = resultPxDataTable4.__data__.tableData[i]['scanValue'],
+							this.spendTime = resultPxDataTable4.__data__.tableData[i]['spendTime'],
+							this.maintId = resultPxDataTable4.__data__.tableData[i]['maintId'],
+							this.id = resultPxDataTable4.__data__.tableData[i]['id'],
+							this.createdDt = resultPxDataTable4.__data__.tableData[i]['createdDt'],
+							this.frequency = resultPxDataTable4.__data__.tableData[i]['frequency']
+	
+					];
+					inspectArr.push(inspectionArr);
+	
+				}
+				this.equipId = this.currentRow.equipId.value;
+				/* this.currentRow; */
+				this.status = "进行中";
+				this.maintainanceArr = inspectArr;
+				document.getElementById("maintainanceCheck").action = "http://localhost:8081/pmms-api/StartMaintainance";
+				document.getElementById('maintainanceCheck').submit();
+				}
+			}else
+			{
+				alert("Please provide the SSO id.");
+			}
+		},
+
+		closeTask : function() {
+			var selectedRowArray = document.getElementById("dataTable4").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			var resultPxDataTable4 = document.getElementById("resultPxDataTable4");
+
+			var length = resultPxDataTable4.__data__.tableData.length;
+			var inspectArr = [];
+			var ssoValue = document.getElementById("ssoid").value;
+			if(ssoValue != "" )
+			{
+				var isValid = this.isValidSSO(ssoValue);
+				if(isValid){
+					for (var i = 0; i < length; i++) {
+						var inspectionArr = [				      
+								this.maintItemId = resultPxDataTable4.__data__.tableData[i]['maintItemId'],
+								this.scanValue = resultPxDataTable4.__data__.tableData[i]['scanValue'],
+								this.spendTime = resultPxDataTable4.__data__.tableData[i]['spendTime'],
+								this.maintId = resultPxDataTable4.__data__.tableData[i]['maintId'],
+								this.id = resultPxDataTable4.__data__.tableData[i]['id'],
+								this.createdDt = resultPxDataTable4.__data__.tableData[i]['createdDt'],
+								this.frequency = resultPxDataTable4.__data__.tableData[i]['frequency']
+		
+						];
+						inspectArr.push(inspectionArr);
+		
+					}
+					this.status = "关闭";
+					this.maintainanceArr = inspectArr;
+					document.getElementById("maintainanceCheck").action = "http://localhost:8081/pmms-api/CloseMaintainanceTask";
+		
+					document.getElementById('maintainanceCheck').submit();
+				}
+			}
+			else
+			{
+				alert("Please provide the SSO id.");
+			}
+		},
+
+		saveTask : function() {
+			var selectedRowArray = document.getElementById("dataTable4").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			var resultPxDataTable4 = document.getElementById("resultPxDataTable4");
+			var length = resultPxDataTable4.__data__.tableData.length;
+			var inspectArr = [];
+			var ssoValue = document.getElementById("ssoid").value;
+			if(ssoValue != "" )
+			{
+				var isValid = this.isValidSSO(ssoValue);
+				if(isValid){
+					for (var i = 0; i < length; i++) {
+						var inspectionArr = [						
+								this.maintItemId = resultPxDataTable4.__data__.tableData[i]['maintItemId'],
+								this.scanValue = resultPxDataTable4.__data__.tableData[i]['scanValue'],
+								this.spendTime = resultPxDataTable4.__data__.tableData[i]['spendTime'],
+								this.maintId = resultPxDataTable4.__data__.tableData[i]['maintId'],
+								this.id = resultPxDataTable4.__data__.tableData[i]['id'],
+								this.createdDt = resultPxDataTable4.__data__.tableData[i]['createdDt'],
+								this.frequency = resultPxDataTable4.__data__.tableData[i]['frequency']
+		
+						];
+						inspectArr.push(inspectionArr);
+					}
+					this.status = "进行中";
+					this.maintainanceArr = inspectArr;
+					document.getElementById("maintainanceCheck").action = "http://localhost:8081/pmms-api/saveMaintainCheckDetails";
+					document.getElementById('maintainanceCheck').submit();
+				}
+			}
+			else
+			{
+				alert("Please provide the SSO id.");
+			}
+		},
+        
+
+     	  
+		isValidSSO : function (ssoValue){
+			var resp = false;
+			$.ajax({
+				method  : 'POST',
+				url     : 'http://localhost:8081/pmms-api/isValidMaintainanceSSO',
+				data    :  'sso='+ssoValue,
+				async: false,
+				error : function (status) {
+					alert("Your operation failed");
+					resp= false;
+				},
+				success: function(data) {
+					if(data.data=="SUCCESS")
+						{
+							resp= true;
+						}
+					else if(data.data=="FAIL")
+						{
+							alert("Please provide Valid SSO Id");
+							resp= false;
+						}
+				}
+			});
+			return resp;
+		}
+    });
+    
+  </script>
+</dom-module>

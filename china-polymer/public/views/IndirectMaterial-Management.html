@@ -1,0 +1,381 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="IndirectMaterial-Management"> 
+<template>
+<px-card chevron>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	<div>
+		<paper-button raised id="search" class="btn btn-large btn-primary" value="{{searchKey}}" on-click="searchMaterialWithParameters"><b>Search</b></paper-button>
+	</div>
+	<div>
+		<form is="iron-form" content-type="application/json" id="SearchMaterial" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleSearchedData" method="post">	
+			<input type="hidden" id="data" name="data" value="{{data}}">
+		
+				<table>
+					<tr>						
+						<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"><b>Manufacturer Name:</b>
+						</label></td>
+						<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="source" id="source"></paper-input></td>
+					</tr>
+					<tr>
+						<td style="align: center; padding: 3px;"><label class="control-label" style="width: 100px;"> <b>Material Name.:</b>
+						</label></td>
+						<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="name" id="name"> </paper-input></td>
+					</tr>
+				</table>				
+				</form>
+				</div>
+	<!-- ***********************************************************************ADD*******************************************************************************-->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="IndirectMaterialAdd" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+				<paper-button raised onclick="add.open()" class="btn btn-large btn-primary" >Add</paper-button>				
+					<paper-dialog id="add">
+				 		<paper-dialog-scrollable>	
+								<table>	
+								<tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>IDM ID*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="paper-input-medium search-query span3"  name="idmId" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>					           
+						            <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Name*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="paper-input-medium search-query span3"  name="idmName" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>  
+						                          
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>source*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="paper-input-medium search-query span3" name="source" style="width: 180px;"  required auto-validate error-message="{{localize('unit')}}">
+						                   </paper-input>  
+						                 </td>
+						             </tr>         
+						            
+						               
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Size*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="paper-input-medium search-query span3"  name="size" style="width: 180px;"  required auto-validate error-message="{{localize('saftyStock')}}"> 
+						                 </paper-input>  
+						               </td>
+						              </tr>  
+						              <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Safety Stock Num*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="paper-input-medium search-query span3"  name="sugSafetyNum" style="width: 180px;"  required auto-validate error-message="{{localize('systemStock')}}"> 
+						                    </paper-input>  
+						                </td>
+						              </tr>  
+						              <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Stock Num*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="paper-input-medium search-query span3"  name="stockNum" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Type ID*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="paper-input-medium search-query span3" name="typeId" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Sub Type Id*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="paper-input-medium search-query span3"  name="subTypeId" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Position*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="paper-input-medium search-query span3"  name="position" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>						               
+						               <tr>
+						                  <td style="padding: 5px"><label class="control-label"  style="width: 200px"><b>Remark*:</b></label></td>
+						                  <td style="padding: 5px">
+						                      <paper-input class="paper-input-medium search-query span3" name="remark" style="width: 180px;"  required auto-validate error-message="{{localize('sapreRemarks')}}"> 
+						                       </paper-input>   
+						                   </td>
+						               </tr>    
+						          </table>
+						       </paper-dialog-scrollable>
+					  				<div class="buttons">
+					   					 <paper-button dialog-dismiss >Cancel</paper-button>
+					    				 <paper-button dialog-confirm autofocus on-click="addRequest">OK</paper-button>
+					 				 </div>
+					   </paper-dialog>		
+				</form>
+			</div>
+			
+			<!-- ***************************EDIT*************************************************** -->
+			
+			<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="IndirectMaterialEdit" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+				<paper-button raised onclick="edit.open()" class="btn btn-large btn-primary" >Edit</paper-button>				
+					<paper-dialog id="edit">
+				 		<paper-dialog-scrollable>	
+								<table>	
+									 <tr>
+						           <td>  <input type="hidden" id="materialId" name="id"></td>
+						           </tr>
+									<tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>ID*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3" id="indirectID" name="idmId" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>					           
+						            <tr>				          
+						            <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Name*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3"  name="idmName" id="indirectName" style="width: 180px;" required auto-validate error-message="{{localize('spareName')}}">
+						                  </paper-input>  
+									    </td>
+						             </tr>  
+						                          
+						             <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>source*:</b></label></td>
+						                <td style="padding: 5px">
+						                   <paper-input class="span3" name="source" id="indirectSource" style="width: 180px;"  required auto-validate error-message="{{localize('unit')}}">
+						                   </paper-input>  
+						                 </td>
+						             </tr>  
+						             <tr>
+						               <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Size*:</b></label></td>
+						               <td style="padding: 5px">
+						                 <paper-input class="span3"  name="size" id="indirectSize" style="width: 180px;"  required auto-validate error-message="{{localize('saftyStock')}}"> 
+						                 </paper-input>  
+						               </td>
+						              </tr>  
+						              <tr>
+						                <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Safety Stock Num*:</b></label></td>
+						                <td style="padding: 5px">
+						                    <paper-input class="span3"  name="sugSafetyNum" id="indirectSafetyNum" style="width: 180px;"  required auto-validate error-message="{{localize('systemStock')}}"> 
+						                    </paper-input>  
+						                </td>
+						              </tr>  
+						              <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Stock Num*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3"  name="stockNum" id="indirectStockNum" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Type ID*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3"  name="typeId" id="indirectTypeId" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Sub Type Id*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3"  name="subTypeId" id="indirectSubTypeId" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>
+						               <tr>
+						                 <td style="padding: 5px"><label class="control-label" style="width: 200px"><b>Position*:</b></label></td>
+						                 <td style="padding: 5px">
+						                    <paper-input class="span3"  name="position" id="indirectPosition" style="width: 180px;"  required auto-validate error-message="{{localize('spareLocation')}}"> 
+						                    </paper-input>  
+						                 </td>
+						               </tr>						               
+						               <tr>
+						                  <td style="padding: 5px"><label class="control-label"  style="width: 200px"><b>Remark*:</b></label></td>
+						                  <td style="padding: 5px">
+						                      <paper-input class="span3" name="remark" id="indirectRemark" style="width: 180px;"  required auto-validate error-message="{{localize('sapreRemarks')}}"> 
+						                       </paper-input>   
+						                   </td>
+						               </tr>    
+						          </table>
+						       </paper-dialog-scrollable>
+					  				<div class="buttons">
+					   					 <paper-button dialog-dismiss >Cancel</paper-button>
+					    				 <paper-button dialog-confirm autofocus on-click="EditRequest">OK</paper-button>
+					 				 </div>
+					   </paper-dialog>		
+				</form>
+			</div>
+			
+			<div>
+				<form is="iron-form" content-type="application/json" id="IndirectManagementDelete" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">
+				<input type="hidden" id="deleteId" name="deleteId" value="{{deleteId}}" />
+					<paper-button class="btn btn-large btn-primary" raised
+						on-click="delete">Delete</paper-button>
+						</form>
+			</div>
+			
+			<!--***********************************************DATA TABLEW**********************************************************************************-->
+		<br>
+			<div class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp url="http://localhost:8081/pmms-api/getIndirectMaterial" id="IndirectTable" last-response="{{minidata1}}" auto>
+				</byutv-jsonp>
+				<px-data-table id="managementTable" enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{minidata1}}" on-px-row-click="clickedRow">  
+				
+					<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+					<px-data-table-column name="idmId" label="IDM ID" id="idmid"></px-data-table-column> 
+					<px-data-table-column name="idmName" label="Name" id="name"></px-data-table-column> 
+					<!-- <px-data-table-column name="name" label="Name" id="name"></px-data-table-column> -->					
+					<px-data-table-column name="source" label="Source" id="source"></px-data-table-column> 
+					<px-data-table-column name="size" label="Size" id="size"></px-data-table-column>				
+					<px-data-table-column name="stockNum" label="Stock Num" id="stock"></px-data-table-column> 
+					<px-data-table-column name="typeId" label="Type ID" id="type"></px-data-table-column>
+					<px-data-table-column name="subTypeId" label=" Sub Type ID" id="subType"></px-data-table-column>
+					 <px-data-table-column name="sugSafetyNum" label="Saftey Num" id="safety"></px-data-table-column> 
+					 <px-data-table-column name="position" label="Position" id="position"></px-data-table-column> 					
+					 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column> 
+					 
+				</px-data-table>
+				
+			</div>
+</section>
+</px-card>
+</template>
+<script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'IndirectMaterial-Management',
+			    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+			    
+			    properties : {
+
+					currentRow : {
+						type : Object,
+						notify : true,
+						value : function() {
+							return {};
+						}},
+						data : {
+							type : String,
+							notify : true
+						},
+						deleteId: {
+							type: String,
+				  			notify: true
+						},
+						source : {
+							type : String,
+							notify : true
+						},
+						
+						name : {
+							type : String,
+							notify : true
+						}
+						
+					},
+					
+			refreshData : function() {
+			this.$.IndirectTable.generateRequest();
+			 },	
+					    
+			 addRequest : function() {			    	
+			document.getElementById("SearchMaterial").action = "http://localhost:8081/pmms-api/SaveIndirectMaterial";
+			document.getElementById('SearchMaterial').submit(); 
+			 },
+			 
+			 clickedRow: function(e) {
+		  	        var clickedRow = e.detail.row;
+		  	  		 this.currentRow = clickedRow.row;
+		  	  		if(this.ids == undefined)
+						this.ids=[];
+					 var index = this.ids.indexOf((clickedRow.row.id.value));
+					 if(clickedRow._selected==false && index == -1)//not present in ids list
+						  this.ids.push(clickedRow.row.id.value);
+					  else if(index > -1) //already there
+						  this.ids.splice(index,1); 
+					document.getElementById("deleteId").value = clickedRow.row.id.value;
+		  	  		document.getElementById("materialId").value=clickedRow.row.id.value;
+		  	 		document.getElementById("indirectID").value=clickedRow.row.idmId.value;		  	 		
+		  	 		document.getElementById("indirectName").value=clickedRow.row.idmName.value;
+		  	 		//document.getElementById("indirectType").value=clickedRow.row.type.value;
+		  	 		document.getElementById("indirectSource").value=clickedRow.row.source.value;		  	 		
+		  	 		document.getElementById("indirectSize").value=clickedRow.row.size.value;
+		  	 		document.getElementById("indirectSafetyNum").value=clickedRow.row.sugSafetyNum.value;
+		  	 		document.getElementById("indirectStockNum").value=clickedRow.row.stockNum.value;
+		  	 		document.getElementById("indirectTypeId").value=clickedRow.row.typeId.value;
+		  	 		document.getElementById("indirectSubTypeId").value=clickedRow.row.subTypeId.value;
+		  	 		document.getElementById("indirectPosition").value=clickedRow.row.position.value;
+		  	 		document.getElementById("indirectRemark").value=clickedRow.row.remark.value;
+		  	 		
+			 },
+			    EditRequest : function(){
+			    	document.getElementById("IndirectMaterialEdit").action = "http://localhost:8081/pmms-api/SaveIndirectMaterial";
+					document.getElementById('IndirectMaterialEdit').submit(); 
+			    },
+			    
+			    delete : function(){				
+			    	if(this.ids.length>0){
+						this.deleteId=this.ids.toString();
+						document.getElementById('IndirectManagementDelete').action = "http://localhost:8081/pmms-api/deleteIndirectMaterial";
+						document.getElementById('IndirectManagementDelete')
+								.submit();
+						alert("Selected row is deleted successfully");
+							
+					}
+				},
+			 
+			 ironformresponse : function(){
+			document.querySelector('IndirectMaterial-Management').refreshData();
+			},
+			
+			searchMaterialWithParameters : function(){
+		    	//this.specification = this.$.specification.value;
+				this.source = this.$.source.value;
+				this.name = this.$.name.value;
+		 
+		    	if ((this.source == undefined
+								|| this.source == null || this.source == "") ||
+								(this.name == undefined
+										|| this.name == null || this.name == ""))
+		    		
+					 alert("Please fill the data to search."); 
+		    
+		    else {
+				
+				this.data = "{'source':"
+						+ this.source + ",'name':"
+						+ this.name 
+						+ "}";
+				document.getElementById("searchMaterialWithParameters").action = "http://localhost:8081/pmms-api/searchMaterialWithParameters";
+				document.getElementById('searchMaterialWithParameters')
+						.submit();
+			}
+			},
+			handleSearchedData : function(e) {
+				var details = e.detail;
+				if (details.status == 200) {
+					this.minidata1 = details.response;
+					this.refreshTable("managementTable");
+				} else {
+					alert("error in searching list!!!!");
+
+				}
+			},
+			refreshTable : function() {
+
+				var array = [];
+				array = this.minidata1;
+				this.minidata1 = array;
+			}
+			 });
+	</script>
+	</dom-module>
+			

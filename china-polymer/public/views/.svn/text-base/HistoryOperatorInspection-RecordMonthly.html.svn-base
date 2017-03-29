@@ -1,0 +1,324 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="HistoryOperatorInspection-RecordMonthly"> <template>
+<px-card chevron>
+<style include="button-style">
+</style>
+
+<br><br>
+<!-- ---------------------------------------- -->
+<form is="iron-form" content-type="application/json" id="searchWithDatesAndParameters" on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">
+			
+			<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+	</form>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 450px">
+			<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+			</label>
+
+			<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="FromDate">
+				<paper-input id="FromDateFields" name="FromDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="FromDate" on-tap="triggerFromDateField"
+					style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="ToDate">
+				<paper-input id="ToDateFields" name="ToDateFields" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+				</paper-input>
+				<px-datetime-picker id="ToDate" on-tap="triggerToDateField" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;">
+				</px-datetime-picker>
+			</div>
+		</div>
+		<div class="control-group pull-left" style="width: 450px;">
+			<label class="control-label" style="width: 80px; margin-left: 40px;">
+				<b>Equipment Number:</b>
+			</label>
+			<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+				<paper-input class="span3" name="equipId" id="equipId" style="width: 180px;"> </paper-input>
+			</div>
+		</div>
+	
+		<div class="control-group pull-left" style="width: 130px">
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="InspectionTransactionDates">Search</paper-button>
+		</div>
+		</div>	
+		 <!--  ******************************************************************************************************
+ ------------------------------------------------ViewAll PopUp------------------------------------------------
+	******************************************************************************************************  -->
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"id="EditRollingRecordForm" on-iron-form-response="ironformresponse"method="post"> 
+	<paper-button raised onclick="viewOperator.open()" class="btn btn-large btn-primary">View</paper-button>
+	<paper-dialog id="viewOperator">
+	<paper-dialog-scrollable>
+	<table> 
+	<tr>
+	<td>
+	<input type="hidden" id="operatorDataId" name="id" disabled></td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>ID:</b></label></td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="maintIdk" id="maintIdk" disabled></paper-input>   <!-- group = deptId -->
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Type:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="maintTypek" id="maintTypek" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px;">
+	<b>Status</b></label></td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="statusk" id="statusk" disabled></paper-input>   <!-- machine = equipId -->
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+    <b>Frequency</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="frequencyk" id="frequencyk" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Last Updated By :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="lastUpdatedByk" id="lastUpdatedByk" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Device Name:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="equipNamek" id="equipNamek" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Device No. :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="equipIdk" id="equipIdk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Operator</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="ssok" id="ssok" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>scheduled Date</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="plannedStartDtk" id="plannedStartDtk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>scheduled End Date:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="plannedEndDtk" id="plannedEndDtk" disabled></paper-input>
+	</td>
+	</tr>
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Start Date:</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="actualStartDtk" id="actualStartDtk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>End Date :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="actualEndDtk" id="actualEndDtk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Creator :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="createdByk" id="createdByk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>created Date :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="createdDtk" id="createdDtk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> 
+	<b>Last Updated Date :</b></label>
+	</td>
+	<td><paper-input class="span3" style="width: 170px; margin-left: 5px;" name="lastUpdatedDtk" id="lastUpdatedDtk" disabled></paper-input>
+	</td>
+	</tr>
+	
+	</table>
+     </paper-dialog-scrollable>
+	<div class="buttons">
+	<paper-button dialog-dismiss>Cancel</paper-button>
+	</div>
+	</paper-dialog>
+	</form>
+	</div> 
+		
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%">
+
+
+	 <byutv-jsonp id="OperatorInspectionCheckId"
+		url="http://localhost:8081/pmms-api/getOperatorInspectionRecord" last-response="{{OperatorInspectionCheck}}"debounce-duration="300" auto="true"></byutv-jsonp>
+
+	<px-data-table id="OperatorInspectionCheckTableId" table-data="{{OperatorInspectionCheck}}"  on-px-row-click="operatorInspectionCheckRowClicked" selectable> 
+		<px-data-table-column name="id" label="ID" hide></px-data-table-column>  
+		<px-data-table-column name="maintId" label="Maintainance Id" > </px-data-table-column> 
+		<px-data-table-column name="maintType" label="Type"  ></px-data-table-column> 
+		<px-data-table-column name="status" label="Status"></px-data-table-column>
+	    <px-data-table-column name="frequency" label="Frequency"></px-data-table-column>
+	    <px-data-table-column name="equipName" label="Equipment Name"></px-data-table-column>
+	    <px-data-table-column name="equipId" label="Device Number"></px-data-table-column>
+	    <px-data-table-column name="plannedStartDt" label="Scheduled Date"></px-data-table-column>
+	    <px-data-table-column name="plannedEndDt" label="Plan" hide></px-data-table-column>
+	    <px-data-table-column name="actualStartDt" label="Actual Date"></px-data-table-column>
+	    <px-data-table-column name="actualEndDt" label="" hide></px-data-table-column>
+	    <px-data-table-column name="sso" label="Technician Id" hide></px-data-table-column>
+	    <px-data-table-column name="createdBy" label="Creator" hide></px-data-table-column>
+	    <px-data-table-column name="createdDt" label="Created Date" hide></px-data-table-column>
+	    <px-data-table-column name="lastUpdatedBy" label="Updater" hide></px-data-table-column>
+	    <px-data-table-column name="lastUpdatedDt" label="Last Updated Date" hide></px-data-table-column>
+	</px-data-table>
+</div>
+
+</px-card>
+
+</template>
+
+<!-- ----------------------------------Script----------------------------------------------------- -->
+<script>
+Polymer({
+    /* this is the element's prototype */
+    is: 'HistoryOperatorInspection-RecordMonthly',
+    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+    FilteredData : {
+		type : String,
+		notify : true
+	},
+	FromDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	ToDateFields : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	equipId : {
+		type : String,
+		notify : true,
+		value : ""
+	},
+	triggerFromDateField : function() {
+		this.FromDate = this.$.FromDate.dateTime.substring(0,
+				this.$.FromDate.dateTime.indexOf('T'));
+		this.FromDateField = this.FromDate;
+		document.getElementById("FromDateFields").value = this.FromDateField;
+	},
+	triggerToDateField : function() {
+		//console.log("calibrationdate : " + this.$.StockToDate);
+		this.ToDate = this.$.ToDate.dateTime.substring(0,
+				this.$.ToDate.dateTime.indexOf('T'));
+		this.ToDateField = this.ToDate;
+		document.getElementById("ToDateFields").value = this.ToDateField;
+	},
+	InspectionTransactionDates : function() {
+		if ((this.ToDateField == undefined
+				|| this.ToDateField == null || this.ToDateField == "")
+				|| (this.FromDateField == undefined
+						|| this.FromDateField == null || this.FromDateField == "") ||
+						(this.equipId == undefined
+								|| this.equipId == null || this.equipId == ""))
+			alert("Please select From Date and To Date to search.");
+		else {
+			this.equipId = this.$.equipId.value;
+			this.FilteredData = "{'fromDate':"
+					+ this.FromDateField + ",'toDate':"
+					+ this.ToDateField + ",'equipId':"
+					+ this.equipId + "}";
+			document.getElementById("searchWithDatesAndParameters").action = "http://localhost:8081/pmms-api/searchWithDatesAndFieldsInspectionRcrd";
+			document.getElementById('searchWithDatesAndParameters').submit();
+		}
+
+	},
+	handleFilteredData : function(e) {
+		var details = e.detail;
+		if (details.status == 200) {
+			this.OperatorInspectionCheck = details.response;
+			this._refreshTable("OperatorInspectionCheckId");
+		} else {
+			alert("error in searching list!!!!");
+
+		}
+	},
+	_refreshTable : function() {
+
+		var array = [];
+		array = this.OperatorInspectionCheck;
+		this.OperatorInspectionCheck = array;
+	},
+	operatorInspectionCheckRowClicked :function(e)
+		{
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+  	  		document.getElementById("operatorDataId").value=clickedRow.row.id.value;
+  	 		document.getElementById("maintIdk").value=clickedRow.row.maintId.value;		  	 		
+  	 		document.getElementById("maintTypek").value=clickedRow.row.maintType.value;
+  	 		document.getElementById("statusk").value=clickedRow.row.status.value;
+  	 		document.getElementById("frequencyk").value=clickedRow.row.frequency.value;
+  	 		document.getElementById("equipNamek").value=clickedRow.row.equipName.value;
+  	 		document.getElementById("equipIdk").value=clickedRow.row.equipId.value;
+  	 		document.getElementById("plannedStartDtk").value=clickedRow.row.plannedStartDt.value;
+  	 		/* document.getElementById("plannedEndDtk").value=clickedRow.row.plannedEndDt.value; */
+  	 		document.getElementById("actualStartDtk").value=clickedRow.row.actualStartDt.value;
+  	 		document.getElementById("actualEndDtk").value=clickedRow.row.actualEndDt.value;
+  	 		document.getElementById("ssok").value=clickedRow.row.sso.value;
+  	 		document.getElementById("createdByk").value=clickedRow.row.createdBy.value;
+  	 		document.getElementById("createdDtk").value=clickedRow.row.createdDt.value;
+  	 		document.getElementById("lastUpdatedByk").value=clickedRow.row.lastUpdatedBy.value;
+  	 		document.getElementById("lastUpdatedDtk").value=clickedRow.row.lastUpdatedDt.value;
+  	 	
+		}
+
+});
+</script>
+ </dom-module>

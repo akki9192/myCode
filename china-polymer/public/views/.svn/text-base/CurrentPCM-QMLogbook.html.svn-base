@@ -1,0 +1,226 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ <link rel="import" href="/../css/button-style.html">
+<dom-module id="CurrentPCM-QMLogbook">
+ <template id="addPaperDialog">
+<px-card icon="fa-suitcase" header-text="" chevron>
+<section>
+<br><br>
+
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"id="AddLogBookDetails" on-iron-form-response="ironformresponse"method="post">	
+			<table>
+				<tr>
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Plain ID:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="planId" id ="planId"></paper-input>
+					</td>					
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Equipment ID:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="equipId" id ="equipId"></paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Employee SSO:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="empSso" id ="empSso"></paper-input>
+					</td>
+					<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Date:</b></label></td>
+					<td style="padding: 5px">
+						<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="LogDate">
+							<paper-input id="logDate" name="logDate" style="display: inline-block; width: 100px;"></paper-input>
+							<px-datetime-picker id="LogDate" on-tap="trigger" style="display: inline-block; width: 80px;"></px-datetime-picker>
+						
+						</div>
+					</td>
+				</tr>			
+					<tr>
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Work Order ID:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="woId" id ="woId"></paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Work Results:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="workResult" id ="workResult"></paper-input>
+					</td>				
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Risk:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="risk" id ="risk"></paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Project:</b></label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input class="paper-input-medium search-query span3" name="logProject" id ="logProject"></paper-input>
+					</td>
+				</tr>
+				<tr>
+					<td> <paper-button raised id="logDetails" class="btn btn-large btn-primary" value="{{LogDetailFields}}" on-click="ShowHiddenLogDetailsField"><b>Add Log Details</b></paper-button>
+				
+				 <tr style="visibility:hidden;" id="hiddenProject">
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Project:</b> </label>
+					</td>
+					<td style="align: center; padding:3px; ">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="project" id="project"> </paper-input>
+					</td>
+				</tr>
+					<tr style="visibility:hidden;" id="hiddenLog">
+					<td style="align: center; padding: 3px;>
+						<label class="control-label" style="width: 100px;"> <b>Log ID:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="logId" id="logId"> </paper-input>
+					</td>
+				</tr>
+				<tr style="visibility:hidden;" id="hiddenContents" >
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Work Contents:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="workContents" id="workContents"> </paper-input>
+					</td>
+					</tr>
+					<tr style="visibility:hidden;" id="hiddenStatus">
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Status:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="status" id="status"> </paper-input>
+					</td>
+				</tr> 
+				</td>
+				<td><paper-button raised id="lodStdDetails" class="btn btn-large btn-primary" value="{{LogStandardDetails}}" on-click="ShowHiddenLogStdDetailsField"><b>Add Log standard Details</b></paper-button>
+				
+				<tr style="visibility:hidden;" id="hiddenLogId">
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Log Id:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="stdLogId" id="stdLogId"> </paper-input>
+					</td>
+				</tr>
+				<tr style="visibility:hidden;" id="hiddenStdDesc">
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>Standard Decision:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="stdDesc" id="stdDesc"> </paper-input>
+					</td>
+				</tr>
+				<tr style="visibility:hidden;" id="hiddenOkNok">
+					<td style="align: center; padding: 3px;">
+						<label class="control-label" style="width: 100px;"> <b>OK NOT OK:</b> </label>
+					</td>
+					<td style="align: center; padding: 3px;">
+						<paper-input type="text" class="paper-input-medium search-query span3" name="okNok" id="okNok"> </paper-input>
+					</td>
+					</td>
+				</tr>
+				</tr>
+			</table>		
+			<!-- <paper-button raised on-tap="submitDetails" id="submit" class="btn btn-large btn-primary" value="{{submitDetails}}"><b>Submit</b></paper-button> -->
+			<paper-button dialog-confirm autofocus on-click="submitDetails">Submit</paper-button>
+		</form>			
+	</div>
+</section>
+</px-card>
+</template>
+	<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'CurrentPCM-QMLogbook',
+		
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		
+		ShowHiddenLogDetailsField : function(e){			
+			
+							document.querySelector("#hiddenProject").style.visibility = "visible";
+							document.querySelector("#hiddenLog").style.visibility = "visible";							
+							document.querySelector("#hiddenContents").style.visibility = "visible";
+							document.querySelector("#hiddenStatus").style.visibility = "visible";
+		},
+		
+		ShowHiddenLogStdDetailsField : function(e){
+			
+							document.querySelector("#hiddenLogId").style.visibility = "visible";							
+							document.querySelector("#hiddenStdDesc").style.visibility = "visible";
+							document.querySelector("#hiddenOkNok").style.visibility = "visible";	
+		},
+		
+	
+		trigger : function() {
+			//console.log("date function is triggered");
+			//console.log("InstallationDate : " + this.$.InstallationDate);
+			this.LogDate = this.$.LogDate.dateTime.substring(
+					0, this.$.LogDate.dateTime.indexOf('T'));
+			this.LogDateField = this.LogDate;
+			document.getElementById("logDate").value = this.LogDateField;
+		},
+		
+		/* submitDetails : function(){
+				    	
+		    	document.getElementById("AddLogBookDetails").action = "http://localhost:8081/pmms-api/addLogBookDetails";
+				document.getElementById('AddLogBookDetails').submit(); 
+				
+		    }, */
+		
+		    
+		submitDetails : function(){
+		    	
+		    var logBook = new Array();
+		    var  logBookDetail = new Array();
+		    var    logBookStds = new Array();
+ 	    	logBook.push(document.getElementById("planId").value);
+	    	logBook.push(document.getElementById("equipId").value);
+	    	logBook.push(document.getElementById("empSso").value);
+		    logBook.push(document.getElementById("logDate").value);
+		    logBook.push(document.getElementById("woId").value);
+		    logBook.push(document.getElementById("workResult").value);
+		    logBook.push(document.getElementById("risk").value);
+		   	logBook.push(document.getElementById("logProject").value);
+		   	logBook.push(document.getElementById("project").value);
+		   	logBook.push(document.getElementById("logId").value);
+		   	logBook.push(document.getElementById("workContents").value);
+		   	logBook.push(document.getElementById("status").value);
+		   	logBook.push(document.getElementById("stdLogId").value);
+		   	logBook.push(document.getElementById("stdDesc").value);
+		   	logBook.push(document.getElementById("okNok").value);
+	    	
+	    	//console.log(logBook,"logBook");
+	    	//console.log(logBookDetail,"logBookDetail");
+	    	//console.log(logBookStds,"logBookStds");
+
+		    	
+				 $.ajax({
+						     type: 'POST',
+						      url: "http://localhost:8081/pmms-api/addLogBookDetails",
+						      contentType:'application/json; charset=utf-8',
+						      dataType: 'json',
+			                 data: JSON.stringify(logBook),
+
+						 success: function(resultData) { 
+							 
+						 }
+		    	
+		    });
+		    }    	
+		    
+	});	
+	</script>
+</dom-module>

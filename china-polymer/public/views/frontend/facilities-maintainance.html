@@ -1,0 +1,574 @@
+<meta charset="utf-8">
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="facilities-maintainance"> <template>
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	<form is="iron-form" content-type="application/json"
+		id="facilityMaintainence" method="post" on-iron-form-response="ironformresponse">
+		<table>
+			<tr>
+				<td><label class="control-label" style="width: 200px"><b>工单操作人/SSO*:</b></label></td>
+				<td><paper-input class="input-medium search-query span3"
+						name="mechanic" style="width: 180px" id="ssoVal"></paper-input></td>
+				<td></td>
+				<td><label class="control-label"
+					style="width: 130px; margin-left: 50px;"> <b>Maintenance
+							Type:</b>
+				</label></td>
+				<byutv-jsonp id="dropdpwnmaintype"
+					url="http://localhost:8081/pmms-api/getMaintenanceType"
+					params='{"Type":"REPAIR_TYPE"}' last-response="{{maintenanceType}}"
+					debounce-duration="300" auto="true"></byutv-jsonp>
+				<td><px-dropdown display-value="--全部 Select --"
+						data-ng-model="maintypeDropDown" id="maintTypeDropDown"
+						selected-key="{{Key}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{maintenanceType}}">
+					</px-dropdown-content> </px-dropdown></td>
+				<td></td>
+				<td><label class="control-label"
+					style="width: 130px; margin-left: 50px;"> <b>Issue
+							Type:</b>
+				</label></td>
+				<byutv-jsonp id="dropdpwnissuetype" params='{"Type":"ISSUE_TYPE"}'
+					url="http://localhost:8081/pmms-api/getIssueType"
+					last-response="{{issueTyp}}" auto></byutv-jsonp>
+				<td><px-dropdown display-value="--全部 Select --" id="issueTypeDropDown"
+						selected-key="{{Key}}"> 
+						<px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{issueTyp}}"></px-dropdown-content>
+					</px-dropdown></td>
+					<!-- <input type="hidden" id="issueType" name="issueType"
+					value="{{currentRow.issueType.value}}"/> -->
+				<td></td>
+				<td><label class="control-label"
+					style="width: 130px; margin-left: 50px;"> <b>Location:</b>
+				</label></td>
+				<byutv-jsonp id="dropdpwnloc" params='{"Type":"FAULT_LOCATION"}'
+					url="http://localhost:8081/pmms-api/getLocations"
+					last-response="{{local}}" auto></byutv-jsonp>
+				<td><px-dropdown display-value="--全部 Select --" id="faultLocationDropDown"
+						selected-key="{{Key}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{local}}">
+					</px-dropdown-content> </px-dropdown></td>
+			</tr>
+			<tr>
+				<td><label class="control-label"><b>Comments*:</b></label></td>
+				<td><paper-input class="input-medium search-query span3"
+						id="comments" name="comments" style="width: 180px;">
+					</paper-input></td>
+	<td>
+		<input type="hidden" id="workOrderNumber" name="workOrderNumber" value="{{currentRow.workOrderNumber.value}}">
+		<input type="hidden" id="id" name="id" value="{{currentRow.id.value}}"> 
+		<input type="hidden" id="woMaintId" name="woMaintId"> 
+		<input type="hidden" id="wordOrderStatus" name="wordOrderStatus" value="{{wordOrderStatus}}"> 
+		<input type="hidden" id="workOrderType" name="workOrderType" value="{{currentRow.workOrderType.value}}"> 
+		<input type="hidden" id="createdDate" name="createdDate" value="{{currentRow.createdDate.value}}">
+		<!-- <input type="hidden" id="workOrderType" name="workOrderType" value="{{currentRow.workOrderType.value}}"> -->
+		<input type="hidden" id="faultDescription" name="faultDescription" 	value="{{currentRow.faultDescription.value}}"> 
+		<input 	type="hidden" id="creatorSSO" name="creatorSSO"	value="{{currentRow.creatorSSO.value}}">
+		<input type="hidden" id="maintypeDropDown" name="maintypeDropDown"	value="{{currentRow.maintType.value}}">
+		<input type="hidden" id="remarks" name="remarks" >
+		<input type="hidden" 	id="shutdownFlag" name="shutdownFlag" value="{{currentRow.shutdownFlag.value}}"> 
+		<input type="hidden" id="safetyInvolved" name="safetyInvolved" value="{{currentRow.safetyInvolved.value}}"> 
+		<input type="hidden" id="facilityNum" name="facilityNum"	value="{{currentRow.facilityNumber.value}}">
+		<input type="hidden" id="facilArea" name="facilArea"	value="{{currentRow.facilityArea.value}}">
+		<input	type="hidden" id="facilityCategory" name="facilityCategory"	value="{{currentRow.facilityCategory.value}}">
+		<input type="hidden" id="factoryName" name="factoryName"	value="{{currentRow.factoryName.value}}">
+		<input	type="hidden" id="maintStartDate" name="maintStartDate"	value="{{currentRow.maintStartDate.value}}">
+		<input	type="hidden" id="maintEndDate" name="maintEndDate"	value="{{currentRow.maintEndDate.value}}"> 
+		<!-- <input type="hidden" id="mechanic" name="mechanic" value="{{currentRow.mechanic.value}}">	 -->
+		<input type="hidden" id="issueType" name="issueType">
+		<input type="hidden" id="maintTypeFAC" name="maintType" > 
+		<input type="hidden" id="repairIssue" name="repairIssue" value="{{currentRow.repairCategory.value}}">
+		<input type="hidden" id="faultLocation" name="faultLocation">
+		<input	type="hidden" id="equipId2" name="equipId2"	value="{{currentRow.equipId2.value}}"></td>
+		<input type="hidden" id="woStatus" name="woStatus">
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td style="align: center; margin-left: 40px;">
+				<paper-button style="margin-left: 20px;" class="btn btn-large btn-primary" id = "startFacilityButton"
+						on-click="startFacility" disabled>开始维修/Start</paper-button></td>
+				<td style="align: center; margin-left: 40px;"><paper-button
+						type="button" style="margin-left: 20px;" id = "closeFacilityButton" 
+						class="btn btn-large btn-primary" on-click="closeFacility" disabled>更新/End</paper-button>
+				</td>
+				<td style="align: center; margin-left: 40px;"><paper-button
+						type="button" style="margin-left: 20px;" id = "pauseResumeFacilityButton" 
+						class="btn btn-large btn-primary" on-click="pauseFacility" disabled>暂停/恢复/Pause/Resume</paper-button>
+				</td>
+				<td style="align: center; margin-left: 40px;"><paper-button
+						type="button" style="margin-left: 20px;" id="confirmFacilityButton" 
+						class="btn btn-large btn-primary" on-click="confirmFacility" disabled>结束维修/Close</paper-button></td>
+			</tr>
+		</table>		
+	</form>
+
+
+	<div class="control-group pull-right">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+		</div>
+	<br> <br>
+	<div class="module-body pull-left" style="width: 100%">
+		
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getDisposalDetails"
+			last-response="{{minidata7}}" on-response="handleResponse" auto></byutv-jsonp>
+
+		<px-data-table id="facilitiesMaintainanceTable" selectable table-data="{{filteredData}}"
+			selected-rows="{{selectedRows77}}" on-px-row-click="selectedRow">
+		<px-data-table-column name="workOrderNumber" label="Work Order Number"></px-data-table-column>
+
+		<px-data-table-column name="wordOrderStatus" label="WorkOrderStatus">
+			<px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="condclose" highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="notstart" highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="closed"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		   <!--  <px-data-table-highlight highlight-type="row" highlight-value="low" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="condclose"  highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="medium"  highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+            <px-data-table-highlight highlight-type="row" highlight-value="white"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight> -->
+		</px-data-table-column> 
+		<px-data-table-column name="faultDescription" label="Description"></px-data-table-column>
+		<px-data-table-column name="factoryName" label="Factory Name"></px-data-table-column>
+		<px-data-table-column name="creatorSSO" label="Creator SSO" id="sso"></px-data-table-column>
+		<px-data-table-column name="createdDate" label="Creation Time"></px-data-table-column>
+		<px-data-table-column name="planStartMonth" label="Start Time"></px-data-table-column>
+		<px-data-table-column name="faultDescription" label="Comments"
+			id="comments"></px-data-table-column>
+	</div>
+
+	<br/><br/>
+	<div class="legendmain mb10 pull-center">
+		<span class="label wo_not_started_legend">未开始</span>
+		<span class="label wo_in_progress_legend">进行中</span>
+		<span class="label wo_pause_legend">暂停</span>
+		<span class="label wo_close_legend">关闭</span>
+		<span class="label wo_conditional_close_legend">带遗留问题运行</span>
+	</div>
+
+</section>
+
+</template> <!--**************************************************************************************************************************************-->
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'facilities-maintainance',
+		selectedRow : function(e) {
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow.row;
+			var woNo = clickedRow.row.workOrderNumber.value;
+			if(!(clickedRow.row.wordOrderStatus.value == "未开始"))
+				{
+				 $.ajax({
+				      type: "POST",
+				      contentType : 'application/json; charset=utf-8',
+				      dataType : 'json',
+				      url: "http://localhost:8081/pmms-api/getWoMaintInfo",
+				      data: woNo, // Note it is important
+				      success :function(result) {
+				    	 // add.close();
+				    	 if(result.length > 0){
+				    	console.log("result----." +result );
+				    	
+				    	document.getElementById("woMaintId").value = result[0];
+				    	document.getElementById("maintTypeDropDown").displayValue = result[1];
+				    	document.getElementById("maintTypeDropDown").selectedKey = result[1];
+				    	document.getElementById("maintTypeFAC").value = result[1];
+				    	
+				    	document.getElementById("issueTypeDropDown").displayValue = result[2];
+				    	document.getElementById("issueTypeDropDown").selectedKey = result[2];
+				    	document.getElementById("issueType").value = result[2];
+				    	
+				    	document.getElementById("faultLocationDropDown").displayValue = result[3];
+				    	document.getElementById("faultLocationDropDown").selectedKey = result[3];
+				    	document.getElementById("faultLocation").value = result[3];
+				    	
+				    	var result= [];}
+				     }
+				  });
+				
+				}
+			document.getElementById("woStatus").value = clickedRow.row.wordOrderStatus.value;
+			/* document.getElementById("comments").value = clickedRow.row.faultDescription.value; */
+			/* document.getElementById("maintTypeDropDown").value = 
+			document.getElementById("issueTypeDropDown").value =
+			document.getElementById("faultLocationDropDown").value = */
+			
+			var statusOfFacilityWorkorder = clickedRow.row.wordOrderStatus.value;
+			
+			if(!clickedRow._selected){
+				if (statusOfFacilityWorkorder == "关闭") {
+					document.getElementById("confirmFacilityButton").disabled = false;
+				} else {
+					document.getElementById("confirmFacilityButton").disabled = true;
+				}
+
+				if (statusOfFacilityWorkorder == "未开始") {
+
+					document.getElementById("startFacilityButton").disabled = false;
+
+				} else {
+
+					document.getElementById("startFacilityButton").disabled = true;
+				}
+
+				if (statusOfFacilityWorkorder == "进行中") {
+
+					document.getElementById("closeFacilityButton").disabled = false;
+				} else {
+
+					document.getElementById("closeFacilityButton").disabled = true;
+
+				}
+				if (statusOfFacilityWorkorder == "进行中" || statusOfFacilityWorkorder == "暂停") {
+
+					document.getElementById("pauseResumeFacilityButton").disabled = false;
+					if(statusOfFacilityWorkorder == "进行中")
+						document.getElementById("pauseResumeFacilityButton").innerHTML="中断/Pause";
+					else
+						document.getElementById("pauseResumeFacilityButton").innerHTML="恢复/Resume";
+
+				} else {
+					document.getElementById("pauseResumeFacilityButton").innerHTML="中断/恢复/Pause/Resume";
+					document.getElementById("pauseResumeFacilityButton").disabled = true;
+
+				}
+				
+				if (statusOfFacilityWorkorder == "带遗留问题运行") {
+
+					document.getElementById("closeFacilityButton").disabled = false;
+					document.getElementById("confirmFacilityButton").disabled = false;
+
+				}
+			}
+			else{
+				document.getElementById("confirmFacilityButton").disabled = true;
+				document.getElementById("startFacilityButton").disabled = true;
+				document.getElementById("closeFacilityButton").disabled = true;
+				document.getElementById("pauseResumeFacilityButton").disabled = true;
+				document.getElementById("pauseResumeFacilityButton").innerHTML="中断/恢复/Pause/Resume";
+			}
+			
+			
+			
+		},
+		searchKey : null,
+
+		searchKeyChanged : function(event) {
+			console.log(this.equipType);
+			this.clearDatatableSelections();
+			/* var test = document.getElementById("facilitiesMaintainanceTable");
+			if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+				test.selectable=false;
+				test.selectedRows[0]._selected=false;
+				test.selectedRows=[];
+				test.selectable=true;
+			} */
+			
+			this.searchKey = event.target.value;
+			this._refreshTable();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.minidata7;
+			} else {
+				for ( var i in this.minidata7) {
+					var jsonObject = this.minidata7[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+		/*************************************************************************************************************************************************/
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+
+		searchKey : null,
+
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+
+			wordOrderStatus : {
+				type : String,
+				notify : true
+			}
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+		
+		clearDatatableSelections : function(){
+			var test = document.getElementById("facilitiesMaintainanceTable");
+			if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+				test.selectable=false;
+				test.selectedRows[0]._selected=false;
+				test.selectedRows=[];
+				test.selectable=true;
+			}
+			/* test.selectable=false;
+			test.selectedRows[0]._selected=false;
+			test.selectedRows=[];
+			test.selectable=true; */
+			
+			this.resetFaultRepairForm();
+		},
+		
+		resetFaultRepairForm : function() {
+			document.getElementById("pauseResumeButton").innerHTML="中断/恢复/Pause/Resume";
+			
+			document.getElementById('ssoVal').value = "";
+			document.getElementById('comments').value = ""; 
+			
+			
+			document.getElementById("maintTypeDropDown").selectedKey = "1";
+			document.getElementById("maintTypeDropDown").displayValue = "--全部 Select --";
+			
+			document.getElementById("issueTypeDropDown").selectedKey = "1";
+			document.getElementById("issueTypeDropDown").displayValue = "--全部 Select --";
+			
+			document.getElementById("faultLocationDropDown").selectedKey = "1";
+			document.getElementById("faultLocationDropDown").displayValue = "--全部 Select --";
+			
+			document.getElementById("startFacilityButton").disabled = true;
+			document.getElementById("closeFacilityButton").disabled = true;
+			document.getElementById("pauseResumeFacilityButton").disabled = true;
+			document.getElementById("confirmFacilityButton").disabled = true;
+		},
+		
+		ironformresponse : function() {			
+		 	document.querySelector('facilities-maintainance').refreshData();	 	
+		 	this.refreshData();
+		 	this.clearDatatableSelections();
+		},
+
+		startFacility : function() {
+		var selectedRowArray = document.getElementById("facilitiesMaintainanceTable").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			this.wordOrderStatus = "进行中";
+			var creatorSSO = document.getElementById('ssoVal').value;
+			var commentVal = document.getElementById('comments').value; 
+			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+			if(isCreatorValid){ 
+				if(commentVal!="" && commentVal!= null){
+					document.getElementById("facilityMaintainence").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+					document.getElementById('facilityMaintainence').submit();
+					alert("Work Order has been started");
+				}
+				else{
+					alert("Please enter Comments");	
+					
+				}
+			}
+			else{
+				document.getElementById("ssoVal").value="";
+			}
+			 
+		},
+		closeFacility : function() {
+			var selectedRowArray = document.getElementById("facilitiesMaintainanceTable").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			document.getElementById('wordOrderStatus').value = "关闭";
+			var creatorSSO = document.getElementById('ssoVal').value;
+			var commentVal = document.getElementById('comments').value; 
+			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+			if(isCreatorValid){
+				if(commentVal!="" && commentVal!= null){
+					document.getElementById("facilityMaintainence").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+					document.getElementById('facilityMaintainence').submit();
+					alert("Work order has been closed.");
+				}
+				else{
+					alert("Please enter Comments");	
+				}
+			}
+			else{
+				document.getElementById("ssoVal").value="";
+			}
+		},
+		pauseFacility : function() {
+			var selectedRowArray = document.getElementById("facilitiesMaintainanceTable").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			var creatorSSO = document.getElementById('ssoVal').value;
+			var commentVal = document.getElementById('comments').value; 
+			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+			if(isCreatorValid){
+				if(commentVal!="" && commentVal!= null){
+					var workOrderStatus = document.getElementById('woStatus').value;
+					document.getElementById("remarks").value = document.getElementById("comments").value;
+					if(workOrderStatus == "暂停")
+						{
+						document.getElementById('wordOrderStatus').value = "进行中";
+						}
+					else {
+						document.getElementById('wordOrderStatus').value = "暂停";
+					}
+					document.getElementById("facilityMaintainence").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+					document.getElementById('facilityMaintainence').submit();
+				
+
+						if(document.getElementById('wordOrderStatus').value == "暂停"){
+								alert("Work Order has been paused.");
+							}
+						else{
+							alert("Work Order has been resumed to In Progress.");
+						 }
+					}
+					else{
+						alert("Please enter Comments");	
+					}
+			}
+			else{
+				document.getElementById("ssoVal").value="";
+			}
+			
+			 
+			
+		},
+		confirmFacility : function() {
+			var selectedRowArray = document.getElementById("facilitiesMaintainanceTable").selectedRows;
+			
+			if(selectedRowArray.length > 1)
+			{
+				alert("Please select only one work order for operation.");
+				return;
+			}
+			var creatorSSO = document.getElementById('ssoVal').value;
+			var commentVal = document.getElementById('comments').value; 
+			var isCreatorValid = this.isValidCreatorSSO(creatorSSO);
+			if(isCreatorValid){
+				if(commentVal!="" && commentVal!= null){
+					this.wordOrderStatus = "确认";
+					document.getElementById("facilityMaintainence").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+					document.getElementById('facilityMaintainence').submit();
+					 alert("Work order has Confirmed.");
+				}
+				else{
+					alert("Please enter Comments");	
+					}
+			}
+			else{
+				document.getElementById("ssoVal").value="";
+			}
+
+		},
+		isValidCreatorSSO : function (ssoValue){
+			var resp = false;
+			$.ajax({
+				method  : 'GET',
+				url     : 'http://localhost:8081/pmms-api/isValidSSO',
+				dataType : 'json',
+			    data: {"sso" : ssoValue}, 
+				async: false,
+				error : function (status) {
+					alert("Your operation failed");
+					resp= false;
+				},
+				success: function(data) {
+					if(data.data=="SUCCESS")
+						{
+							resp= true;
+						}
+					else if(data.data=="Fail" || data.data=="FAIL")
+						{
+							alert("Please provide a valid SSO.");
+							resp= false;
+						}
+				}
+			});
+			return resp;
+		},
+		listeners: {
+			'issueTypeDropDown.dropdown_content_value_changed': 'issuechanged',
+			'faultLocationDropDown.dropdown_content_value_changed': 'factoryNameChanged',
+			'maintTypeDropDown.dropdown_content_value_changed': 'maintainanceTypeChanged'
+			},
+			issuechanged: function (event) {			
+				
+				document.getElementById("issueType").value = event.detail.textValue;
+			},
+				
+			factoryNameChanged: function (event) {			
+					
+				document.getElementById("faultLocation").value = event.detail.textValue;
+			},
+			
+			maintainanceTypeChanged: function (event) {			
+					
+				document.getElementById("maintTypeFAC").value = event.detail.textValue;
+			},
+			
+
+			
+			
+			refreshData : function() {
+				this.$.test.generateRequest();
+			},
+	});
+	
+	
+</script> </dom-module>

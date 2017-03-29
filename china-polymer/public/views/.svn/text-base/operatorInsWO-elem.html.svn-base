@@ -1,0 +1,384 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="operator-Inspection">
+<template> 
+<px-card icon="fa-suitcase" header-text="Operator Inspection WorkOrder" chevron>
+<px-tab-set selected={{selected}}> <px-tab>Current WorkOrder Inspection
+</px-tab> <px-tab>Work Order Inspection History</px-tab> 
+ </px-tab-set> 
+<px-tab-pages selected={{selected}}> 
+<section>
+	<br>		
+		<form is="iron-form" content-type="application/json" id="searchOperatorWOWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleCheckData" method="post">
+			<input type="hidden" id="checkData" name="checkData" value="{{checkData}}">			
+		</form>
+		<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+		
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+		
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchWOInspectionWithDates">Search</button>
+			</div>
+		</div>
+			<!-- 
+			-----------------------------Download-------------------------------------------------
+	<form content-type="application/xls" id="downloadExcel" method="GET" >
+			<div class="control-group pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="callDownlaodExcel">Download</paper-button> 
+		</div>		
+		</form>
+		-----------------------------Print-------------------------------------------------
+			
+		
+		<form  content-type="application/pdf" id="printTable" method="GET">
+		<div class="control-group pull-left" style="width: 130px">
+		<paper-button class="btn btn-large btn-primary" raised on-click="printData">Print</paper-button>
+		</div>		
+		</form> -->
+		<!-- -----------------------------datatable------------------------------------------------- -->
+	
+		<br><br>
+		<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse"  method="post">
+			<div class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="technicianList" url="http://localhost:8081/pmms-api/getMaintainanceCheck" last-response="{{OperatorWorkorder}}" auto on-response="handleResponse">
+				</byutv-jsonp>
+		
+		<px-data-table id="WorkorderInspection" enable-column-resize selectable table-data="{{OperatorWorkorder}}"  on-px-row-click="rowSelectedcurrent"> 
+			<px-data-table-column name="maintId" label="WorkOrder"></px-data-table-column>
+			<px-data-table-column name="equipId" label="Equipment Number"></px-data-table-column>
+			<px-data-table-column name="maintType" label="Category"></px-data-table-column>
+			<px-data-table-column name="sso" label="Technician SSO"></px-data-table-column>
+			<px-data-table-column name="plannedStartDt" label="Scheduled Maintenance Time"></px-data-table-column>
+			<px-data-table-column name="actualStartDt" label="Actual Maintenance Time"></px-data-table-column>
+		</px-data-table>
+		
+		</div>
+		</form>
+		<div id="DtlsTable" class="module-body pull-left" style="width: 100%"  class="hide">
+			<byutv-jsonp url="http://localhost:8081/pmms-api/getMaintainanceTechCheckDtls"
+			params='{{getMaintId(maintId)}}'
+			on-response="handleResponse"
+			last-response="{{resultData}}" debounce-duration="300" auto="true"></byutv-jsonp>
+			<px-data-table id="DtlsTableData" enable-column-reorder	hide-pagination-control table-data="{{resultData}}">
+			<px-data-table-column name="maintId" label="WorkOrder"></px-data-table-column>
+			<px-data-table-column name="scanValue" label="Scan Value"></px-data-table-column>
+			<px-data-table-column name="spendTime" label="Spend Time"></px-data-table-column>
+			<px-data-table-column name="createdBy" label="Created By"></px-data-table-column>
+			<px-data-table-column name="createdDt" label="Created Date"></px-data-table-column>
+			<px-data-table-column name="lastUpdatedBy" label="Last Updated By"></px-data-table-column>
+			<px-data-table-column name="lastUpdatedDt" label="Last Updated Date"></px-data-table-column>
+			<px-data-table-column name="frequency" label="Frequency"></px-data-table-column>
+			<px-data-table-column name="maintItem" label="Maintain Item"></px-data-table-column>
+			<px-data-table-column name="maintItemId" label="Maintain Item Id"></px-data-table-column>
+			</px-data-table>
+		</div>
+		
+		</section>
+		
+		<!--**************************TAB-2****************************************************************************************************************-->
+		
+		<section>
+	<br>		
+		<form is="iron-form" content-type="application/json" id="searchWOHistoryWithDates" on-iron-form-invalid="ironforminvalid" on-iron-form-response="handleHistoryData" method="post">
+			<input type="hidden" id="historyData" name="historyData" value="{{historyData}}">			
+		</form>
+		<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+		
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromHistoryDateField" name="fromHistoryDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromHistoryDate" id="fromHistoryDate" on-tap="triggerFromHistoryDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+		
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="todate">
+					<paper-input id="toHistoryDateField" name="toHistoryDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toHistoryDate" id="toHistoryDate" on-tap="triggerToHistoryDate" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchOperatorHistoryWithDates">Search</button>
+			</div>
+		</div>
+		
+		<!-- -----------------------------Download------------------------------------------------- -->
+	<form content-type="application/xls" id="downloadExcelWOHistory" method="GET">
+			<div class="control-group pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="callDownlaodExcelWOHistory">Download</paper-button> 
+		</div>		
+		</form>
+		
+		<!-- -----------------------------Print------------------------------------------------- -->
+			
+		<br><br>
+		<form  content-type="application/pdf" id="printTableWOHistory" method="GET">
+		<div class="control-group pull-left" style="width: 130px">
+		<paper-button class="btn btn-large btn-primary" raised on-click="printDataWOHistory">Print</paper-button>
+		</div>		
+		</form>
+		
+				
+		<br><br>
+		<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse"  method="post">
+			<div class="module-body pull-left" style="width: 100%">
+				<byutv-jsonp id="technicianHistoryList" url="http://localhost:8081/pmms-api/getOperatorCheckHistory" params='{"status":"关闭"}' last-response="{{MaintainanceTechnicianHistory}}" auto on-response="handleResponse">
+				</byutv-jsonp>
+		
+		<px-data-table id="WorkorderHistory" enable-column-resize selectable table-data="{{MaintainanceTechnicianHistory}}" on-px-row-click="SelectedHistoryrow" > 
+			<px-data-table-column name="maintId" label="WorkOrder"></px-data-table-column>
+			<px-data-table-column name="equipId" label="Equipment Number"></px-data-table-column>
+			<px-data-table-column name="maintType" label="Category"></px-data-table-column>
+			<px-data-table-column name="sso" label="Technician SSO"></px-data-table-column>
+			<px-data-table-column name="plannedStartDt" label="Scheduled Maintenance Time"></px-data-table-column>
+			<px-data-table-column name="actualStartDt" label="Actual Maintenance Time"></px-data-table-column>
+		</px-data-table>
+		
+		
+		</div>
+		</form>
+		
+		<div id="DtlsTableHistory" class="module-body pull-left" style="width: 100%"  class="hide">
+			<byutv-jsonp url="http://localhost:8081/pmms-api/getMaintainanceTechCheckDtls"
+			params='{{getMaintId(maintId)}}'
+			on-response="handleResponse"
+			last-response="{{resultData}}" debounce-duration="300" auto="true"></byutv-jsonp>
+			<px-data-table id="DtlsTableDataHistory" enable-column-reorder	hide-pagination-control table-data="{{resultData}}">
+			<px-data-table-column name="maintId" label="WorkOrder"></px-data-table-column>
+			<px-data-table-column name="scanValue" label="Scan Value"></px-data-table-column>
+			<px-data-table-column name="spendTime" label="Spend Time"></px-data-table-column>
+			<px-data-table-column name="createdBy" label="Created By"></px-data-table-column>
+			<px-data-table-column name="createdDt" label="Created Date"></px-data-table-column>
+			<px-data-table-column name="lastUpdatedBy" label="Last Updated By"></px-data-table-column>
+			<px-data-table-column name="lastUpdatedDt" label="Last Updated Date"></px-data-table-column>
+			<px-data-table-column name="frequency" label="Frequency"></px-data-table-column>
+			<px-data-table-column name="maintItem" label="Maintain Item"></px-data-table-column>
+			<px-data-table-column name="maintItemId" label="Maintain Item Id"></px-data-table-column>
+			</px-data-table>
+		</div>
+		</section>
+		</px-tab-pages>
+		</px-card>
+		</template>
+		<script>
+		
+		
+		Polymer({
+		    /* this is the element's prototype */
+		    is: 'operator-Inspection',
+
+		    behaviors: [
+			             PmmsBehaviors.LanguageBehavior
+			           ],
+			searchKey : null,
+			 properties: {
+			  		
+			  		maintId: {
+					  			type: String,
+					  			notify: true
+			  				}		
+			        },
+			getMaintId : function(maintId) {
+	     	       return {
+	     	    	   maintId : maintId
+	     	       };
+	  		},
+			fromDate: {
+				type: String,
+	 			notify: true
+			},
+			fromHistoryDate: {
+				type: String,
+	 			notify: true
+			},
+			
+			toDate: {
+				type: String,
+	 			notify: true
+			},
+			toHistoryDate: {
+				type: String,
+	 			notify: true
+			},
+			
+			toDateField: {
+	 			type: String,
+	 			notify: true,
+	 			value:""
+	 		},
+	 		toHistoryDateField: {
+	 			type: String,
+	 			notify: true,
+	 			value:""
+	 		},
+			fromDateField: {
+	 			type: String,
+	 			notify: true,
+	 			value:""
+	 		},
+	 		fromHistoryDateField: {
+	 			type: String,
+	 			notify: true,
+	 			value:""
+	 		},
+	 		
+	 		
+	 		triggerToDate: function(){
+				console.log("To date : "+this.$.toDate);
+				this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+				this.toDateField=this.toDate;
+				document.getElementById("toDateField").value=this.toDateField;
+			},
+			
+			triggerFromDate: function(){
+				console.log("From date : "+this.$.fromDate);
+				this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+				this.fromDateField=this.fromDate;
+				document.getElementById("fromDateField").value=this.fromDateField;
+			},
+			
+			searchWOInspectionWithDates : function()
+			{
+				if
+					((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+					alert("Please select From Date and To Date to search in the List.");
+				  
+				else {
+					this.checkData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+"}";
+					document.getElementById("searchOperatorWOWithDates").action = "http://localhost:8081/pmms-api/searchListtWithDates";
+					document.getElementById('searchOperatorWOWithDates').submit();
+				}
+				
+			},
+			handleCheckData : function(e) {
+				var details=e.detail;
+				if(details.status==200)
+				{
+					this.OperatorWorkorder=details.response;
+					this.refreshTable("technicianHistoryList");
+				}
+				else{			
+					alert("error in searching list!!!!");
+				
+				}
+			},
+			handleResponse : function(event) {
+				var details=event.detail;   
+				this.refreshTable(event.target.id);
+			},
+			//****************************************************************************************************************
+			
+			triggerToHistoryDate: function(){
+				console.log("To date : "+this.$.toHistoryDate);
+				this.toHistoryDate = this.$.toHistoryDate.dateTime.substring(0,this.$.toHistoryDate.dateTime.indexOf('T'));
+				this.toHistoryDateField=this.toHistoryDate;
+				document.getElementById("toHistoryDateField").value=this.toHistoryDateField;
+			},
+			
+			triggerFromHistoryDate: function(){
+				console.log("From date : "+this.$.fromHistoryDate);
+				this.fromHistoryDate = this.$.fromHistoryDate.dateTime.substring(0,this.$.fromHistoryDate.dateTime.indexOf('T'));
+				this.fromHistoryDateField=this.fromHistoryDate;
+				document.getElementById("fromHistoryDateField").value=this.fromHistoryDateField;
+			},
+			searchOperatorHistoryWithDates : function()
+			{
+				if
+					((this.toHistoryDateField==undefined || this.toHistoryDateField==null || this.toHistoryDateField=="") || 
+							(this.fromHistoryDateField==undefined || this.fromHistoryDateField==null || this.fromHistoryDateField=="") )
+					alert("Please select From Date and To Date to search in the List.");
+				  
+				else {
+					this.historyData="{'fromHistoryDate':"+this.fromHistoryDateField+",'toHistoryDate':"+this.toHistoryDateField+"}";
+					document.getElementById("searchWOHistoryWithDates").action = "http://localhost:8081/pmms-api/searchHistoryListtWithDates";
+					document.getElementById('searchWOHistoryWithDates').submit();
+				}
+				
+			},
+			handleHistoryData : function(e) {
+				var details=e.detail;
+				if(details.status==200)
+				{
+					this.MaintainanceTechnicianHistory=details.response;
+					this.refreshTable("technicianHistoryList");
+				}
+				else{			
+					alert("error in searching list!!!!");
+				
+				}
+			},
+			/* printData : function() {
+				 document.getElementById("printTable").action = "http://localhost:8081/pmms-api/printDetailsOrPdf"; 
+				 document.getElementById("printTable").submit();
+				   
+			},
+
+			 callDownlaodExcel : function() {
+
+			 document.getElementById("downloadExcel").action = "http://localhost:8081/pmms-api/getOperatorWorkorderListDownlaod";
+			 document.getElementById("downloadExcel").submit();
+
+			},  */
+			
+			printDataWOHistory : function() {
+				 document.getElementById("printTableWOHistory").action = "http://localhost:8081/pmms-api/printDetailsOrPdf?status='CL'"; 
+				 document.getElementById("printTableWOHistory").submit();
+				   
+			},
+
+			callDownlaodExcelWOHistory : function() {
+
+			 document.getElementById("downloadExcelWOHistory").action = "http://localhost:8081/pmms-api/getOperatorWorkorderListDownlaod?status='CL'";
+			 document.getElementById("downloadExcelWOHistory").submit();
+
+			}, 
+			
+			
+			handleResponse : function(event) {
+				var details=event.detail;
+				this.refreshTable(event.target.id);
+			},
+			rowSelectedcurrent: function(e) {
+		        var clickedRow = e.detail.row;
+		  		this.currentRow = clickedRow.row;
+		  		this.maintId = this.currentRow.maintId.value; 
+				if (!clickedRow._selected) {
+					this.$.DtlsTable.classList.remove("hide");
+				} else {
+					this.$.DtlsTable.classList.add("hide");
+				}
+    	},
+			SelectedHistoryrow: function(e) {
+		        var clickedRow = e.detail.row;
+		  		this.currentRow = clickedRow.row;
+		  		this.maintId = this.currentRow.maintId.value; 
+				if (!clickedRow._selected) {
+					this.$.DtlsTableHistory.classList.remove("hide");
+				} else {
+					this.$.DtlsTableHistory.classList.add("hide");
+				}
+    	}
+		});
+		
+			
+		</script>
+		
+		</dom-module>

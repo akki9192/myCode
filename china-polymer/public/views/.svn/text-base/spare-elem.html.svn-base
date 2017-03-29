@@ -1,0 +1,33 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="spare-elem">
+
+<template> 
+<px-card icon="fa-suitcase" header-text="Spare Part Management" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Spare Part Stock</px-tab> 
+		<px-tab>Saftey Stock</px-tab> 
+		<px-tab>Spare part Storage transaction</px-tab> 
+		<px-tab>Spare Parts not being used</px-tab>
+		<px-tab>Operation Log</px-tab>
+		</px-tab-set>
+	<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+	<px-tab-pages selected="{{selected}}">
+	<SparePart-Stock></SparePart-Stock>
+	<Safety-Stock></Safety-Stock>
+	<SparePart-StorageTransaction></SparePart-StorageTransaction>
+	<SparePart-NotUsed></SparePart-NotUsed>
+	<SparePart-OperationLog></SparePart-OperationLog>
+
+</px-tab-pages>
+</px-card>
+
+</template> <script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'spare-elem',
+			    
+			  });
+			
+			</script></dom-module>

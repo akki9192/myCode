@@ -1,0 +1,142 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="equipmentIssueList-elem"> 
+<template>
+<px-card icon="fa-suitcase" header-text="Equipment Issue List" chevron>
+<px-tab-set selected={{selected}}>
+	 <px-tab>Equipment Issues</px-tab> 
+	 <px-tab>Equipment Issue History</px-tab> 
+</px-tab-set> 
+<px-tab-pages selected={{selected}}> 
+
+<section>
+<br><br>
+
+
+<form is="iron-form" id="equipList" method="POST" content-type="application/json">
+<div>
+	<paper-button raised on-click="selectEquipListRecords" 
+	class="btn btn-large btn-primary"> 开始维修/Start</paper-button>
+			<paper-button raised  on-click="closeEquipListRecords" class="btn btn-large btn-primary">Close</paper-button>
+<br><br>
+<input type="hidden" id="idsSelected" name="idsSelected"
+				value="{{idsSelected}}"> <br> <br>
+<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="test" url="http://localhost:8081/pmms-api/getEquipmentIssues" last-response="{{minidata1}}"  auto>
+		</byutv-jsonp>
+		<px-data-table id="pxEquipDtls" enable-column-resize selectable table-data="{{minidata1}}" id="RemoveSparePart" selected-rows="{{selectedRows6}}" on-px-row-click="rowClicked">  
+		
+			<px-data-table-column name="woId" label="Work Order No." id="workOrderNo"></px-data-table-column> 
+			<px-data-table-column name="requestorSSO" label="Staff" id="staff"></px-data-table-column>
+			<px-data-table-column name="equipId" label="Equipment" id="equipment"></px-data-table-column>
+			 <px-data-table-column name="issueType" label="Issue Type" id="issueTyper"></px-data-table-column> 
+			 <px-data-table-column name="faultDescription" label="Problem Description" id="problemDescription"></px-data-table-column>
+			  <px-data-table-column name="" label="Principal" id="pricipal"></px-data-table-column>
+			  <px-data-table-column name="actualEndDate" label="Estimated Finish Time" id="finishTime"></px-data-table-column> 
+			 <px-data-table-column name="lastUpdatedBy" label="Person(Closed)" id="pClosed"></px-data-table-column> 
+			 
+		</px-data-table>
+		
+	</div>
+	</div>
+	</form>
+</section>
+<section>
+<br><br>
+<div>
+
+<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="equipHistory" url="http://localhost:8081/pmms-api/getEquipmentIssuesHistory" last-response="{{historyData}}" auto>
+		</byutv-jsonp>
+		<px-data-table  id="pxEquipDtlsHistory" enable-column-resize selectable table-data="{{historyData}}" id="RemoveSparePart" selected-rows="{{selectedRows6}}">  
+		
+			<px-data-table-column name="woId" label="Work Order No." id="workOrderNo"></px-data-table-column> 
+			<px-data-table-column name="requestorSSO" label="Staff" id="staff"></px-data-table-column>
+			<px-data-table-column name="equipId" label="Equipment" id="equipment"></px-data-table-column>
+			 <px-data-table-column name="remark" label="Issue Type" id="issueTyper"></px-data-table-column> 
+			 <px-data-table-column name="faultDescription" label="Problem Description" id="problemDescription"></px-data-table-column>
+			  <px-data-table-column name="remark" label="Pricipal" id="pricipal"></px-data-table-column>
+			  <px-data-table-column name="actualEndDate" label="Estimated Finish Time" id="finishTime"></px-data-table-column> 
+			 <px-data-table-column name="lastUpdatedBy" label="Person(Closed)" id="pClosed"></px-data-table-column> 
+			 
+		</px-data-table>
+		
+	</div>
+	</div>
+</section>
+</px-tab-pages>
+</px-card>
+</template>
+<script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'equipmentIssueList-elem',
+			    selected: 0,
+			    refreshData: function() {
+			        this.$.test.generateRequest();
+			    },	
+			    properties: {
+			  		
+			    	idsSelected: {
+			    		type : Array,
+					  			notify: true
+			  				}		
+			        },
+			    
+			   rowClicked:function(e)
+        	{  
+        		//var equipment_issue = document.getElementById("EquipIssues");
+        		var clickedRow = e.detail.row;
+	  			var id = clickedRow.row.id.value; //id of clicked row	  		
+	  			var value=""; //new value
+	  			var existingValue=$("#idsSelected").val(); //existing value	  
+	  			var existFlag =false;
+	  			var j=0;
+	  			var newValue="";
+	  			
+	  			var idArray= existingValue.split(",");	  
+	  			for(i=0;i<idArray.length;i++){
+	  				if(idArray[i]==id){	  					
+	  					existFlag=true;
+	  					break;
+	  				}
+	  			}
+	  			
+	  			if(existFlag){
+	  				for(i=0;i<idArray.length;i++){
+	  					if(idArray[i]!=id){
+	  						newValue=idArray[i]+','+newValue;
+	  					}
+	  				}
+	  				value=newValue;
+	  			}else{
+	  				value = id + ',' + existingValue;
+	  			}	  			
+	  			
+	  			if(value.charAt(value.length-1)==","){
+	  				 //trim last comma if any
+	  				value=value.substring(0, value.length - 1);		
+	  			}	
+	  				  							  			  		
+	  			this.idsSelected = value;	  			
+        	},
+			    selectEquipListRecords:function(){
+					
+			    	document.getElementById("equipList").action = "http://localhost:8081/pmms-api/updateEquipmentIssues";
+		    		document.getElementById("equipList").submit();
+	    			 
+	      
+	    		},
+	    		
+	    		closeEquipListRecords:function(){
+					
+			    	document.getElementById("equipList").action = "http://localhost:8081/pmms-api/closeEquipmentIssues";
+		    		document.getElementById("equipList").submit();
+		    		this.$.equipHistory.generateRequest();
+		    		this.$.test.generateRequest();
+		    		this.$.pxEquipDtls.generateRequest();
+	    			 
+	      
+	    		},			    
+			  });
+			
+			</script></dom-module>

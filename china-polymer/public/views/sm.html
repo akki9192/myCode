@@ -1,0 +1,142 @@
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="fa-suitcase" header-text="SM Work Order" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>Scheduled Maintenance Work Orders</px-tab>
+    <px-tab>Operator Inspection Work Order Inspection </px-tab>
+	<px-tab>Maintenance Inspection Work Order Inspection </px-tab>
+	<px-tab>Equipment Issues</px-tab>
+	<px-tab>Create Scheduled Maintenance Plan</px-tab>
+	<px-tab>Plan Maintenance Content creation </px-tab>
+	<px-tab>Inspection and Maintenance WO-(Gantt Chart)</px-tab>
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}">
+
+    <!-- TAB-1 -->
+		<section>			
+			<template id="my-subtabs" is="dom-bind">					
+					
+						<br>
+						<br>
+		
+			<px-tab-set selected="{{selected}}">
+						<px-tab>Work Order</px-tab>
+						<px-tab> BM Work Order</px-tab>
+						<px-tab>Facility Work Order</px-tab>				
+					</px-tab-set>
+					<px-tab-pages selected="{{selected}}">				
+					
+					<!-- Sub tab-1 -->
+						<section>
+							<br><br>
+						</section>
+					
+					<!-- Sub Tab-2 -->					
+						<section>
+							<br><br>
+						</section>
+					
+					<!-- Sub Tab-3 -->					
+						<section>
+							<br><br>
+						</section>
+			</template>
+		</section>
+		
+	<!-- TAB-2 -->
+		<section>
+			
+		</section>
+		
+	<!-- TAB-3 -->
+		<section>
+			
+		</section>
+		
+	<!-- TAB-4 -->
+		<section>
+		<br><br>
+		
+			<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Edit</button>
+			<button class="btn btn--primary modal-trigger" style="margin-left:10px;">Delete</button>
+			
+			<div class="module-body pull-left" style="width:100%">        			
+				<iron-ajax id="test" url="/sample-data/sm.json" last-response="{{minidata}}" auto>
+				</iron-ajax>
+				<px-data-table show-column-chooser enable-column-resize  selectable table-data="{{minidata}}">					
+                    <px-data-table-column name="发现时间"></px-data-table-column> 
+					<px-data-table-column name="关联工单号"></px-data-table-column> 
+					<px-data-table-column name="发现人员"></px-data-table-column> 
+					<px-data-table-column name="设备"></px-data-table-column> 
+					<px-data-table-column name="问题描述"></px-data-table-column>
+					<px-data-table-column name="负责人"></px-data-table-column> 
+					<px-data-table-column name="预计完成时间"></px-data-table-column> 
+					<px-data-table-column name="关闭人员"></px-data-table-column> 
+					<px-data-table-column name="实际完成时间"></px-data-table-column> 
+					<px-data-table-column name="备注"></px-data-table-column> 
+				</px-data-table>
+			</div>
+		</section>
+		
+		<!-- TAB-5 -->
+		<section>
+			
+		</section>
+		
+		<!-- TAB-6 -->
+		<section>
+			<br>
+			<br>	
+		<template id="my-subtabs1" is="dom-bind">
+			<px-tab-set selected="{{selected}}">
+						<px-tab>Maintanance Item </px-tab>
+						<px-tab> Maintanance Inspection creation </px-tab>										
+					</px-tab-set>
+					<px-tab-pages selected="{{selected}}">				
+					
+					<!-- Sub tab-1 -->
+						<section>
+							<br><br>
+						</section>
+					
+					<!-- Sub Tab-2 -->					
+						<section>
+							<br><br>
+						</section>
+		</section>
+		
+		<!-- TAB-7 -->
+		<section>
+		</section>				
+	</px-tab-pages>
+	</template>
+								
+				<script>
+						var t = document.querySelector('#my-tabs');
+						t.addEventListener('dom-change', function() {
+					// auto-binding template is ready.
+					this.selected = 0;      
+					});	
+					
+					var t1 = document.querySelector('#my-subtabs');
+					t1.addEventListener('dom-change', function() {
+				// auto-binding template is ready.
+				this.selected = 0;      
+				});	
+				
+				var t2 = document.querySelector('#my-subtabs1');
+					t2.addEventListener('dom-change', function() {
+				// auto-binding template is ready.
+				this.selected = 0;
+				
+				});
+				 <!-- function inputLostFocus(evt){
+					<!-- Polymer.dom(document).querySelector("#three").modalButtonClicked();
+				  <!-- } - -->->
+					 -->
+				</script>										
+		</px-tab-pages>
+	</px-card>
+</template>
+
+
+

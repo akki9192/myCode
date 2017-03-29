@@ -1,0 +1,252 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="CurrentPCMWO-Fulfillmenttracking">
+<template> 
+<px-card icon="fa-suitcase" header-text="" chevron>
+<section>
+<br><br>
+		
+		<div class="legendmain mb10 pull-left">
+			<form is="iron-form" content-type="application/json" id="PCMAddForm" on-iron-form-invalid="ironforminvalid" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button raised onclick="PCMRecords.open()" class="btn btn-large btn-primary" >Add</paper-button>				
+						<paper-dialog id="PCMRecords">
+					 		<paper-dialog-scrollable>	
+									<table>
+										<tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Work Order Number:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" name="workOrderId" id="workOrderId" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							            <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Category:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="woCategory" name="woCategory" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							            
+							           <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Maintainence Item Description:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="itemDescription" name="itemDescription" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							           <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Technician SSO:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="technicianName" name="technicianName" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							           <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Personnel:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="noOfPorsonel" name="noOfPorsonel" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr> 
+							           <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Date:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="date" name="date" style="width: 180px;" 
+							              	   			placeholder="e.g. yyyy-mm-dd">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							           <tr>
+							             <td style="padding: 5px"><label class="control-label"><b>Equipment Number:*</b></label></td>
+							              <td style="padding: 5px">
+							              <paper-input class="paper-input-medium search-query span3" id="equipmentId" name="equipIdTrans" style="width: 180px;">
+							              </paper-input>   
+							              </td>
+							           </tr>
+							           <tr>
+							           <td> 
+	                    <!-----------------------------------Inside------------------------------------------------------------------------------>
+								           	<paper-button raised on-click="saveDateDetails" class="btn btn-large btn-primary" >Click</paper-button>				
+												<paper-dialog id="insideAnother">
+						 							<paper-dialog-scrollable>
+						 								<table>									 						 
+										 					<tr>	
+										 						<td>
+										 							<div class="pull-left" style="width: 900px";>
+																				<div class="control-group pull-left" style="width: 450px">
+																					<label class="control-label" style="width: 80px;"> <b>Planned Date:</b>
+																					</label>
+																		
+																		<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="plannedDate">
+																			<paper-input id="PlannedDateField" name="plannedDate" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+																			</paper-input>
+																			<px-datetime-picker id="plannedDate" on-tap="triggerPlannedDateField"
+																				style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+																		</div>
+																	</div>
+																</div></td>
+							 								</tr>
+							 								<tr>					             					
+								             					<td><paper-checkbox name="plannedHalfDay" id="plannedHalfDay" >Half Day</paper-checkbox>
+								             					<paper-checkbox name="plannedFullDay" id="plannedFullDay">Full Day</paper-checkbox></td>
+								             				</tr>
+								           					<tr>
+								           					<tr>
+							 									<td><div class="pull-left" style="width: 900px";>
+																	<div class="control-group pull-left" style="width: 450px">
+																		<label class="control-label" style="width: 80px;"> <b>Actual Maintenance Date:</b>
+																		</label>
+															
+																		<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="actualDate">
+																			<paper-input id="ActualDateField" name="mainDate" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;">
+																			</paper-input>
+																			<px-datetime-picker id="actualDate" on-tap="triggerActualDateField"
+																				style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+																		</div>
+																	</div>
+																</div></td>
+								             				<tr>						             					
+								             					<td><paper-checkbox name="maintHalfDay" id="maintHalfDay">Half Day</paper-checkbox>
+								             					<paper-checkbox name="maintFullDay" id="maintFullDay">Full Day</paper-checkbox></td>
+								             				</tr>
+								             				<tr>
+											                     <td style="padding: 5px"><label class="control-label"><b>Equipment Number:*</b></label></td>
+											                  	 <td style="padding: 5px">
+												             		  <paper-input class="paper-input-medium search-query span3" id="equipId" name="equipId" style="width: 180px;" required auto-validate error-message ="{{localize('sparePartNo')}}">
+												                      </paper-input>   
+											                     </td>
+											                </tr>
+								             			</table>
+						 							</paper-dialog-scrollable>
+								 						<div class="buttons">
+									   					 <paper-button dialog-dismiss >Cancel</paper-button>
+									    				 <paper-button dialog-confirm autofocus on-click="handlePCMCheckboxAddRequest">Submit</paper-button>
+									 				   </div>
+						 						</paper-dialog>
+						 					<!-- -----------------------------------inside PopupEnd------------------------------------------- -->	
+						 					</td>
+								           </tr>              						             
+								         </table>
+								       </paper-dialog-scrollable>
+							  				<div class="buttons">
+							   					 <paper-button dialog-dismiss >Cancel</paper-button>
+							    				 <paper-button dialog-confirm autofocus on-click="handlePCMAddRequest">Submit</paper-button>
+							 				 </div>
+							   </paper-dialog>		
+						</form>
+				</div>
+	
+
+		<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp url="http://localhost:8081/pmms-api/getQMDataRecordFromWO" last-response="{{qmDataRecord}}" auto >
+		</byutv-jsonp>
+		<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{qmDataRecord}}" on-px-row-click="selectedRow">  
+		
+			<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+			<px-data-table-column name="workOrderNumber" label="WO"></px-data-table-column> 
+			<px-data-table-column name="equipId2" label="Equipment Number"></px-data-table-column>
+			<px-data-table-column name="creatorSSO" label="Employee Sso"></px-data-table-column>
+			<px-data-table-column name="createdDate" label="Date"></px-data-table-column> 			
+			 
+		</px-data-table>		
+	</div>
+</section>
+</px-card>
+</template>
+<script>
+Polymer({
+    /* this is the element's prototype */
+    is: 'CurrentPCMWO-Fulfillmenttracking',
+behaviors : [ PmmsBehaviors.LanguageBehavior ],
+
+		properties : {		
+			currentRow : {
+				type : Object,
+				notify : true,
+				
+				value : function() {
+					return {};
+				}},
+		
+	
+		PlannedDateField : {
+			type : String,
+			notify : true,
+			value : ""
+		},
+	
+		ActualDateField : {
+			type : String,
+			notify : true,
+			value : ""
+		}
+		},
+		
+		triggerPlannedDateField : function() {
+			//console.log("calibrationdate : " + this.$.StockFromDate);
+			this.plannedDate = this.$.plannedDate.dateTime.substring(0,
+					this.$.plannedDate.dateTime.indexOf('T'));
+			this.plannedDateField = this.plannedDate;
+			document.getElementById("PlannedDateField").value = this.plannedDateField;
+		},
+		
+		triggerActualDateField : function() {
+			//console.log("calibrationdate : " + this.$.StockFromDate);
+			this.actualDate = this.$.actualDate.dateTime.substring(0,
+					this.$.actualDate.dateTime.indexOf('T'));
+			this.actualDateField = this.actualDate;
+			document.getElementById("ActualDateField").value = this.actualDateField;
+		},
+		
+		selectedRow: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+			 
+			 
+			 this.$.workOrderId.value=clickedRow.row.workOrderNumber.value;
+			 this.$.equipmentId.value=clickedRow.row.equipId2.value;
+			 this.$.technicianName.value=clickedRow.row.creatorSSO.value;
+			 
+			 
+			// this.$.createdDate.value=clickedRow.row.createdDate.value;
+			// this.$.itemDescription.value=clickedRow.row.itemDescription.value;
+			 //this.$.noOfPorsonel.value=clickedRow.row.noOfPorsonel.value;
+			 
+			/*  document.getElementById("workOrderId").value=clickedRow.row.workOrderNumber.value;
+			 document.getElementById("equipmentId").value=clickedRow.row.equipId.value;
+			 document.getElementById("technicianName").value=clickedRow.row.creatorSSO.value;
+			 document.getElementById("createdDate").value=clickedRow.row.createdDate.value;
+			 document.getElementById("itemDescription").value=clickedRow.row.itemDescription.value;
+			 document.getElementById("noOfPorsonel").value=clickedRow.row.noOfPorsonel.value;
+	 */
+		},
+		
+		handlePCMAddRequest : function() {		
+			
+	    	document.getElementById("PCMAddForm").action = "http://localhost:8081/pmms-api/addPCMRecord";  
+			document.getElementById('PCMAddForm').submit(); 
+			
+    },
+    
+    handlePCMCheckboxAddRequest : function(){
+    	
+    	document.getElementById("PCMAddForm").action = "http://localhost:8081/pmms-api/addPCMDates";  
+		document.getElementById('PCMAddForm').submit(); 
+    	
+    },
+    saveDateDetails : function(){
+    	this.$.equipId.value = document.getElementById("equipmentId").value;
+    	insideAnother.open();
+    	
+    }
+  
+  });
+
+</script>
+</dom-module>

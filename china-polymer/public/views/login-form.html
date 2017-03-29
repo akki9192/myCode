@@ -1,0 +1,208 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link  rel="import" href="../css/button-style.html">
+<dom-module id="login-form" attributes="sso sso_placeholder sso_min_length password password_min_length handler failed">
+
+<template> 
+<px-card icon="fa-suitcase" header-text="Login Management" chevron>
+	<link rel="stylesheet" href="../css/login-form.css">
+	 <script type="text/javascript" src="../scripts/modules/sample-module/login-form.js"></script>
+	<form id="form" method="post" >
+    		<fieldset>
+    			<div id="msg"></div>
+    		</fieldset>
+		    <fieldset name="sso">
+		      <label for="sso">SSO Id*</label>
+		      <input type="number" name="sso" id="sso" placeholder="{{sso_placeholder}}" value="{{sso}}" required>
+		      <div class="status" id="sso_status"></div>
+		    </fieldset>
+
+		   	<fieldset name="password">
+		      <label for="password">Password*</label>
+		      <input type="password" name="password"  id="password" required>
+		      <div class="status" id="password_status"></div>
+		    </fieldset>
+		 
+		 <div id="msg"></div>
+		 
+   	<byutv-jsonp id="ajax"
+			url="http://localhost:8081/pmms-api/login"
+			  params='{{getParams(sso,password)}}' on-response="signInResponse"
+			 debounce-duration="300"></byutv-jsonp>
+
+    <button on-click="signIn">Signin</button>
+		 
+		<!--     <fieldset>
+		    	<input type="submit" id="submit" value="Submit">
+			</fieldset> -->
+		</form>
+	
+</px-card>
+</template>
+ <script>
+ 
+ Polymer({
+	    is: "login-form",
+		
+	    // add properties and methods on the element's prototype
+	    properties: {
+	      // declare properties for the element's public API
+	      sso: {
+	        type: String,
+	        value: "sso"
+	      },
+	      password: {
+	        type: String,
+	        value: "password"
+	      },
+	      errorMessage: {
+	        type: String,
+	        value: ""
+	      }
+	    },
+	    
+	    getParams : function(sso, password) {
+	    	return {
+                        sso : sso,
+                        password : password
+            };
+		},
+
+	    signIn: function() {
+	     	$.post("http://localhost:8081/pmms-api/login",
+	    		    {
+	    		        sso: sso.value,
+	    		        password: password.value
+	    		    },
+	    		    function(data, status){
+	    		    	if(data=='SUCCESS')
+	    		    	 	window.location.href = "backend.html";
+	    		    	else{
+	    		    		var msg = document.getElementById("msg")
+	    		    		msg.innerHTML = "No user with this username/password!!";
+	    			        msg.style.display = "block";
+	    		    	}
+	    		    		
+	    		    });
+	    },
+
+	   
+	    signInResponse: function(request) {
+	      response = request.detail.response;
+	      console.log("response: "+response);
+	      if (response.code == '0') {
+	        this.fire("signin-success", response);
+	      } else {
+	        this.fire("signin-fail", response);
+	      }
+	    }
+	  });
+ 
+ /* var defaults = {
+		    handler: "http://localhost:8081/pmms-api/login",
+		    password: "",
+		    "sso_placeholder": "1234567890",
+		    sso: "",
+		    "password_min_length": 6,
+		    "sso_min_length": 10,
+		    failed: false
+		  };
+ 
+ function isSSOValid(sso,sso_min_length) {
+	  return sso.length >= parseInt(sso_min_length)
+	  }
+
+	  function isPasswordValid(pwd, pwd_min_length) {
+	    return pwd.length >= parseInt(pwd_min_length)
+	  }
+
+	  
+	  function getAttribute(element, att) {
+		    return element.getAttribute(att) ? element.getAttribute(att) : (typeof defaults[att] !== "undefined" ? defaults[att] : "");
+		  }
+	  
+	  function addClass(element, className) {
+		    var regex = new RegExp('\\b' + className + '\\b', 'g');
+		    element.className = element.className.replace(regex, '');
+		    element.className = element.className + " " + className;
+		  }
+	  
+	  function removeClass(element, className) {
+		    var regex = new RegExp('\\b' + className + '\\b', 'g');
+		    element.className = element.className.replace(regex, '');
+		  }
+	  
+	  Polymer({
+	      is: 'login-form',
+	      
+	      ready: function () {
+	          var myself = this;
+
+	          var sso = myself.$.sso;
+	          var password = myself.$.password;
+	          var submit = myself.$.submit;
+	          var form = myself.$.form;
+	          var msg = myself.$.msg;
+	          var password_min_length = getAttribute(myself, "password_min_length");
+	          var sso_min_length = getAttribute(myself, "password_min_length");
+
+	          //initializing element
+	          form.action = getAttribute(myself, "handler");
+	          password.value = getAttribute(myself, "password");
+	          if (getAttribute(myself, "failed")) {
+	            msg.innerHTML = "No user with this username/password";
+	            msg.style.display = "block";
+	          }
+	         
+	          //onclick
+	          submit.onclick = function (e) {
+	            if (isSSOValid(sso.value,sso_min_length) && isPasswordValid(password.value, password_min_length)) {
+	            	  this.$.ajax.url = "http://localhost:8081/pmms-api/login";
+		              this.$.ajax.params = {"sso":this.sso, "password": this.sso};
+		              this.$.ajax.generateRequest();
+		              
+	              //return true;
+	            }
+	            e.preventDefault();
+	            e.stopPropagation();
+	            return false;
+	          };
+	          
+	          signInResponse = function (request) {
+	              response = request.detail.response;
+	              console.log(response);
+	              if (response.code == '0') {
+	                this.fire("signin-success", response);
+	              } else {
+	                this.fire("signin-fail", response);
+	              }
+	              
+	          };
+	              
+	          //validating sso
+	          sso.onkeyup = function (e) {
+	            if (isSSOValid(this.value)) {
+	              removeClass(myself.$.sso_status, "invalid");
+	              addClass(myself.$.sso_status, "valid");
+	            } else {
+	              removeClass(myself.$.sso_status, "valid");
+	              addClass(myself.$.sso_status, "invalid");
+	            }
+	          };
+
+	          //validating password
+	          password.onkeyup = function (e) {
+	            if (isPasswordValid(this.value, password_min_length)) {
+	              removeClass(myself.$.password_status, "invalid");
+	              addClass(myself.$.password_status, "valid");
+	            } else {
+	              removeClass(myself.$.password_status, "valid");
+	              addClass(myself.$.password_status, "invalid");
+	            }
+	          };
+
+	       
+	        }
+	      
+	  }); */
+ </script>
+ </dom-module>

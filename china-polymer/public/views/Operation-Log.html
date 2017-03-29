@@ -1,0 +1,174 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="Operation-Log"> <template> <px-card
+	chevron>
+<style include="button-style">
+</style>
+<section>
+	<br>
+	<br>
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 300px">
+		
+			<form is="iron-form" content-type="application/json"
+				id="searchingWithDatesAndParameters"
+				on-iron-form-invalid="ironforminvalid"
+				on-iron-form-response="handleFilteredData" method="post">
+				<input type="hidden" id="FilteredData" name="FilteredData"
+					value="{{FilteredData}}">
+			</form>
+			
+			<table>
+				<tr>
+					<td><label class="control-label"> <b>开始日期/StartDate:</b></label></td>
+					<td>
+						<div class="controls"
+							style="margin-left: 5px; display: inline-block; width: 200px;"
+							name="startDate">
+							<px-datetime-picker id="startDate" on-tap="triggerStartDate"></px-datetime-picker>
+							<paper-input id="startDateInput" name="startDateInput"
+								style="display: inline-block; width: 100px;"></paper-input>
+						</div>
+					</td>
+					<td><label class="control-label"> <b>结束日期/EndDate:</b></label></td>
+					<br>
+					<td>
+						<div class="controls"
+							style="margin-left: 5px; display: inline-block; width: 200px;"
+							name="endDate">
+							<px-datetime-picker id="endDate" on-tap="triggerEndDate"></px-datetime-picker>
+							<paper-input id="endDateInput" name="endDateInput"
+								style="display: inline-block; width: 100px;"></paper-input>
+						</div>
+					</td>
+					<br>
+					<td style="padding: 5px"><label class="control-label"><b>SSO</b></label></td>
+					<td style="padding: 5px"><paper-input
+							class="paper-input-medium search-query span3" name="SSO"
+							style="width: 180px;"> </paper-input></td>
+				</tr>
+				<tr>
+				<td><div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchOperationsLog">SEARCH</button>
+			</div>
+			</td>
+			</tr>
+			</table>
+		</div>
+		<br> <br> <br>
+
+		<div id="measuringinfo" class="module-body pull-left"
+			style="width: 100%">
+
+			<byutv-jsonp id="operationslog"
+				params='{{getParams(measurementSSO,startMeasureDates,endMeasureDates)}}'
+				url="http://localhost:8081/pmms-api/getMeasuringToolInfo"
+				last-response="{{operationlogldata}}" debounce-duration="300"
+				auto="true"></byutv-jsonp>
+
+
+
+
+	<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse" id="SearchEquipPart" method="post">
+
+
+
+				<byutv-jsonp id="logTable"
+					url="http://localhost:8081/pmms-api/getEquipmentLogs"
+					last-response="{{MeasuringOperationLog}}" 
+					auto on-response="handleResponse" 
+					debounce-duration="300" auto="true"></byutv-jsonp>
+
+				<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" 
+				 table-data="{{MeasuringOperationLog}}" on-px-row-click=measuringToolInfoRow>  
+					<px-data-table-column sortable name="operation" label="Operator"></px-data-table-column>
+					<px-data-table-column sortable name="moduleId" label="ID"></px-data-table-column>
+					<px-data-table-column sortable name="oldVlue" label="OldValue"></px-data-table-column>
+					<px-data-table-column sortable name="newValue" label="NewValue"></px-data-table-column>
+					<px-data-table-column sortable name="createdBy" label="SSOID"></px-data-table-column>
+				</px-data-table> 
+	</form>
+
+		</div>
+</section></template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'Operation-Log',
+		
+		 FilteredData : {
+				type : String,
+				notify : true
+			},
+			FacilityFromDateFields : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			FacilityToDateFields : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			moduleId : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			createdBy : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			refreshData : function() {
+				this.$.test.generateRequest();
+			},
+			
+			
+
+		triggerStartDate : function() {
+			console.log("startDate : " + this.$.startDate);
+			this.startDate = this.$.startDate.dateTime.substring(0,
+					this.$.startDate.dateTime.indexOf('T'));
+			this.startDateField = this.startDate;
+			document.getElementById("startDateInput").value = this.startDateField;
+		},
+
+		triggerEndDate : function() {
+			console.log("endDate : " + this.$.endDate);
+			this.endDate = this.$.endDate.dateTime.substring(0,
+					this.$.endDate.dateTime.indexOf('T'));
+			this.endDateField = this.endDate;
+			document.getElementById("endDateInput").value = this.endDateField;
+		},
+		
+		searchOperationsLog : function() {
+			this.moduleId="7469";
+			this.createdBy="GE";
+			if ((this.FacilityToDateField == undefined
+					|| this.FacilityToDateField == null || this.FacilityToDateField == "")
+					|| (this.FacilityFromDateField == undefined
+							|| this.FacilityFromDateField == null || this.FacilityFromDateField == "") ||
+							(this.moduleId == undefined
+									|| this.moduleId == null || this.moduleId == "")||
+									(this.createdBy == undefined
+											|| this.createdBy == null || this.createdBy == ""))
+				alert("Please select From Date and To Date to search.");
+			else {
+// 				this.model = this.$.model.value;
+// 				this.createdBy = this.$.createdByText.value;
+				this.FilteredData = "{'fromDate':"
+						+ this.FacilityFromDateField + ",'toDate':"
+						+ this.FacilityToDateField + ",'moduleId':"
+						+ this.moduleId + ",'sso':" + this.createdBy
+						+ "}";
+				document.getElementById("searchingWithDatesAndParameters").action = "http://localhost:8081/pmms-api/searchingWithDatesAndFields";
+				document.getElementById('searchingWithDatesAndParameters').submit();
+			}
+
+		}
+		
+		handleFilteredData :
+		
+		
+
+	});
+</script> </dom-module>

@@ -1,0 +1,99 @@
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="Operation-Log"> <template>
+
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<h2>Inside Operation-Log</h2>
+	<br>
+	<br>
+
+	<div class="pull-left" style="width: 900px";>
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>开始日期/Start
+					Date:</b>
+			</label>
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				 <paper-date-picker id="startMeasureDate" date="[[startMeasureDates]]"></paper-date-picker>
+
+			</div>
+		</div>
+
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+
+			<label class="control-label" style="width: 130px;"> <b>结束日期/End
+					Date</b>
+			</label>
+
+			<div style="width: 150px; display: inline-block; margin-left: 20px;">
+				 <paper-date-picker id="endMeasureDate" date="[[endMeasureDates]]"></paper-date-picker>
+			</div>
+		</div>
+	</div>
+	<br> <br>
+	<table>
+		<tr>
+			<td><label class="control-label"><b>SSO</b></label></td>
+
+			<td style="margin-left: 20px;"><paper-input
+					class="input-medium search-query span3" id="measurementSSO"
+					value="{{measurementSSO}}" name="measurementSSO"
+					style="width: 180px;"> </paper-input></td>
+		</tr>
+	</table>
+
+	<br> <br> <br>
+
+	<div id="measuringinfo" class="module-body pull-left"
+		style="width: 100%">
+
+		<byutv-jsonp id="operationslog"
+			params='{{getParams(measurementSSO,startMeasureDates,endMeasureDates)}}'
+			url="http://localhost:8081/pmms-api/getMeasuringToolInfo"
+			last-response="{{operationlogldata}}" debounce-duration="300"
+			auto="true"></byutv-jsonp>
+
+		<px-data-table id="measuringtoolinfo"
+			table-data="{{measuringtooldata}}"
+			on-px-row-click="measuringToolInfoRow" selectable> <px-data-table-column
+			name="id" label="ID" hide></px-data-table-column> <px-data-table-column
+			name="instrumentNo" label="Instrument No"></px-data-table-column> <px-data-table-column
+			name="firstCalibDate" label="First Calibration Date"></px-data-table-column>
+		<px-data-table-column name="loScArDate"
+			label="Loose/Scrap/Archive Date"></px-data-table-column> <px-data-table-column
+			name="personResponsible" label="Responsible"></px-data-table-column>
+		<px-data-table-column name="transferDate" label="Transfer Date"></px-data-table-column>
+		<px-data-table-column name="calibrationFrequency"
+			label="Calibration Frequency"></px-data-table-column> <px-data-table-column
+			name="calibrationFee" label="Calibration Fee"></px-data-table-column>
+		<px-data-table-column name="department" label="Department"></px-data-table-column>
+		<px-data-table-column name="depository" label="Depository"></px-data-table-column>
+		<px-data-table-column name="instrumentName" label="Instrument Name"></px-data-table-column>
+		<px-data-table-column name="managementNos" label="Type Management Nos"></px-data-table-column>
+		<px-data-table-column name="status" label="Status"></px-data-table-column>
+		<px-data-table-column name="calibrationDate" label="Calibration Date"></px-data-table-column>
+		<px-data-table-column name="planSubDate" label="Plan Submission Date"></px-data-table-column>
+		<px-data-table-column name="verificationResults"
+			label="Verification Results"></px-data-table-column> <px-data-table-column
+			name="operationLoglink " label="Operation Log link "></px-data-table-column>
+		<px-data-table-column name="createdBy" label="createdBy" hide></px-data-table-column>
+		<px-data-table-column name="createdDate" label="createdDate" hide></px-data-table-column>
+		<!-- <px-data-table-column name="lastUpdatedBy" label="lastUpdatedBy"></px-data-table-column> 
+		<!-- <px-data-table-column name="lastUpdatedDate" label="lastUpdatedDate"></px-data-table-column>   -->
+
+
+		</px-data-table>
+
+	</div>
+</section>
+
+</template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'Operation-Log',
+
+	});
+</script> </dom-module>

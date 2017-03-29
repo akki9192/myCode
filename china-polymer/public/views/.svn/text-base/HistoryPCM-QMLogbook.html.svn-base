@@ -1,0 +1,245 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="HistoryPCM-QMLogbook">
+<template>
+<px-card icon="fa-suitcase" header-text="" chevron>
+<br><br> 
+<!-- <px-tab-pages selected={{selected}}>  -->
+
+<br><br>
+<!-- ---------------------------------------- -->
+
+<form is="iron-form" content-type="application/json"id="searchforQMandPCMtab" method="post">
+<input type="hidden" id="SearchMYData" name="SearchMYData" value="{{SearchMYData}}">
+</form>
+		<div class="pull-left" style="width: 1000px";>
+			<div class="control-group pull-left" style="width: 450px">
+				<label class="control-label" style="width: 80px;"> <b>From Date:</b>
+				</label>
+		
+				<div class="controls" style="margin-left: 5px; display: inline-block; width: 265px; height: 50px;" name="fromdate">
+					<paper-input id="fromDateField" name="fromDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="fromDate" id="fromDate" on-tap="triggerFromDateQMPCM" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"></px-datetime-picker>
+				</div>
+			</div>
+		
+			<div class="control-group pull-left" style="width: 450px;">
+				<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>To Date:</b>
+				</label>
+				<div class="controls" style="display: inline-block; width: 265px; height: 50px; margin-left: 20px;" name="toDate">
+					<paper-input id="toDateField" name="toDateField" style="margin-left: 5px; display: inline-block; width: 100px; height: 50px;"></paper-input>
+					<px-datetime-picker id="toDate" id="toDate" on-tap="triggerToDateQMPCM" style="margin-left: 10px; display: inline-block; width: 80px; height: 50px;"> </px-datetime-picker>
+				</div>
+			</div>
+			<div class="control-group pull-left" style="width: 130px">
+				<button class="btn btn-icon" type="button" style="display: inline-block;" on-click="searchforQMandPCMtabDate">Search</button>
+			</div>
+		</div>
+	<!-- ******************************************************************************************************
+	 ------------------------------------------------ViewAll PopUp------------------------------------------------
+	****************************************************************************************************** -->
+
+<div class="legendmain mb10 pull-left"  style="margin-left: 40px;">
+	<form is="iron-form" content-type="application/json"id="ismViewAllForm" on-iron-form-response="ironformresponse"method="post">
+		
+	<paper-button raised onclick="view.open()"class="btn btn-large btn-primary">ViewAll</paper-button>
+		<paper-dialog id="view"> 
+		<paper-dialog-scrollable>
+	<table>
+	
+	<tr>
+    <td>  <input type="hidden" id="pcmAndqmdataId" name="id"></td>
+   </tr>
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Plan Id:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="planId" id="planId" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>WorkOrder Number:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="woId" id="woId" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>SSO:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="empSso" id="empSso" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Time:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="createdDate" id="createdDate" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Work Order Month:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="Date" id="Date" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Project:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="logProject" id="logProject" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Result:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="workResult" id="workResult" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Creator:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="createdBy" id="createdBy" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Last Updated By:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="lastUpdatedBy" id="lastUpdatedBy" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Last Updated Date:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="lastUpdatedDate" id="lastUpdatedDate" disabled></paper-input></td>
+	</tr>
+	</table>		
+
+</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss>Cancel</paper-button>
+			
+		</div>
+		</paper-dialog>
+	</form>
+</div>
+
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%">
+
+
+	 <byutv-jsonp id="History2Data"
+		url="http://localhost:8081/pmms-api/getQMandPCMHistoryRecord" last-response="{{QMandPCMRecord}}"debounce-duration="300" auto="true"></byutv-jsonp>
+
+	<px-data-table id="History2DataTable" table-data="{{QMandPCMRecord}}"  on-px-row-click="qmAndPcmLogBookRowClick" selectable> 
+		<px-data-table-column name="id" label="ID" hide></px-data-table-column>  
+		<px-data-table-column name="woId" label="Work Order Number" > </px-data-table-column> 
+		<px-data-table-column name="empSso" label="SSO"  ></px-data-table-column> 
+		<px-data-table-column name="createdDate" label="Time"></px-data-table-column>
+	    <px-data-table-column name="date" label="Work Order Month"></px-data-table-column>
+	    <px-data-table-column name="logProject" label="Project" hide></px-data-table-column>
+	    <px-data-table-column name="planId" label="Plan" hide></px-data-table-column>
+	    <px-data-table-column name="workResult" label="Result" hide></px-data-table-column>
+	    <px-data-table-column name="createdBy" label="Creator" hide></px-data-table-column>
+	    <px-data-table-column name="lastUpdatedBy" label="Last Updated By" hide></px-data-table-column>
+	    <px-data-table-column name="lastUpdatedDate" label="Last Updated Date" hide></px-data-table-column>
+	</px-data-table>
+</div>
+
+</px-card>
+
+</template>
+
+<!-- ----------------------------------Script----------------------------------------------------- -->
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'HistoryPCM-QMLogbook',
+
+	    behaviors: [
+		             PmmsBehaviors.LanguageBehavior             
+		           ],
+		searchKey : null,
+		 properties: {
+		
+		  currentRow: {
+			type: String,
+		 	notify: true
+				}
+		 },
+	
+				fromDate: {
+					type: String,
+		 			notify: true
+				},
+				
+				todate: {
+					type: String,
+		 			notify: true
+				},
+				
+				toDateField: {
+		 			type: String,
+		 			notify: true,
+		 			value:""
+		 		},
+		 		
+				fromDateField: {
+		 			type: String,
+		 			notify: true,
+		 			value:""
+		 		},
+	
+
+		 		triggerToDate: function(){
+					console.log("To date : "+this.$.toDate);
+					this.toDate = this.$.toDate.dateTime.substring(0,this.$.toDate.dateTime.indexOf('T'));
+					this.toDateField=this.toDate;
+					document.getElementById("toDateField").value=this.toDateField;
+				},
+				
+				triggerFromDate: function(){
+					console.log("From date : "+this.$.fromDate);
+					this.fromDate = this.$.fromDate.dateTime.substring(0,this.$.fromDate.dateTime.indexOf('T'));
+					this.fromDateField=this.fromDate;
+					document.getElementById("fromDateField").value=this.fromDateField;
+				},
+				
+				searchHistoryRecordWithDates : function()
+				{
+					if
+						((this.toDateField==undefined || this.toDateField==null || this.toDateField=="") || (this.fromDateField==undefined || this.fromDateField==null || this.fromDateField=="") )
+						alert("Please select From Date and To Date to search in the List.");
+					  
+					else {
+						this.SearchMYData="{'fromDate':"+this.fromDateField+",'toDate':"+this.toDateField+"}";
+						document.getElementById("searchHistoryRecord").action = "http://localhost:8081/pmms-api/getInspectionSMHistoryRecordTrackingwithDates";
+						document.getElementById('searchHistoryRecord').submit();
+					}
+					
+				},
+	
+		
+				handleCheckData : function(e) {
+					var details=e.detail;
+					if(details.status==200)
+					{
+						this.monthlyPlanDetail=details.response;
+						this.refreshTable("History1-1DataTable");
+					}
+					else{			
+						alert("error in searching list!!!!");
+					
+					}
+				},
+			
+		
+			
+
+			/* -----------------------------Row Click View All------------------------------ */
+			qmAndPcmLogBookRowClick: function(e) {
+	  	        var clickedRow = e.detail.row;
+	  	  		 this.currentRow = clickedRow.row;
+	  	  		if(this.ids == undefined)
+					this.ids=[];
+				 var index = this.ids.indexOf((clickedRow.row.id.value));
+				 if(clickedRow._selected==false && index == -1)//not present in ids list
+					  this.ids.push(clickedRow.row.id.value);
+				  else if(index > -1) //already there
+					  this.ids.splice(index,1); 
+	  	  		document.getElementById("pcmAndqmdataId").value=clickedRow.row.id.value;
+	  	 		document.getElementById("woId").value=clickedRow.row.woId.value;		  	 		
+	  	 		document.getElementById("empSso").value=clickedRow.row.empSso.value;
+	  	 		document.getElementById("createdDate").value=clickedRow.row.createdDate.value;
+	  	 		document.getElementById("Date").value=clickedRow.row.date.value;
+	  	 		document.getElementById("logProject").value=clickedRow.row.logProject.value;
+	  	 		document.getElementById("planId").value=clickedRow.row.planId.value;
+	  	 		document.getElementById("workResult").value=clickedRow.row.workResult.value;
+	  	 		document.getElementById("createdBy").value=clickedRow.row.createdBy.value;
+	  	 		document.getElementById("lastUpdatedBy").value=clickedRow.row.lastUpdatedBy.value;
+	  	 		document.getElementById("lastUpdatedDate").value=clickedRow.row.lastUpdatedDate.value;
+	  	
+			}
+			
+		
+		
+		});
+</script> </dom-module>

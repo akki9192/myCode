@@ -1,0 +1,1144 @@
+<meta charset="utf-8">
+<link  rel="import" href="/../css/button-style.html">
+<dom-module id="breakdown-workOrder">
+
+<template id="my-tabs" is="dom-bind">
+   <px-card icon="fa-suitcase" header-text="BreakDown WO" chevron>
+		<px-tab-set selected="{{selected}}">
+			<px-tab>Current WorkOrders</px-tab>
+			<px-tab>WorkOrder History</px-tab>
+			<px-tab>SI Work Order</px-tab>
+		</px-tab-set>
+  
+  <px-tab-pages selected="{{selected}}">
+  
+  <!-- Main Tab-1 -->
+  
+  <section>
+			
+			<br>
+				<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>从/FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>	
+				<br>
+				<br>
+				<div class="module-body pull-left">	
+				
+					<label class="control-label" style="width:100px;">
+					<b>至/TO:</b>
+					</label>
+					&nbsp;&nbsp;
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>		
+				<br>
+				<br>
+				<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>部/Department:</b>
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+
+						
+				<!-- 	<px-dropdown display-value="Select" data-ng-model="deptDropDown"> -->
+
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown"
+
+						id="deptDropDown" selected-key="{{deptId}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+				<br>
+				<div class="module-body pull-left"> 
+				<button type="button" id="search" class="btn btn-primary btn-lg btn-block">Search</button>	
+				</div>
+				<br>
+				
+	<!--************************************************** PX-TABLE ***************************************************************************-->
+	
+			<div id="firstTime" class="module-body pull-left" style="width: 100%">
+			<form is="iron-form" content-type="application/json" id="bmWorkOrderWOdet" method="post"> 
+              <byutv-jsonp id="test"
+                     url="http://localhost:8081/pmms-api/getDisposalDetails"
+                     last-response="{{mydata}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+				<px-data-table id="myTabless" table-data="{{mydata}}">
+				<px-data-table-column sortable name="workOrderNumber" label="WOSN"></px-data-table-column>
+				<px-data-table-column sortable name="workOrderType" label="WOType"></px-data-table-column>
+				
+		<px-data-table-column sortable name="wordOrderStatus" label="WorkOrderStatus">
+		<px-data-table-highlight highlight-type="row" highlight-value="notyetstarted" highlight-method="isNotStarted" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="interruptions"  highlight-method="isInterrupted" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+		</px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipId" label="EQSN"></px-data-table-column>
+					<!-- <px-data-table-column sortable name="equipmentInfo.equipNameId" label="EQNM"></px-data-table-column> -->
+					<px-data-table-column sortable name="equipmentInfo.equipModel" label="EQModel"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID" label="AssetSN"></px-data-table-column>										
+					<px-data-table-column sortable name="faultDescription" label="FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO" label="RequestorSSO"></px-data-table-column>
+					<px-data-table-column sortable name="updaterSSO" label="UpdaterSSO"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="CreatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="lastUpdatedDate" label="LastUpdatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="safetyInvolved" label="Safety"></px-data-table-column>
+					<px-data-table-column sortable name="shutdownFlag" label="Shutdown"></px-data-table-column>
+					<px-data-table-column sortable name="maintType" label="Maintainer"></px-data-table-column>
+					<px-data-table-column sortable name="equipId2" label="EquipId2" hide></px-data-table-column>
+					
+				</px-data-table> 
+</form>
+			</div>	
+		<div class="legendmain mb10 pull-center"
+				style="text-align: center; font-size: 12px; width: 285px">
+
+				<span class="label"
+					style="width: 80px; background-color: red; color: white; float: right;">
+					<h5>Work not started</h5>
+				</span> <span class="label"
+					style="width: 60px; background-color: yellow; float: right;">
+					<h5>Work Incomplete</h5>
+				</span> <span class="label"
+					style="width: 60px; background-color: darkblue; float: right;">
+					<h5>Issues</h5>
+				</span> <span class="label"
+					style="width: 60px; background-color: #00FFFF; float: right;">
+					<h5>Interruptions</h5>
+				</span>
+			</div>
+      	
+      	</section>
+
+ <!-- Main Tab-2 -->
+<section>
+<br>
+<br>
+	<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>从/FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>	
+				<br>
+				<br>
+				<div class="module-body pull-left">	
+				
+					<label class="control-label" style="width:100px;">
+					<b>至/TO:</b>
+					</label>
+					&nbsp;&nbsp;
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>		
+				<br>
+				<br>
+				<div class="control-group pull-left" style="width: 300px">
+				<label class="control-label" style="width: 130px;"> <b>部/Department:</b>
+				</label>
+
+
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown"
+						id="deptDropDown" selected-key="{{deptId}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+				<br>
+				<div class="module-body pull-left"> 
+				<button type="button" id="search" class="btn btn-primary btn-lg btn-block">Search</button>	
+				</div>
+	<!-- -----------------------------Download------------------------------------------------- -->
+			
+			<form content-type="application/json" id="downloadXl" method="GET">
+			<div class="control-group pull-left" style="width: 130px">
+			<paper-button class="btn btn-large btn-primary" raised on-click="downloadExcel">Download</paper-button>
+			</div>		
+			</form>
+			
+	<!-- -----------------------------Print------------------------------------------------- -->
+					
+		<form  content-type="application/pdf" id="printTablWOHistory" method="GET">
+		<div class="control-group pull-left" style="width: 130px">
+		<paper-button class="btn btn-large btn-primary" raised on-click="printDataaWOHistory">Print</paper-button>
+		</div>		
+		</form>
+      	<br><br>
+	<!--************************************************** PX-TABLE ***************************************************************************-->
+	
+			<div id="firstTime" class="module-body pull-left" style="width: 100%">
+			<form is="iron-form" content-type="application/json" id="bmWorkOrderClosed" method="post"> 
+            <byutv-jsonp id="tests"
+                     url="http://localhost:8081/pmms-api/getClosedWODetails" 
+                     params='{"wordOrderStatus":"带遗留问题运行"}' on-response="handleResponse"
+                     last-response="{{mydataa}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+					<px-data-table id="myTables" table-data="{{mydataa}}">
+					
+					<px-data-table-column sortable name="workOrderNumber" label="WOSN"></px-data-table-column>
+					<px-data-table-column sortable name="wordOrderStatus" label="WorkOrderStatus">
+					<px-data-table-highlight highlight-type="row" highlight-value="closed"  highlight-method="isClosed" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+					</px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipId" label="EQSN"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipNameInfo.equipNameId" label="EQNM"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipModel" label="EQModel"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID" label="AssetSN"></px-data-table-column>										
+					<px-data-table-column sortable name="faultDescription" label="FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO" label="RequestorSSO"></px-data-table-column>
+					<px-data-table-column sortable name="updaterSSO" label="UpdaterSSO"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="CreatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="lastUpdatedDate" label="LastUpdatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="safetyInvolved" label="Safety"></px-data-table-column>
+					<px-data-table-column sortable name="shutdownFlag" label="Shutdown"></px-data-table-column>
+					<px-data-table-column sortable name="maintType" label="Maintainer"></px-data-table-column>
+					
+				</px-data-table> 
+</form>
+			</div>	
+		<!-- <button type="button" id="search" class="btn btn-primary btn-lg btn-block" style="margin-left:20px;">Excel</button>
+      	<button type="button" id="search" class="btn btn-primary btn-lg btn-block" style="margin-left:20px;">Print</button> -->
+      	<!-- <a href="https://www.polymer-project.org/" tabindex="-1">
+        <paper-button raised>Polymer Project</paper-button>
+</a> -->
+</section>
+
+ <!-- Main Tab-3 -->
+<section>
+
+<px-tab-set selected="{{siselected}}">
+			<px-tab>SI Outage Work Orders</px-tab>
+			<px-tab>SI Root Cause Tracking</px-tab>
+</px-tab-set>
+		<br>
+		<px-tab-pages selected="{{siselected}}">
+ 		<!-- Sub tab-1 -->
+					<section>
+					
+						<br><br>
+						
+						<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+					<b>从/FROM:</b>
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+				
+				<div class="control-group pull-left" style="width: 300px">
+
+				<label class="control-label" style="width: 130px;"> <b>部/Department:</b>
+
+				</label>
+
+				<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown"
+						id="deptDropDown" selected-key="{{deptId}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+			</div>
+				
+				<br>
+				<br>
+				<br>
+				
+				<div class="module-body pull-left">			
+					<label class="control-label" style="width:100px;">
+					<b>至/TO:</b>
+					</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>
+																			
+				<!-- <div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">Search</button>	
+				</div> -->
+				
+				<br><br>
+<!--************************************************** PX-TABLE ***************************************************************************-->
+					
+					<div class="module-body pull-left" style="width:100%">
+                  <form is="iron-form" content-type="application/json" id="bmWorkOrderOutage" method="post">    
+                      <byutv-jsonp id="tess"
+                     	url="http://localhost:8081/pmms-api/getOutageWODetails" 
+                     	params='{"wordOrderStatus":"暂停"}' on-response="handleResponse"
+                    	 last-response="{{dat}}" debounce-duration="300" auto="true">
+                     </byutv-jsonp>
+
+					<px-data-table id="myTa" table-data="{{dat}}">
+					
+					<px-data-table-column sortable name="workOrderNumber" label="WOSN"></px-data-table-column>
+					<px-data-table-column sortable name="wordOrderStatus" label="WorkOrderStatus"> 
+					<px-data-table-highlight highlight-type="row" highlight-value="interruptions"  highlight-method="isInterrupted" import="/../views/px-data-table-highlight.html"></px-data-table-highlight>
+					</px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipId" label="EQSN"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipNameId" label="EQNM"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.equipModel" label="EQModel"></px-data-table-column>
+					<px-data-table-column sortable name="equipmentInfo.assetsID" label="AssetSN"></px-data-table-column>					
+					<px-data-table-column sortable name="faultDescription" label="FaultDesc"></px-data-table-column>
+					<px-data-table-column sortable name="creatorSSO" label="RequestorSSO"></px-data-table-column>
+					<px-data-table-column sortable name="updaterSSO" label="UpdaterSSO"></px-data-table-column>
+					<px-data-table-column sortable name="createdDate" label="CreatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="lastUpdatedDate" label="LastUpdatedDate"></px-data-table-column>
+					<px-data-table-column sortable name="safetyInvolved" label="Safety"></px-data-table-column>
+					<px-data-table-column sortable name="shutdownFlag" label="Shutdown"></px-data-table-column>
+					<px-data-table-column sortable name="maintType" label="Maintainer"></px-data-table-column>
+					
+				</px-data-table> 
+				</form> 
+						</div>
+						
+	<!--************************************************** PX-TABLE ***************************************************************************-->
+	
+	  <div class="legendmain mb10 pull-left">  				
+ 	 <form is="iron-form" content-type="application/json" id="savebmWorkOrder" method="post">  	
+
+		<paper-button raised onclick="wo.open()"class="btn btn-large btn-primary">SI HistoricalWO</paper-button>
+		<paper-dialog id=wo><paper-dialog-scrollable>
+		
+	<table><tr>
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Place of Anomaly:</b></label></td>
+ 	<td><paper-input class="span3" name="anomaly"style="margin-left:5px; width: 170px;" required auto-validate	error-message="This cannot be empty"> </paper-input></td>
+	
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Date:</b></label></td>
+ 	<td><div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="DatetimeEdit">
+	<paper-input id="datess" name="Dates" style="display: inline-block; width: 100px;"></paper-input>
+	<px-datetime-picker id="DatetimeEdit" on-tap="triggerDatetimeEdit" style="display: inline-block; width: 80px;"></px-datetime-picker>
+	</div></td>
+	</tr></table>
+	<br><br>
+	<table><tr>
+	
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Members:</b></label></td>
+	<td><paper-input class="span3" name="members"style="margin-left:5px; width: 170px;" required auto-validate	error-message="This cannot be empty"> </paper-input></td>
+			
+	<td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Section:</b></label></td>				
+	<td><paper-input class="span3" name="section"style="margin-left:5px; width: 170px;" required auto-validate	error-message="This cannot be empty"> </paper-input></td>
+	</tr>
+	
+	</table>
+		<br>
+								<div>
+									<table cellspacing="10px" cellpadding="10px">										
+										<tr>
+											<td></td>
+											<td><b>1st Attempt</b></td>
+											<td><b>2nd Attempt</b></td>
+											<td><b>3rd Attempt</b></td>
+											<td><b>4th Attempt</b></td>
+											<td><b>5th Attempt</b></td>
+											<td><b>Suggestions of Improvement</b></td>
+										</tr>
+										<tr>
+									<td><b>A</b></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+											
+										</tr>
+							<!-- 	<tr>
+									<td></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td><b>B</b></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td><b>C</b></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td><b>D</b></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td><b>E</b></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+									<!-- <tr>
+									<td></td>
+									<td><paper-input class="span3" name="attempt1"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt2"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt3"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt4"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="attempt5"style="margin-left:5px; width: 100px;"> </paper-input></td>
+									<td><paper-input class="span3" name="suggestof_imp"style="margin-left:5px; width: 100px;"> </paper-input></td>
+										</tr> -->
+								<tr><td>
+								<input type="hidden" id="type" name="type">								
+								<input type="hidden" id="workorder_id" name="workorder_id">								
+								<input type="hidden" id="created_by" name="created_by">
+								<input type="hidden" id="created_date" name="created_date">
+								<input type="hidden" id="lastupdated_by" name="lastupdated_by">
+								<input type="hidden" id="lastupdated_date" name="lastupdated_date">														
+								</td></tr>
+									
+									</table>
+								</div>
+									<div class="buttons">
+										<paper-button dialog-dismiss>Cancel</paper-button>
+										<paper-button dialog-confirm autofocus autofocus on-click="saveSIHistoryData">Submit</paper-button>
+										
+									</div>	
+									</paper-dialog-scrollable></paper-dialog>
+								</form>
+						</div>
+					
+	<!--***********************************************MaintainanceReport**********************************************************************-->			
+						
+						<div class="scroll-body">
+						 <div class="legendmain mb10 pull-left">
+						<form is="iron-form" content-type="application/json" on-iron-form-response="ironform" id="addbmWorkOrder" method="post"> 
+						
+					<!--  <px-modal modal-heading="Measurement Plan"> -->
+							<paper-button raised onclick="si.open()"class="btn btn-large btn-primary">Maintainance Report</paper-button>								
+							<paper-dialog id=si>
+		 					 <table>
+								
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>故障时间(Failure time):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<paper-input class="span3" id="FailureTimes" name="failureTime"
+								style="margin-left:5px; width: 170px;"> </paper-input>
+									</td>
+							
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>操作员(Operator):</b>
+									</label>
+									</td>	
+									<td style="align:left">
+									<paper-input class="span3" id="operators" name="operator" 
+								style="margin-left:5px; width: 170px;"> </paper-input>
+									</td>									
+								</tr>
+							</table>
+							
+							<br>
+							
+							<table>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>接收修复时间(Received Repair time):</b>
+									</label>
+									</td>
+									<td style="align:left">
+									
+									<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="ReceivedRepairtimeEdit">
+						<paper-input id="receivedRepairTimes" name="receivedRepairTime"
+							style="display: inline-block; width: 100px;"></paper-input>
+						<px-datetime-picker id="ReceivedRepairtimeEdit" on-tap="triggerReceivedRepairtimeEdit"
+							style="display: inline-block; 
+				              	width: 80px;"></px-datetime-picker>
+					</div>	
+									</td>
+								
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>开始修复时间(Start Repair time):</b>
+									</label>
+									</td>
+									<td style="align:left">
+									
+									<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="StartRepairtimeEdit">
+						<paper-input id="startRepairTimes" name="startRepairTime"
+							style="display: inline-block; width: 100px;"></paper-input>
+						<px-datetime-picker id="StartRepairtimeEdit" on-tap="triggerStartRepairtimeEdit"
+							style="display: inline-block; 
+				              	width: 80px;"></px-datetime-picker>
+					</div>	
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>启动维护人员(Start Maintenance staff):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<paper-input class="span3" id="startMaintStaffSSO" name="startMaintStaffSSOId"
+								style="margin-left:5px; width: 170px;"> </paper-input>
+									</td>
+								
+									<td>
+									<label class="control-label" style="width:100px;">
+										<b>结束修复时间(End Repair time):</b>
+									</label>
+									</td>
+									<td style="align:left">
+					<div class="controls" style="margin-left: 5px; display: inline-block; width: 200px;" name="EndRepairtimeEdit">
+						<paper-input id="endRepairtimes" name="startRepresentativeTime"
+							style="display: inline-block; width: 100px;"></paper-input>
+						<px-datetime-picker id="EndRepairtimeEdit" on-tap="triggerEndRepairtimeEdit"
+							style="display: inline-block; 
+				              	width: 80px;"></px-datetime-picker>
+					</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>结束维护人员(End Maintenance staff):</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<paper-input class="span3" id="endStaff" name="endMaintStaff"
+								style="margin-left:5px; width: 170px;"> </paper-input>
+									</td>
+									
+									<td>
+										<label class="control-label" style="width:100px;">
+										<b>Workshop:</b>
+									</label>
+									</td>
+									<td style="align:left">
+										<paper-input class="span3" id="workorder2" name="workorderID"
+								style="margin-left:5px; width: 170px;"> </paper-input>
+									</td>
+								</tr>
+								  </table>
+	   	
+				
+							<div class="buttons">
+								<paper-button dialog-dismiss>Cancel</paper-button>
+								<paper-button dialog-confirm autofocus on-click="addMaintInfo">Submit</paper-button>
+							</paper-dialog>
+				</form>
+
+			</div>
+			  
+			  <br><br>
+			  
+	<!--************************************************** PX-TABLE ***************************************************************************-->						
+			
+	<div id="firstTime" class="module-body pull-left" style="width: 100%">
+		
+	<form is="iron-form" content-type="application/json" on-iron-form-response="ironform" id="SearchMeasure" method="post">
+							              	
+   <byutv-jsonp id="measurementPlantest" url="http://localhost:8081/pmms-api/getMeasurementPlanDetails"
+       last-response="{{measurementPlan}}" debounce-duration="300" auto="true" auto on-response="handleResponses"></byutv-jsonp>
+
+<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" id="mymeasurementPlan" table-data="{{measurementPlan}}" 
+on-px-row-click="measuringRow">  
+			
+				<px-data-table-column sortable name="id" label="ID"></px-data-table-column>
+				<px-data-table-column sortable name="workshop" label="WORKSHOP"></px-data-table-column>
+				
+				<px-data-table-column sortable name="failureTime" label="FAILURE TIME"></px-data-table-column>
+				<px-data-table-column sortable name="operator" label="OPERATOR"></px-data-table-column>
+				<px-data-table-column sortable name="receivedRepairTime" label="RECVD REPAIR TIME"></px-data-table-column>
+				<px-data-table-column sortable name="startRepairTime" label="START REPAIR TIME"></px-data-table-column>
+				<px-data-table-column sortable name="startMaintStaffSSOId" label="START STAFF"></px-data-table-column>
+				
+				<px-data-table-column sortable name="startRepresentativeTime" label="START REP TIME"></px-data-table-column>
+				<px-data-table-column sortable name="endMaintStaff" label="END STAFF"></px-data-table-column>
+				<px-data-table-column sortable name="workorder2" label="Workorder"></px-data-table-column>
+				
+				<px-data-table-column sortable name="managersSSO" label="MANAGER SSO"></px-data-table-column>
+				<px-data-table-column sortable name="creatorSSO" label="CREATOR SSO"></px-data-table-column>
+				<px-data-table-column sortable name="updatorSSO" label="UPDATOR SSO"></px-data-table-column>
+				<px-data-table-column sortable name="creatdDate" label="CREATED DATE"></px-data-table-column>
+					
+					<!-- 	EquipMainId2	
+					
+					id="FailureTimes" name="failureTime"
+					 <input type="hidden" id="id" name="id" value="{{currentRow.id.value}}">	
+				<input type="hidden" id="workshop" name="workshop" value="{{currentRow.workshop.value}}">	
+				<input type="hidden" id="managersSSO" name="managersSSO" value="{{currentRow.managersSSO.value}}">
+				<input type="hidden" id="creatorSSO" name="creatorSSO" value="{{currentRow.creatorSSO.value}}">	
+				<input type="hidden" id="updatorSSO" name="updatorSSO" value="{{currentRow.updatorSSO.value}}">		
+				<input type="hidden" id="Id" name="id"  value="{{currentRow.creatdDate.value}}"></px-data-table-column>		
+				<input type="hidden" id="creatdDate" name="creatdDate" value="{{currentRow.creatdDate.value}}">	
+				<input type="hidden" id="updatdDate" name="updatdDate" value="{{currentRow.updatdDate.value}}">  -->
+							
+					<br><br>
+					<br><br>
+							
+	<!--************************************************** PX-TABLE ***************************************************************************-->						
+			  
+			 <div id="frstTime" class="module-body pull-left" style="width: 100%">
+		  	<form is="iron-form" content-type="application/json" id="mainReport"  method="post"> 
+              <byutv-jsonp id="testdata"
+                     url="http://localhost:8081/pmms-api/getMaintReportDetails"
+                     last-response="{{sampledata}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+			<px-data-table id="myTable" table-data="{{sampledata}}" on-px-row-click="maintananceRow">
+				
+					 <px-data-table-column sortable	name="id" label="ID" hide></px-data-table-column>
+					<px-data-table-column sortable name="positionNumber" label="PositionNumber"></px-data-table-column>
+					<px-data-table-column sortable name="okNok" label="OK/NOK"></px-data-table-column>
+					<px-data-table-column sortable name="restorationMeasures" label="RestorationMeasures"></px-data-table-column>
+				
+					</px-data-table> 
+			</form>
+			</div>	
+							
+	<!--*****************************************************************************************************************************-->						
+			  					
+					</px-modal>
+					</form>
+				</div>
+				</div>
+			
+					</section>
+	
+		<!--************************************************** Sub tab-2  ***************************************************************************-->
+				
+					<section>
+						<br><br>
+						
+					<div class="module-body pull-left">		
+					<label class="control-label" style="width:100px;">
+
+					<b>从/FROM:</b>
+
+					</label>					
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>	
+				<br>
+				<br>
+				<div class="module-body pull-left">	
+				
+					<label class="control-label" style="width:100px;">
+
+					<b>至/TO:</b>
+
+					</label>
+					&nbsp;&nbsp;
+					<px-datetime-picker date-time="2016-02-01T01:00:00.000Z" date-format="MM/DD/YY" 
+					time-format="hh:mm A" hide-time="true" show-time-zone="abbreviatedText" 
+					time-zone="America/Los_Angeles"></px-datetime-picker>	
+				</div>		
+						
+				<!-- <div class="module-body pull-left"> 
+				<button type="button" id="search" class="btn btn-primary btn-lg btn-block">Search</button>	
+				</div> -->
+																
+				<div class="module-body pull-left">	
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<button type="button" id="search" class="btn btn-primary btn-lg btn-block">搜索/Search</button>	
+				</div>
+
+	<!-- ******************************************************************************************************
+	------------------------------------------------Add PopUp------------------------------------------------
+	****************************************************************************************************** -->					
+				<br><br>
+				
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json"
+			id="bmManagementAdd" on-iron-form-response="ironformresponse" method="post">	
+				<br><br>
+				
+				<paper-button class="btn btn-large btn-primary" raised onclick="adding.open()">ADD</paper-button>
+				<paper-dialog id="adding"> <paper-dialog-scrollable>
+					<table>
+						<!-- <tr>
+						<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>WorkOrderNumber</b></label><td>		
+							<td><paper-input class="span3" name="workOrderNumber"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>					
+						</tr> 
+						
+						</td>
+						
+				<td><label class="control-label" style="width: 100px;">
+						<b>Release Date</b>
+				</label></td>
+				<td style="padding: 5px">
+					<div class="controls"
+						style="margin-left: 5px; display: inline-block; width: 200px;"
+						name="ReleaseDate">
+						<paper-input id="releaseDates" name="releaseDate"
+							style="display: inline-block; width: 100px;"></paper-input>
+						<px-datetime-picker id="ReleaseDate" on-tap="triggerReleaseDate"
+							style="display: inline-block; 
+				    	width: 80px;"></px-datetime-picker>
+					</div>
+				</td>
+						-->
+						
+					
+						<tr>
+						<td><label class="control-label"> <b>FaultDescription</b></label><td>		
+							<td style="padding: 5px">
+							<paper-input class="paper-input-medium search-query span3" name="faultDescription"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="{{localize('faultDescription')}}"> </paper-input></td>					
+						</tr>
+						
+						<tr>
+							<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>RouteCause</b></label><td>		
+							<td style="padding: 5px">
+							<paper-input class="span3" name="routecause"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="{{localize('routecause')}}"> </paper-input></td>					
+						</tr>	
+						
+						<!-- 	<tr>
+							<td><label class="control-label" style="width: 100px; margin-left: 5px;"> <b>Down Time</b></label><td>		
+							<td style="padding: 5px">
+							<div class="controls" name="Downtime"
+								style="margin-left: 5px; display: inline-block; width: 200px;">
+					
+						<paper-input id="downTime" class="span3" name="workOrderDate"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input>
+						
+						<px-datetime-picker id="Downtime" on-tap="trigger"
+							style="display: inline-block; 
+				              	width: 80px;"></px-datetime-picker>
+				          </div>    	</td>					
+						</tr>		 -->
+								
+						</table>
+				</paper-dialog-scrollable>
+				<div class="buttons">
+					<paper-button dialog-dismiss>Cancel</paper-button>
+					<paper-button dialog-confirm autofocus on-click="addingRoutedata">Submit</paper-button>
+				</div>
+			</paper-dialog>
+	</form>
+
+</div>
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------EDIT PopUp------------------------------------------------
+	****************************************************************************************************** -->
+				
+				<!-- EDIT FUNCTIONALITY-->
+				
+				<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json"
+					id="routeCauseEdit" on-iron-form-invalid="ironforminvalid"
+						on-iron-form-response="ironformresponse" method="post">	
+						
+				<paper-button raised on-click="edit.open()"
+				class="btn btn-large btn-primary">Edit</paper-button>
+			<paper-dialog id="edit"> <paper-dialog-scrollable>
+          		
+          				<table>
+						<tr>
+							<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>WorkOrderNumber</b></label><td>		
+							<td><paper-input class="span3" name="workOrderNumber" id="workOrderidEdit"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>					
+						</tr> 
+						
+						<tr>
+							<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Downtime</b></label><td>		
+							<td><paper-input class="span3" name="workOrderDate" id="downtimeEdit"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>					
+						</tr> 
+						
+						<tr>
+							<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>FaultDescription</b></label><td>		
+							<td><paper-input class="span3" name="faultDescription" id="faultdescEdit"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>					
+						</tr> 
+						
+						<tr>
+							<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>RouteCause</b></label><td>		
+							<td><paper-input class="span3" name="routecause" id="routeEdit"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>					
+						</tr> 
+						
+						</table>
+					</paper-dialog-scrollable>
+					<div class="buttons">
+					<paper-button dialog-dismiss>Cancel</paper-button>
+					<paper-button dialog-confirm autofocus on-click="editMeasuringTool">Update</paper-button>
+					</div>
+					</paper-dialog>
+          			
+          			 </form></div>
+				<!-- DELETE FUNCTIONALITY -->
+					<div class="legendmain mb10 pull-left">
+					<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse"
+							id="routeDelete" method="post">
+
+
+					<input type="hidden" id="deleteEquipmentId" name="deleteEquipmentId" value="{{deleteEquipmentId}}" />
+					
+					<paper-button class="btn btn-large btn-primary" raised on-click="deleteEquipment">Delete</paper-button>
+					
+			</form>
+		</div>
+								
+	<!--************************************************** PX-TABLE ***************************************************************************-->	
+			<div id="stTime" class="module-body pull-left" style="width: 100%">
+			<form is="iron-form" content-type="application/json" id="bmWorkOrderWOTracking" method="post"> 
+              <byutv-jsonp id="testts"
+                     	url="http://localhost:8081/pmms-api/getTrackingDetails"
+                    	 last-response="{{myroute}}" debounce-duration="300" auto="true">
+                     </byutv-jsonp>	
+                  
+					<px-data-table id="myRoutecause" enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{myroute}}" on-px-row-click="selectedRows1" selectable>
+					
+					<!-- <px-data-table-column sortable name="routeCauseDetails.headerId" label="WorkOrderNumber"></px-data-table-column> -->
+					<px-data-table-column sortable name="workOrderDate" label="Downtime"></px-data-table-column>
+					<!-- <px-data-table-column sortable name="faultReport.workOrderNumber" label="WorkOrderNumber"></px-data-table-column> -->
+					<px-data-table-column sortable name="faultDescription" label="FaultDescription"></px-data-table-column>
+					<px-data-table-column sortable name="routecause" label="RouteCause"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="1">
+		<px-data-table-highlight highlight-type="row" highlight-value="perfect" highlight-method="isPerfect" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="issues" highlight-method="isIssues" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="noissuestracked" highlight-method="isNoIssuesTracked" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+					</px-data-table-column>
+			
+					<px-data-table-column sortable name="routeCauseDetails.value" label="2">
+		<px-data-table-highlight highlight-type="row" highlight-value="perfect" highlight-method="isPerfect" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="issues" highlight-method="isIssues" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="noissuestracked" highlight-method="isNoIssuesTracked" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+				</px-data-table-column>
+				
+					<px-data-table-column sortable name="routeCauseDetails.value" label="3">
+					<px-data-table-highlight highlight-type="row" highlight-value="perfect" highlight-method="isPerfect" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="issues" highlight-method="isIssues" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		<px-data-table-highlight highlight-type="row" highlight-value="noissuestracked" highlight-method="isNoIssuesTracked" import="/../views/px-data-table-highlight-bmwo.html"></px-data-table-highlight>
+		
+					</px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="4"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="5"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="6"></px-data-table-column>										
+					<px-data-table-column sortable name="routeCauseDetails.value" label="7"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="8"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="9"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="10"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="11"></px-data-table-column>
+					<px-data-table-column sortable name="routeCauseDetails.value" label="12"></px-data-table-column>
+				
+				</px-data-table> 
+			</form>
+						</div>							
+						
+					</section>
+</section>
+  </px-tab-pages>
+  </px-card>
+</template>
+  <script>
+    Polymer({
+    
+      is: 'breakdown-workOrder',
+    
+    	  behaviors : [ PmmsBehaviors.LanguageBehavior ],
+
+    		searchKey : null,
+    		
+    		properties : {
+
+    			currentRow : {
+    				type : Object,
+    				notify : true,
+    				value : function() {
+    					return {};
+    				}
+    			}
+    		},
+    		
+    		deleteEquipmentId : {
+				type : String,
+				notify : true
+			},
+		
+		deleteEquipment : function() {
+			if (this.ids.length > 0) {
+				this.deleteEquipmentId = this.ids.toString();
+				document.getElementById('routeDelete').action = "http://localhost:8081/pmms-api/removeRoutecauseDetails";
+				document.getElementById('routeDelete').submit();
+			}
+
+		},
+    		refreshData : function() {
+    			this.$.testts.generateRequest();
+    		},
+/* 
+    		handleResponse : function(event) {
+				var details=event.detail;
+				this.refreshTable(event.target.id);
+			}, */	
+			ironformresponse : function() {
+
+				document.querySelector('breakdown-workOrder').refreshData();
+			},
+			_refreshTable : function(tableId) {
+				var array = [];
+				if (!this.searchKey) {
+					array = this.mydata;
+				} else {
+					for ( var i in this.mydata) {
+						var jsonObject = this.mydata[i];
+						if (this._matches(jsonObject, this.searchKey)) {
+							array.push(jsonObject);
+
+						}
+
+					}
+				}
+
+			},
+			
+			handleResponseData : function(event) {
+				var details = event.detail;
+				console.log(details);
+				if (details.status == 200) {
+					this.operationLog = details.response;
+					this._refreshTable("myroute");
+				} else {
+					alert("error!!!");
+
+				}
+			},
+			
+			
+			ironform : function(){
+				
+				document.querySelector('breakdown-workOrder').refreshData();
+			},
+			
+			
+    			triggerStartRepairtimeEdit:function() {
+    				console.log("date function is triggered");
+    				console.log("StartRepairtimeEdit : " + this.$.StartRepairtimeEdit);
+    				this.StartRepairtimeEdit = this.$.StartRepairtimeEdit.dateTime.substring(
+    						0, this.$.StartRepairtimeEdit.dateTime.indexOf('T'));
+    				this.StartRepairtimefieldEdit = this.StartRepairtimeEdit;
+    				document.getElementById("startRepairTimes").value = this.StartRepairtimefieldEdit;
+    			},
+    			triggerEndRepairtimeEdit:function() {
+    				console.log("date function is triggered");
+    				console.log("EndRepairtimeEdit : " + this.$.EndRepairtimeEdit);
+    				this.EndRepairtimeEdit = this.$.EndRepairtimeEdit.dateTime.substring(
+    						0, this.$.EndRepairtimeEdit.dateTime.indexOf('T'));
+    				this.EndRepairtimefieldEdit = this.EndRepairtimeEdit;
+    				document.getElementById("endRepairtimes").value = this.EndRepairtimefieldEdit;
+    			},
+    			triggerReceivedRepairtimeEdit:function() {
+    				console.log("date function is triggered");
+    				console.log("ReceivedRepairtimeEdit : " + this.$.ReceivedRepairtimeEdit);
+    				this.ReceivedRepairtimeEdit = this.$.ReceivedRepairtimeEdit.dateTime.substring(
+    						0, this.$.ReceivedRepairtimeEdit.dateTime.indexOf('T'));
+    				this.ReceivedRepairtimefieldEdit = this.ReceivedRepairtimeEdit;
+    				document.getElementById("receivedRepairTimes").value = this.ReceivedRepairtimefieldEdit;
+    			},
+    			
+    		triggerDatetimeEdit:function() {
+    				console.log("date function is triggered");
+    				console.log("DatetimeEdit : " + this.$.DatetimeEdit);
+    				this.DatetimeEdit = this.$.DatetimeEdit.dateTime.substring(
+    						0, this.$.DatetimeEdit.dateTime.indexOf('T'));
+    				this.DatetimeEditfield = this.DatetimeEdit;
+    				document.getElementById("datess").value = this.DatetimeEditfield;
+    			},
+    			 
+    			downloadExcel : function() {
+
+    				document.getElementById("downloadXl").action = "http://localhost:8081/pmms-api/getClosedWODetailsDownloadExcel?wordOrderStatus='CC'";
+    				document.getElementById('downloadXl').submit();
+
+    			},
+    			printDataaWOHistory : function() {
+   				 document.getElementById("printTablWOHistory").action = "http://localhost:8081/pmms-api/printClosedWODetailsInPdf?wordOrderStatus='CC'"; 
+   				 document.getElementById("printTablWOHistory").submit();
+   				   
+   			},
+   		//----------------------------------------------------------------------				
+   			measuringRow : function(e) {
+   				var clickedRow = e.detail.row;
+   				this.currentRow = clickedRow;
+   				if (this.ids == undefined)
+   					this.ids = [];
+   				var index = this.ids.indexOf((clickedRow.row.id.value));
+   				if (clickedRow._selected == false && index == -1)//not present in ids list
+   					this.ids.push(clickedRow.row.id.value);
+   				else if (index > -1) //already there 
+   					this.ids.splice(index, 1);
+   				document.getElementById("Id").value = clickedRow.row.id.value;
+   				document.getElementById("operators").value = clickedRow.row.operator.value;
+   				document.getElementById("FailureTimes").value = clickedRow.row.failureTime.value;
+   				document.getElementById("receivedRepairTimes").value = clickedRow.row.receivedRepairTime.value;
+   				document.getElementById("startRepairTimes").value = clickedRow.row.startRepairTime.value;
+   				
+   				document.getElementById("startMaintStaffSSO").value = clickedRow.row.startMaintStaffSSOId.value;
+   				document.getElementById("endRepairtimes").value = clickedRow.row.startRepresentativeTime.value;
+   				document.getElementById("endStaff").value = clickedRow.row.endMaintStaff.value;
+   				document.getElementById("workorder2").value = clickedRow.row.workorderID.value;
+   				
+   			},
+   				
+   		//----------------------------------------------------------------------	
+    			saveSIHistoryData : function() {
+    				alert("hiiiii");
+    				console.log("HIII");
+    					document.getElementById('savebmWorkOrder').action = "http://localhost:8081/pmms-api/addSIHistoryWOInfo";
+    					document.getElementById('savebmWorkOrder').submit();
+    				},
+    			addMaintInfo : function(){
+    				alert("hiiiii");
+    					console.log("HIII");
+    					document.getElementById('addbmWorkOrder').action = "http://localhost:8081/pmms-api/addMaintReportInfo";
+    					document.getElementById('addbmWorkOrder').submit();
+    				},
+    //----------------------------------------------------------------------	
+    				/* addInfo : function(){
+    					document.getElementById("addbmWorkOrder").action = "http://localhost:8081/pmms-api/addInfo";
+    					document.getElementById("addbmWorkOrder").submit();
+    				}, */
+    		//----------------------------------------------------------------------	
+    				
+    				trigger:function() {
+    					console.log("date function is triggered");
+    					console.log("Downtime : " + this.$.Downtime);
+    					this.Downtime = this.$.Downtime.dateTime.substring(
+    							0, this.$.Downtime.dateTime.indexOf('T'));
+    					this.InstallDateField = this.Downtime;
+    					document.getElementById("downTime").value = this.InstallDateField;
+    				},
+
+    		
+    			
+    //----Edit Function-----------------------------------------------------/
+    				selectedRows1 : function(e) {
+    					var clickedRow = e.detail.row;
+    					this.currentRow = clickedRow;
+    					if (this.ids == undefined)
+    						this.ids = [];
+    					var index = this.ids.indexOf((clickedRow.row.id.value));
+    					if (clickedRow._selected == false && index == -1)//not present in ids list
+    						this.ids.push(clickedRow.row.id.value);
+    					else if (index > -1) //already there
+    						this.ids.splice(index, 1);
+    					
+    					document.getElementById("faultDescription").value = clickedRow.row.faultDescription.value;
+    					document.getElementById("routecause").value = clickedRow.row.routecause.value;
+    					
+    				    document.getElementById("workOrderidEdit").value = clickedRow.row.workOrderNumber.value; 
+    					document.getElementById("downtimeEdit").value = clickedRow.row.workOrderDate.value;
+    				    document.getElementById("faultdescEdit").value = clickedRow.row.faultDescription.value;
+    					document.getElementById("routeEdit").value = clickedRow.row.routecause.value;
+    					
+    					
+    					document.getElementById("deleteEquipmentId").value = clickedRow.row.id.value;
+    					
+    					/* document.getElementById("workOrderDate").value = clickedRow.row.downTime.value; */
+    					
+    					
+    					
+    				},
+    				
+    				addingRoutedata : function() {
+    					document.getElementById("bmManagementAdd").action = "http://localhost:8081/pmms-api/saveRouteCauseInfo";
+    					document.getElementById('bmManagementAdd').submit();
+    				},
+    				
+    				editMeasuringTool : function() {
+    					document.getElementById("routeCauseEdit").action = "http://localhost:8081/pmms-api/saveRouteCauseInformation";
+    					document.getElementById('routeCauseEdit').submit();
+    				}
+    	 		
+    				
+    		});
+    </script>
+  </dom-module>

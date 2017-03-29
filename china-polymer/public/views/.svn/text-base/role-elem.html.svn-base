@@ -1,0 +1,1056 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="role-elem"> <template> <px-card
+	icon="fa-suitcase" header-text="Role Management" chevron>
+<section>
+	<byutv-jsonp url="http://localhost:8081/pmms-api/getRoleInfo"
+		last-response="{{mydata}}" debounce-duration="300" auto>
+	</byutv-jsonp>
+
+	<!-- *******************************************ADDD****************************************************************************
+*******************************************************************************************************************************-->
+<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="addForm" method="post">
+
+
+			<paper-button raised onclick="add.open()"
+				class="btn btn-large btn-primary">Add</paper-button>
+			<paper-dialog id="add"> <paper-dialog-scrollable>
+			<table>
+				<tr>
+					<td><label class="control-label"><b>角色名称/Role
+								Name*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3"
+							id="roleName" name="roleName" style="width: 180px;" required
+							auto-validate error-message="Role Name cannot be empty">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>角色描述/Role
+								Description*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3"
+							id="roleDescription" name="roleDescription" style="width: 180px;"
+							required auto-validate
+							error-message="Role Description cannot be empty"> </paper-input>
+					</td>
+				</tr>
+			</table>
+			
+
+				
+		 <table selected-key="{{id}}">
+				<tr>
+					<td>
+						<!-- <paper-checkbox id="workOrd" class="parentCheckBox"  value="Work Order Management"><b>Work Order Management:</b></paper-checkbox> -->
+						<label><b id="2" value="Work Order Management">Work Order Management</b></label>
+					</td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="9"  master-parent="2"
+							value="Fault maintenance order" class="childNode">
+						 Fault maintenance order</paper-checkbox></td>
+					<td><paper-checkbox id="10" master-parent="2"
+							value="Planned Maintenance Work Order" class="childNode">
+						Planned Maintenance Work Order</paper-checkbox></td>
+					<td><paper-checkbox id="11" master-parent="2"
+							value="Planned maintenance work order processing"	class="childNode">
+						Planned maintenance work order processing</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="9-add"
+							parent-name="9" name="faultMantainAdd"
+							value="A" class="subChildNode">A</paper-checkbox> <paper-checkbox
+							id="9-edit"
+							parent-name="9" name="faultMantainEdit"
+							value="E" class="subChildNode">E</paper-checkbox> <paper-checkbox
+							id="9-delete"
+							parent-name="9" name="faultMantainDelete"
+							value="D" class="subChildNode">D</paper-checkbox></td>
+					<td><paper-checkbox id="10-add"
+							parent-name="10" name="plannedMaintainAdd"
+							value="A" class="subChildNode">A</paper-checkbox> <paper-checkbox
+							id="10-edit"
+							parent-name="10"
+							name="plannedMaintainEdit" value="E" class="subChildNode">E</paper-checkbox>
+						<paper-checkbox id="10-delete"
+							parent-name="10"
+							name="plannedMaintainDelete" value="D" class="subChildNode">D</paper-checkbox></td>
+					<td><paper-checkbox id="11-add"
+							parent-name="11"
+							name="plannedMaintainWorkAdd" value="A" class="subChildNode">A</paper-checkbox>
+						<paper-checkbox id="11-edit"
+							parent-name="11"
+							name="plannedMaintainWorkEdit" value="E" class="subChildNode">E</paper-checkbox>
+						<paper-checkbox id="11-delete"
+							parent-name="11"
+							name="plannedMaintainWorkDelete" value="D" class="subChildNode">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<!-- <td><paper-checkbox  class="parentCheckBox" value ="Maintainance Program Management"><b>Maintainance Program Management:</b></paper-checkbox></td> -->
+					<td><label><b id="3" value="Maintainance Program Management">Maintainance Program Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="12"
+							master-parent="3"
+							value="Annual maintenance plan" class="childNode">
+						Annual maintenance plan</paper-checkbox></td>
+
+					<td><paper-checkbox id="13"
+							master-parent="3"
+							value="Produce year-round maintenance program" class="childNode">Produce
+						year-round maintenance program</paper-checkbox></td>
+					
+					<td><paper-checkbox id="14"
+							master-parent="3" class="childNode"
+							value="Maintenance Content Management">Maintenance
+						Content Management</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="12-add"
+							parent-name="12" name="annualMantainAdd"
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="12-edit"
+							parent-name="12" name="annualMantainEdit" 
+							class="subChildNode" value="E">E</paper-checkbox> 
+					<paper-checkbox	id="12-delete"
+							parent-name="12" name="annualMantainDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="13-add"
+							parent-name="13" name="prodYrAroundAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+							
+						<paper-checkbox id="13-edit"
+							parent-name="13" name="prodYrAroundEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							
+						 <paper-checkbox id="13-delete"  parent-name="13" name="prodYrAroundDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="14-add"  parent-name="14" name="maintContentMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="14-edit"  parent-name="14" name="maintContentMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> 
+						<paper-checkbox id="14-delete"  parent-name="14" name="maintContentMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><label><b id="4" value="Maintainance Spare Parts Management">Maintainance Spare Parts Management:</b></label></td>
+					
+					
+				</tr>
+				<tr>
+					<td><paper-checkbox id="15"  value ="Spare Parts
+						Management" master-parent="4" class="childNode">Spare Parts
+						Management</paper-checkbox></td>
+					<td><paper-checkbox id="16" master-parent="4" class="childNode" value="Safety Stock" >Safety
+						Stock</paper-checkbox></td>
+					<td><paper-checkbox id="17" master-parent="4" class="childNode" value="Out of	storage records management">Out of
+						storage records management</paper-checkbox></td>
+					<td><paper-checkbox id="18" master-parent="4" class="childNode" value="See spare	parts inventory">See spare
+						parts inventory</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="15-add"  parent-name="15" name="sparePartMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="15-edit"  parent-name="15" name="sparePartMgmtEdit"  
+							class="subChildNode" value="E" >E</paper-checkbox>
+							 <paper-checkbox id="15-delete"  parent-name="15" name="sparePartMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="16-add"  parent-name="16" name="safetyStockOfMaintainAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="16-edit"  parent-name="16" name="safetyStockOfMaintainEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> <paper-checkbox
+							id="16-delete"  parent-name="16" name="safetyStockOfMaintainDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="17-add"  parent-name="17" name="outOfStorageAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="17-edit"  parent-name="17" name="outOfStorageEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> <paper-checkbox
+							id="17-delete"  parent-name="17" name="outOfStorageDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="18-add"  parent-name="18" name="seeSparePartInventoryAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="18-edit"  parent-name="18" name="seeSparePartInventoryEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="18-delete"  parent-name="18" name="seeSparePartInventoryDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="5" value=" Analysis and Reporting"> Analysis and Reporting:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="19" value ="Planned
+						maintenance completion rate statistics" master-parent="5" class="childNode">Planned
+						maintenance completion rate statistics</paper-checkbox></td>
+					<td><paper-checkbox id="20" value ="Equipment availability
+						statistics" master-parent="5" class="childNode">Equipment availability
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="21" value ="The average time between
+						repair statistics" master-parent="5" class="childNode">The average time between
+						repair statistics</paper-checkbox></td>
+					<td><paper-checkbox id="22" value ="The average repair time
+						statistics" master-parent="5" class="childNode">The average repair time
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="23" value ="Spare Parts cost
+						statistics" master-parent="5" class="childNode">Spare Parts cost
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="24" value ="Number of spare parts for
+						maintenance use statistics" master-parent="5" class="childNode">Number of spare parts for
+						maintenance use statistics</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><paper-checkbox id="19-add"  parent-name="19" name="plannedMaintRateStatisticsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="19-edit"  parent-name="19" name="plannedMaintRateStatisticsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="19-delete"  parent-name="19" name="plannedMaintRateStatisticsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+						
+					<td><paper-checkbox id="20-add"  parent-name="20" name="equipAvailStaticsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="20-edit"  parent-name="20" name="equipAvailStaticsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="20-delete"  parent-name="20" name="equipAvailStaticsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="21-add"  parent-name="21" name="avgTimeBtwRepairStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="21-edit"  parent-name="21" name="avgTimeBtwRepairStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="21-delete"  parent-name="21" name="avgTimeBtwRepairStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="22-add"  parent-name="22" name="avgRepairTimeStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="22-edit"  parent-name="22" name="avgRepairTimeStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="22-delete"  parent-name="22" name="avgRepairTimeStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="23-add"  parent-name="23" name="sparePartsCostAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="23-edit"  parent-name="23" name="sparePartsCostEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="23-delete"  parent-name="23" name="sparePartsCostDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+						
+					<td><paper-checkbox id="24-add"  parent-name="24" name="NoOfSparepartsStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="24-edit"  parent-name="24" name="NoOfSparepartsStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="24-delete"  parent-name="24" name="NoOfSparepartsStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="6" value="Equipment and Facility and document Management"> Equipment and Facility and document Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="25" value ="Equipment and facilities
+						management" master-parent="6" class="childNode">Equipment and facilities
+						management</paper-checkbox></td>
+					<td><paper-checkbox id="26" value ="Device file upload"
+					 master-parent="6" class="childNode">Device file upload</paper-checkbox></td>
+				</tr>
+				<tr>
+									
+					<td><paper-checkbox id="25-add"  parent-name="25" name="equipNfacMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="25-edit"  parent-name="25" name="equipNfacMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="25-delete"  parent-name="25" name="equipNfacMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox> </td>
+							
+							<td> <paper-checkbox id="26-add"  parent-name="26" name="deviceFileUploadAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="26-edit"  parent-name="26" name="deviceFileUploadEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="26-delete"  parent-name="26" name="deviceFileUploadDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="7" value="Indirect Material Management">Indirect Material Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="27" value ="Indirect Materials Management" 
+					master-parent="7" class="childNode">Indirect Materials
+						Management</paper-checkbox></td>
+					<td><paper-checkbox id="28" value ="Safety Stock"
+					 master-parent="7" class="childNode">Safety Stock</paper-checkbox></td>
+					<td><paper-checkbox id="29" value ="Out of storage records management"
+					 master-parent="7" class="childNode">Out of storage records
+						management</paper-checkbox></td>
+					<td><paper-checkbox id="30" value ="Check indirect materials
+						inventor" master-parent="7" class="childNode">Check indirect materials
+						inventor</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="27-add"  parent-name="27" name="indirectMaterialMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="27-edit"  parent-name="27" name="indirectMaterialMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="27-delete"  parent-name="27" name="indirectMaterialMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="28-add"  parent-name="28" name="safetyStockOfIndirectAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="28-edit"  parent-name="28" name="safetyStockOfIndirectEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="28-delete"  parent-name="28" name="safetyStockOfIndirectDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="29-add"  parent-name="29" name="outStorageMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="29-edit"  parent-name="29" name="outStorageMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="29-delete"  parent-name="29" name="outStorageMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="30-add"  parent-name="30" name="checkIndirectInventorAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="30-edit"  parent-name="30" name="checkIndirectInventorEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="30-delete"  parent-name="30" name="checkIndirectInventorDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><label><b id="8" value="Users and Rights Management">Users and Rights Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="31" value ="User Management" 
+					master-parent="8" class="childNode">User Management</paper-checkbox></td>
+					<td><paper-checkbox id="32" value ="Role Management" 
+					master-parent="8" class="childNode">Role Management</paper-checkbox></td>
+					<td><paper-checkbox id="33" value ="System configuration parameters" 
+					master-parent="8" class="childNode">System configuration
+						parameters</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="31-add"  parent-name="31" name="userMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="31-edit"  parent-name="31" name="userMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="31-delete"  parent-name="31" name="userMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="32-add"  parent-name="32" name="roleMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="32-edit"  parent-name="32" name="roleMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="32-delete"  parent-name="32" name="roleMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="33-add"  parent-name="33" name="systemConfigParamAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="33-edit"  parent-name="33" name="systemConfigParamEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="33-delete"  parent-name="33" name="systemConfigParamDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+			</table>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button id="cancelAddModal" dialog-dismiss>Cancel</paper-button>
+				<paper-button raised on-tap="submitRoleRights"
+					class="btn btn-large btn-primary">Submit</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+	<!--******************************************EDIT FUNCTIONALITY*****************************************************************************************
+******************************************************************************************************************************************************-->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="editform"	 method="post" >
+
+			<paper-button raised on-click="editRole"
+				class="btn btn-large btn-primary">Edit</paper-button>
+			<paper-dialog id="edit"><paper-dialog-scrollable>
+
+			<table>
+				<tr>
+					<td><label class="control-label"><b>角色名称/Role
+								Name*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3"
+							id="roleName" name="roleName"
+							style="width: 180px;"
+							required auto-validate error-message="Role Name cannot be empty">
+						</paper-input></td>
+				</tr>
+				<tr>
+					<td><label class="control-label"><b>角色描述/Role
+								Description*:</b></label></td>
+					<td><paper-input class="input-medium search-query span3"
+							id="roleDescription" name="roleDescription"
+							style="width: 180px;" required auto-validate
+							error-message="Role Description cannot be empty"> </paper-input>
+					</td>
+				</tr>
+			</table>
+					<table selected-key="{{id}}">
+				<tr>
+					<td>
+						<!-- <paper-checkbox id="workOrd" class="parentCheckBox"  value="Work Order Management"><b>Work Order Management:</b></paper-checkbox> -->
+						<label><b id="2" value="Work Order Management">Work Order Management</b></label>
+					</td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM9" master-parent="2"
+							value="Fault maintenance order" class="childNode">
+						<font color="red"> Fault maintenance order</font></paper-checkbox></td>
+					<td><paper-checkbox id="SM10" master-parent="2"
+							value="Planned Maintenance Work Order" class="childNode">
+						<font color="red">Planned Maintenance Work Order</font></paper-checkbox></td>
+					<td><paper-checkbox id="SM11" master-parent="2"
+							value="Planned maintenance work order processing"	class="childNode">
+						<font color="red">Planned maintenance work order processing</font></paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="add-SM9"
+							parent="SM9" name="faultMantainAdd"
+							value="A" class="subChildNode">A</paper-checkbox> <paper-checkbox
+							id="edit-SM9"
+							parent="SM9" name="faultMantainEdit"
+							value="E" class="subChildNode">E</paper-checkbox> <paper-checkbox
+							id="delete-SM9"
+							parent="SM9" name="faultMantainDelete"
+							value="D" class="subChildNode">D</paper-checkbox></td>
+					<td><paper-checkbox id="add-SM10"
+							parent="SM10" name="plannedMaintainAdd"
+							value="A" class="subChildNode">A</paper-checkbox> <paper-checkbox
+							id="edit-SM10"
+							parent="SM10"
+							name="plannedMaintainEdit" value="E" class="subChildNode">E</paper-checkbox>
+						<paper-checkbox id="delete-SM10"
+							parent="SM10"
+							name="plannedMaintainDelete" value="D" class="subChildNode">D</paper-checkbox></td>
+					<td><paper-checkbox id="add-SM11"
+							parent="SM11"
+							name="plannedMaintainWorkAdd" value="A" class="subChildNode">A</paper-checkbox>
+						<paper-checkbox id="edit-SM11"
+							parent="SM11"
+							name="plannedMaintainWorkEdit" value="E" class="subChildNode">E</paper-checkbox>
+						<paper-checkbox id="delete-SM11"
+							parent="SM11"
+							name="plannedMaintainWorkDelete" value="D" class="subChildNode">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<!-- <td><paper-checkbox  class="parentCheckBox" value ="Maintainance Program Management"><b>Maintainance Program Management:</b></paper-checkbox></td> -->
+					<td><label><b id="3" value="Maintainance Program Management">Maintainance Program Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM12"
+							master-parent="3"
+							value="Annual maintenance plan" class="childNode">
+						Annual maintenance plan</paper-checkbox></td>
+
+					<td><paper-checkbox id="SM13"
+							master-parent="3"
+							value="Produce year-round maintenance program" class="childNode">Produce
+						year-round maintenance program</paper-checkbox></td>
+					<td><paper-checkbox id="SM14"
+							master-parent="3" class="childNode"
+							value="Maintenance Content Management">Maintenance
+						Content Management</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="add-SM12"
+							parent="SM12" name="annualMantainAdd"
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM12"
+							parent="SM12" name="annualMantainEdit" 
+							class="subChildNode" value="E">E</paper-checkbox> 
+					<paper-checkbox	id="delete-SM12"
+							parent="SM12" name="annualMantainDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="add-SM13"
+							parent="SM13" name="prodYrAroundAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+							
+						<paper-checkbox id="edit-SM13"
+							parent="SM13" name="prodYrAroundEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							
+						 <paper-checkbox id="delete-SM13"  parent="SM13" name="prodYrAroundDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="add-SM14"  parent="SM14" name="maintContentMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM14"  parent="SM14" name="maintContentMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> 
+						<paper-checkbox id="delete-SM14"  parent="SM14" name="maintContentMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><label><b id="4" value="Maintainance Spare Parts Management">Maintainance Spare Parts Management:</b></label></td>
+					
+					
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM15"  value ="Spare Parts
+						Management" master-parent="4" class="childNode">Spare Parts
+						Management</paper-checkbox></td>
+					<td><paper-checkbox id="SM16" master-parent="4" class="childNode" value="Safety Stock" >Safety
+						Stock</paper-checkbox></td>
+					<td><paper-checkbox id="SM17" master-parent="4" class="childNode" value="Out of	storage records management">Out of
+						storage records management</paper-checkbox></td>
+					<td><paper-checkbox id="SM18" master-parent="4" class="childNode" value="See spare	parts inventory">See spare
+						parts inventory</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="add-SM15"  parent="SM15" name="sparePartMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM15"  parent="SM15" name="sparePartMgmtEdit"  
+							class="subChildNode" value="E" >E</paper-checkbox>
+							 <paper-checkbox id="delete-SM15"  parent="SM15" name="sparePartMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="add-SM16"  parent="SM16" name="safetyStockOfMaintainAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM16"  parent="SM16" name="safetyStockOfMaintainEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> <paper-checkbox
+							id="delete-SM16"  parent="SM16" name="safetyStockOfMaintainDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="add-SM17"  parent="SM17" name="outOfStorageAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM17"  parent="SM17" name="outOfStorageEdit"  
+							class="subChildNode" value="E">E</paper-checkbox> <paper-checkbox
+							id="delete-SM17"  parent="SM17" name="outOfStorageDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+					<td><paper-checkbox id="add-SM18"  parent="SM18" name="seeSparePartInventoryAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM18"  parent="SM18" name="seeSparePartInventoryEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM18"  parent="SM18" name="seeSparePartInventoryDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="5" value=" Analysis and Reporting"> Analysis and Reporting:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM19" value ="Planned
+						maintenance completion rate statistics" master-parent="5" class="childNode">Planned
+						maintenance completion rate statistics</paper-checkbox></td>
+					<td><paper-checkbox id="SM20" value ="Equipment availability
+						statistics" master-parent="5" class="childNode">Equipment availability
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="SM21" value ="The average time between
+						repair statistics" master-parent="5" class="childNode">The average time between
+						repair statistics</paper-checkbox></td>
+					<td><paper-checkbox id="SM22" value ="The average repair time
+						statistics" master-parent="5" class="childNode">The average repair time
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="SM23" value ="Spare Parts cost
+						statistics" master-parent="5" class="childNode">Spare Parts cost
+						statistics</paper-checkbox></td>
+					<td><paper-checkbox id="SM24" value ="Number of spare parts for
+						maintenance use statistics" master-parent="5" class="childNode">Number of spare parts for
+						maintenance use statistics</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><paper-checkbox id="add-SM19"  parent="SM19" name="plannedMaintRateStatisticsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM19"  parent="SM19" name="plannedMaintRateStatisticsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM19"  parent="SM19" name="plannedMaintRateStatisticsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+						
+					<td><paper-checkbox id="add-SM20"  parent="SM20" name="equipAvailStaticsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM20"  parent="SM20" name="equipAvailStaticsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM20"  parent="SM20" name="equipAvailStaticsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM21"  parent="SM21" name="avgTimeBtwRepairStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM21"  parent="SM21" name="avgTimeBtwRepairStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM21"  parent="SM21" name="avgTimeBtwRepairStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM22"  parent="SM22" name="avgRepairTimeStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM22"  parent="SM22" name="avgRepairTimeStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM22"  parent="SM22" name="avgRepairTimeStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM23"  parent="SM23" name="sparePartsCostAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM23"  parent="SM23" name="sparePartsCostEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM23"  parent="SM23" name="sparePartsCostDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+							
+						
+					<td><paper-checkbox id="add-SM24"  parent="SM24" name="NoOfSparepartsStatsAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM24"  parent="SM24" name="NoOfSparepartsStatsEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM24"  parent="SM24" name="NoOfSparepartsStatsDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="6" value="Equipment and Facility and document Management"> Equipment and Facility and document Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM25" value ="Equipment and facilities
+						management" master-parent="6" class="childNode">Equipment and facilities
+						management</paper-checkbox></td>
+					<td><paper-checkbox id="SM26" value ="Device file upload"
+					 master-parent="6" class="childNode">Device file upload</paper-checkbox></td>
+				</tr>
+				<tr>
+									
+					<td><paper-checkbox id="add-SM25"  parent="SM25" name="equipNfacMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM25"  parent="SM25" name="equipNfacMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM25"  parent="SM25" name="equipNfacMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox> </td>
+							
+							<td> <paper-checkbox id="add-SM26"  parent="SM26" name="deviceFileUploadAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM26"  parent="SM26" name="deviceFileUploadEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM26"  parent="SM26" name="deviceFileUploadDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+
+				<tr>
+					<td><label><b id="7" value="Indirect Material Management">Indirect Material Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM27" value ="Indirect Materials Management" 
+					master-parent="7" class="childNode">Indirect Materials
+						Management</paper-checkbox></td>
+					<td><paper-checkbox id="SM28" value ="Safety Stock"
+					 master-parent="7" class="childNode">Safety Stock</paper-checkbox></td>
+					<td><paper-checkbox id="SM29" value ="Out of storage records management"
+					 master-parent="7" class="childNode">Out of storage records
+						management</paper-checkbox></td>
+					<td><paper-checkbox id="SM30" value ="Check indirect materials
+						inventor" master-parent="7" class="childNode">Check indirect materials
+						inventor</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="add-SM27"  parent="SM27" name="indirectMaterialMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM27"  parent="SM27" name="indirectMaterialMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM27"  parent="SM27" name="indirectMaterialMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM28"  parent="SM28" name="safetyStockOfIndirectAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM28"  parent="SM28" name="safetyStockOfIndirectEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM28"  parent="SM28" name="safetyStockOfIndirectDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM29"  parent="SM29" name="outStorageMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM29"  parent="SM29" name="outStorageMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM29"  parent="SM29" name="outStorageMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM30"  parent="SM30" name="checkIndirectInventorAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM30"  parent="SM30" name="checkIndirectInventorEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM30"  parent="SM30" name="checkIndirectInventorDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><label><b id="8" value="Users and Rights Management">Users and Rights Management:</b></label></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="SM31" value ="User Management" 
+					master-parent="8" class="childNode">User Management</paper-checkbox></td>
+					<td><paper-checkbox id="SM32" value ="Role Management" 
+					master-parent="8" class="childNode">Role Management</paper-checkbox></td>
+					<td><paper-checkbox id="SM33" value ="System configuration parameters" 
+					master-parent="8" class="childNode">System configuration
+						parameters</paper-checkbox></td>
+				</tr>
+				<tr>
+					<td><paper-checkbox id="add-SM31"  parent="SM31" name="userMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM31"  parent="SM31" name="userMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM31"  parent="SM31" name="userMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM32"  parent="SM32" name="roleMgmtAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM32"  parent="SM32" name="roleMgmtEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM32"  parent="SM32" name="roleMgmtDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+						
+					<td><paper-checkbox id="add-SM33"  parent="SM33" name="systemConfigParamAdd"  
+							class="subChildNode" value="A">A</paper-checkbox>
+						<paper-checkbox id="edit-SM33"  parent="SM33" name="systemConfigParamEdit"  
+							class="subChildNode" value="E">E</paper-checkbox>
+							<paper-checkbox	id="delete-SM33"  parent="SM33" name="systemConfigParamDelete"  
+							class="subChildNode" value="D">D</paper-checkbox></td>
+				</tr>
+			</table>
+
+			</paper-dialog-scrollable>
+				<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button raised on-tap="submitEditRoleRights"
+					class="btn btn-large btn-primary">Submit</paper-button>
+			</div>
+			</paper-dialog>
+		</form>
+	</div>
+<!--******************************************DELETE FUNCTIONALITY*****************************************************************************************
+******************************************************************************************************************************************************-->
+	<div class="legendmain mb10 pull-left">
+		<form is="iron-form" content-type="application/json" id="deleteform" method="post">
+
+			<paper-button raised on-click="deleteRole" class="btn btn-large btn-primary" >Delete</paper-button>		
+		</form>
+	</div>					
+	<!----------------------------------------- TABLE DISPLAY------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------->
+
+	<div id ="pxRoleTable"class="module-body pull-left" style="width: 100%">
+
+		<byutv-jsonp id="test"
+			url="http://localhost:8081/pmms-api/getRoleInfo"
+			last-response="{{minidata1}}" auto></byutv-jsonp>
+
+		<px-data-table id="removeRole" enable-column-resize selectable 
+			table-data="{{minidata1}}" 
+			selected-rows="{{selectedRows6}}"> 
+			<px-data-table-column name="id" label="Role Id" ></px-data-table-column>
+			 <px-data-table-column	name="roleName" label="Role Name"></px-data-table-column>
+			  <px-data-table-column	name="roleDescription" label="Role Description"></px-data-table-column>
+		</px-data-table>
+	</div>
+	
+<paper-dialog id="addRole">
+  <p>New Role added succesfully.</p>
+  <div class="buttons">
+    <paper-button dialog-confirm autofocus  on-click="closeModal">OK</paper-button>
+  </div>
+</paper-dialog>
+
+<paper-dialog id="deleteRole">
+  <p> Role deleted succesfully.</p>
+  <div class="buttons">
+    <paper-button dialog-confirm autofocus  on-tap="refreshData">OK</paper-button>
+  </div>
+</paper-dialog>
+</section>
+</px-card> </template> <script>
+					Polymer({
+						/* this is the element's prototype */
+						is : 'role-elem',
+						selected : 0,
+						refreshData : function() {
+							this.$.test.generateRequest();
+						},
+						closeModal:function close()
+						{
+							this.$.test.generateRequest();
+							
+						},
+						properties: {
+					  		currentRow: {
+							  			type: Object,
+							  			notify: true,
+							  			value: function() {
+							  					return {};
+					  				}
+					  			},
+					  			roleName: {
+						  			type: String,
+						  			notify: true
+									},
+									roleDesc : {
+										type : String,
+										notify : true
+									},
+									roleId:{
+										type :String,
+										notify : true
+									}
+					        },
+					  deleteRole:function deleteRole(e)
+					  {
+						  var deleteRole=[];
+						  var length= this.$.removeRole.__data__.selectedRows.length;
+						  for(var i =0;i<length;i++)
+							  {
+							  var roleId=  this.$.removeRole.__data__.selectedRows[i].row.id.value;
+							  deleteRole.push(roleId);
+							  }
+						  
+						  
+						  $.ajax({
+						      type: "POST",
+						      contentType : 'application/json; charset=utf-8',
+						      dataType : 'json',
+						      url: "http://localhost:8081/pmms-api/deleteRole",
+						      data: JSON.stringify(deleteRole),
+						      success :function(result) {
+						    	  
+						     }
+						  });
+					  },
+					  
+					  editRole:function editRole(e){
+						  var editRole=[];
+						  var roleId=  this.$.removeRole.__data__.selectedRows[0].row.id.value;
+						  var roleName= this.$.removeRole.__data__.selectedRows[0].row.roleName.value;
+						  var roleDesc = this.$.removeRole.__data__.selectedRows[0].row.roleDescription.value;
+						  editRole.push(roleId);
+						  editRole.push(roleName);
+						  editRole.push(roleDesc);
+						  edit.open();
+						  this.$.roleName.value = roleName;
+						  this.$.roleDescription.value =roleDesc;
+						  //this.$.SM9.checked=true;
+						  $.ajax({
+						      type: "POST",
+						      contentType : 'application/json; charset=utf-8',
+						      dataType : 'json',
+						      url: "http://localhost:8081/pmms-api/editRole",
+						      data: JSON.stringify(editRole),
+						      success :function(result) {
+						    	  var checkedObj=result;
+
+						    	  for(var i =0;i <= checkedObj.length-1;i++)
+						    	  {
+						    		  var operation= checkedObj[i].operation;
+						    		  var subModuleId= "SM"+checkedObj[i].subModuleId;
+						    		  var operation=checkedObj[i].operation;
+						    		  var operationId;
+						    		  if(operation=="A")
+						    			  {
+						    			  operationId = "add-"+subModuleId;
+						    			  }else if(operation=="E"){
+						    				  operationId ="edit-"+subModuleId;
+						    			  }else if(operation=="D"){
+						    				  operationId ="delete-"+subModuleId;
+						    			  }
+						    		  document.getElementById(operationId).checked= true;
+						    		  document.getElementById(subModuleId).checked= true;
+						    	  }
+						    	 
+						     }
+						  });
+						  
+					  },
+						submitRoleRights:function getChcked(){
+							
+							Array.prototype.getUnique = function(){
+						    	   var u = {}, a = [];
+						    	   for(var i = 0, l = this.length; i < l; ++i){
+						    	      if(u.hasOwnProperty(this[i])) {
+						    	         continue;
+						    	      }
+						    	      a.push(this[i]);
+						    	      u[this[i]] = 1;
+						    	   }
+						    	   return a;
+						    }
+							
+						    var parentArr=[];
+						    var masterArr=[];
+						    var parent = document.getElementsByClassName("subChildNode");
+						    var childNode = document.getElementsByClassName("childNode");
+						    
+						    for(var i=0; i<parent.length; i++){
+						    	parentArr.push(parent[i].getAttribute("parent-name"));
+						    	}
+						    
+						    for(var i=0; i<childNode.length; i++){
+						    	masterArr.push(childNode[i].getAttribute("master-parent"));
+						    	}
+						    parentArr = parentArr.getUnique();
+						    masterArr = masterArr.getUnique();
+						    var finalArr = new Array();
+						    var roleArr= new Array();
+						    for(var i=0;i<parentArr.length-1;i++)	{
+						    	
+						    	var userObj={};
+						    	var parentObj = {};
+						    	var roleObj = {};
+						    	var add=parentArr[i] + "-add";
+						    	var edit=parentArr[i] + "-edit";
+						    	var del=parentArr[i] + "-delete";
+						    	
+						    	if(document.getElementById(add).checked) {
+						    		 addElement=document.getElementById(add).value;
+						    		 userObj.add = true;
+						    	} else {
+						    		 userObj.add = false;
+						    	}
+						    
+						    	if(document.getElementById(edit).checked) {
+						    		editElement=document.getElementById(edit).value;
+							    		userObj.edit = true;
+						    	} else {
+						    		 userObj.edit = false;
+						    	}
+						    	 
+						    	if(document.getElementById(del).checked) {
+						    		  deleteElement=document.getElementById(del).value;
+						    		userObj.del = true;
+						    	} else {
+						    		 userObj.del = false;
+						    	}
+						    	  if(document.getElementById(add).checked || document.getElementById(edit).checked || document.getElementById(del).checked || document.getElementById(parentArr[i]).checked) {
+						    		  var subName=document.getElementById(parentArr[i]);
+						    		  var parentName= subName.getAttribute("master-parent");
+						    		//  var parentName= document.getElementById(getAttr).textContent;
+						    		  
+						    		  //parentObj.check = true;
+						    		  parentObj.name = document.getElementById(parentArr[i]).value;
+						    		  parentObj.submoduleId = parentArr[i];
+						    		  parentObj.sub_values = userObj;
+						    		  parentObj.parentId = parentName;
+						    		  finalArr.push(parentObj);
+						    		  
+						    		  
+						    	  }
+						    	}
+						    
+						    roleObj.roleName=document.getElementById("roleName").value;
+						    roleObj.roleDesc= document.getElementById("roleDescription").value;
+						    roleArr.push(roleObj);
+						    finalArr.push(roleArr);
+						   $.ajax({
+							      type: "POST",
+							      contentType : 'application/json; charset=utf-8',
+							      dataType : 'json',
+							      url: "http://localhost:8081/pmms-api/saveRole",
+							      data: JSON.stringify(finalArr), // Note it is important
+							      success :function(result) {
+							    	 // add.close();
+							    	  addRole.open(); 
+							    	  
+							     }
+							  });
+						    
+						},
+					  submitEditRoleRights:function getChcked(){
+							
+							Array.prototype.getUnique = function(){
+						    	   var u = {}, a = [];
+						    	   for(var i = 0, l = this.length; i < l; ++i){
+						    	      if(u.hasOwnProperty(this[i])) {
+						    	         continue;
+						    	      }
+						    	      a.push(this[i]);
+						    	      u[this[i]] = 1;
+						    	   }
+						    	   return a;
+						    }
+							
+						    var parentEditArr=[];
+						    var masterEditArr=[];
+						    var parent = document.getElementsByClassName("subChildNode");
+						    var childNode = document.getElementsByClassName("childNode");
+						    
+						    for(var i=0; i<parent.length-1; i++){
+						    	parentEditArr.push(parent[i].getAttribute("parent"));
+						    	}
+						    
+						    for(var i=0; i<childNode.length; i++){
+						    	masterEditArr.push(childNode[i].getAttribute("master-parent"));
+						    	}
+						    parentEditArr = parentEditArr.getUnique();
+						    masterEditArr = masterEditArr.getUnique();
+						    var finalArr = new Array();
+						    var roleArr= new Array();
+						    for(var i=1;i<=parentEditArr.length-1;i++)	{
+						    	
+						    	var userObj={};
+						    	var parentObj = {};
+						    	var roleObj = {};
+						    	var add="add-" +parentEditArr[i];
+						    	var edit= "edit-" +parentEditArr[i] ;
+						    	var del="delete-" +parentEditArr[i] ;
+						    	
+						    	if(document.getElementById(add).checked) {
+						    		 addElement=document.getElementById(add).value;
+						    		 userObj.add = true;
+						    	} else {
+						    		 userObj.add = false;
+						    	}
+						    
+						    	if(document.getElementById(edit).checked) {
+						    		editElement=document.getElementById(edit).value;
+							    		userObj.edit = true;
+						    	} else {
+						    		 userObj.edit = false;
+						    	}
+						    	 
+						    	if(document.getElementById(del).checked) {
+						    		  deleteElement=document.getElementById(del).value;
+						    		userObj.del = true;
+						    	} else {
+						    		 userObj.del = false;
+						    	}
+						    	  if(document.getElementById(add).checked || document.getElementById(edit).checked || document.getElementById(del).checked || document.getElementById(parentEditArr[i]).checked) {
+						    		  var subName=document.getElementById(parentEditArr[i]);
+						    		  var parentName= subName.getAttribute("master-parent");
+						    		//  var parentName= document.getElementById(getAttr).textContent;
+						    		  
+						    		  //parentObj.check = true;
+						    		  parentObj.name = document.getElementById(parentEditArr[i]).value;
+						    		  parentObj.submoduleId = parentEditArr[i];
+						    		  parentObj.sub_values = userObj;
+						    		  parentObj.parentId = parentName;
+						    		  finalArr.push(parentObj);
+						    		  
+						    		  
+						    	  }
+						    	}
+						    
+						    roleObj.roleId=  this.$.removeRole.__data__.selectedRows[0].row.id.value;
+						    roleObj.roleName= this.$.removeRole.__data__.selectedRows[0].row.roleName.value;
+						    roleObj.roleDesc = this.$.removeRole.__data__.selectedRows[0].row.roleDescription.value;
+						    roleArr.push(roleObj);
+						    finalArr.push(roleArr);
+						   $.ajax({
+							      type: "POST",
+							      contentType : 'application/json; charset=utf-8',
+							      dataType : 'json',
+							      url: "http://localhost:8081/pmms-api/saveEditRole",
+							      data: JSON.stringify(finalArr), // Note it is important
+							      success :function(result) {
+							    	 // add.close();
+							    	  addRole.open(); 
+							    	  parentEditArr = [];
+									   masterEditArr = [];
+							    	  
+							     }
+							  });
+						    
+						}
+					});
+				</script> </dom-module>

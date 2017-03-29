@@ -1,0 +1,2229 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/px-file-upload-master/px-file-upload.html"/>
+<!-- <link  rel="import" href="../css/datetimepicker_css.js"> -->
+<dom-module id="SMSched-mngt">
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="" header-text="计划维修制定 / Plan maintenance development" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>年滚动计划/Rolling (Yearly) Plan Configuration</px-tab>
+    <px-tab>当月保养计划/Monthly Plan Configuration </px-tab>
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}">
+    <section>
+    <form is="iron-form" content-type="application/json"
+		id="searchSMscheduling" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="handleSMScheduling" method="post">
+		<input type="hidden" id="SMSchedulingData"
+			name="SMSchedulingData" value="{{SMSchedulingData}}"/>	
+	</form>
+    <br><br>
+    <table border="0">
+      <tr>
+        <td style="align:right">
+          <label  class="control-label" style="width:230px">
+            <b>开始年月/MaintYear:</b>
+          </label>
+        </td>
+        <td style="align:left">
+          <div class="pull-left" style="width:140px">
+          <px-dropdown id="pxSchMaintYear" display-value="--全部 Select --">
+          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="20" max-cont-character-width="5" 
+          items='[{"key":"0", "val":"--全部 Select --"}, {"key":"2015", "val":"2015"},{"key":"2016", "val":"2016"},{"key":"2017", "val":"2017"},{"key":"2018", "val":"2018"},{"key":"2019", "val":"2019"},{"key":"2020", "val":"2020"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </div>
+          <input type="hidden" name="yearTypeSearch" id="yearTypeSearch"/>
+        </td>
+      <!--   <td style="align:left">
+          <div class="pull-left" style="width:80px">
+          <px-dropdown display-value="-月份-">
+          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"1", "val":"1"}, {"key":"2", "val":"2"},{"key":"3", "val":"3"},{"key":"4", "val":"4"},{"key":"5", "val":"5"},{"key":"6", "val":"6"},{"key":"7", "val":"7"},{"key":"8", "val":"8"},{"key":"9", "val":"9"},{"key":"10", "val":"10"},{"key":"11", "val":"11"},{"key":"12", "val":"12"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </div>
+        </td> -->
+        
+        <td style="align:right">
+          <label  class="control-label" style="width:90px">
+            <b>设备类型/EQType:</b>
+          </label>
+        </td>       
+        <td align="left"> 							
+								 <div style="width:140px;display:inline-block;">
+								<byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQType" selected-key="{{fileCategory}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content class="px-dropdown-content"
+                                                extend-dropdown="true" extend-dropdown-by="50"
+                                                max-cont-character-width="15"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</div>
+								<input type="hidden" name="equipTypeSearch" id="equipTypeSearch"/>
+							</td>	
+							
+      </tr>
+      <tr>
+        <td colspan="5"> <br></td>
+      </tr>
+      <tr>
+        <td> 
+			<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="FacilityTransactionDates">Search</paper-button>
+		</td>
+      </tr>
+      <tr>
+        <td colspan="5"> <br></td>
+      </tr>
+      <tr>
+      <td align="left">
+       <!-- ******************************************************************************************************
+	 		------------------------------------------------Add PopUp for Year tab---------------------------------
+		****************************************************************************************************** -->
+			 <form is="iron-form" content-type="application/json"
+					id="scheduleManagementAdd" on-iron-form-invalid="ironforminvalid"
+					on-iron-form-response="ironformresponse" method="post">
+					
+					<paper-button raised onclick="add.open()"
+						class="btn btn-large btn-primary">新增/AddY</paper-button>
+						
+					<paper-dialog id="add"> <paper-dialog-scrollable>
+					<template is="dom-bind" id="addPaperDialog">
+						<table style="width:700px">
+						<tr>
+                			<td align="left">
+                    			<label class="control-label" style="width:100px;">
+                        			<b>第一步：选择设备 / Step 1: Select the device:</b>
+                      			</label>
+                      		<br>                     
+                  			<table style="width:90%">
+                    		<tr>
+                      			<td align="right">                        
+                          		<b>区域 / Area:</b>                        
+                      			</td>
+                      			<td align="left">
+                               		<div style="width:155px;margin-left:20px;display:inline-block;">
+                               	<byutv-jsonp id="test"  params='{"Type":"DEPT"}' url="http://localhost:8081/pmms-api/getSchMaintDeptType" last-response="{{depttyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintDeptType" selected-key="{{deptCategory}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{depttyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+                      <!--   <px-dropdown display-value="--全部--">
+                        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                        </px-dropdown-content>
+                        </px-dropdown> -->
+                        <input type="hidden" name="deptId" id="deptId"/>
+                      </div>
+                      </td>
+                      <td align="right">
+                       <label class="control-label" style="width:100px;">
+                        <b>设备类型 / Type of Facility:</b>
+                     </label>
+                      </td>
+                      <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQTypeY" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>								
+								<input type="hidden" name="equipType" id="equipTypeYear"/>
+                      </div>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备名称:/Device Name:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  url="http://localhost:8081/pmms-api/getSchMaintEqName" last-response="{{eqpnameresponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQName" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{eqpnameresponse}}">
+                                  </px-dropdown-content> </px-dropdown>								
+								<input type="hidden" name="equipNameId" id="equipNameId"/>
+                      </div>
+                      </td>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备编号 / device ID:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                     <byutv-jsonp id="dropdowneqid"  url="http://localhost:8081/pmms-api/getDvId" last-response="{{docdvidresponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								<px-dropdown id="pxDequipId" display-value="--全部 Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docdvidresponse}}">
+                                         </px-dropdown-content> 
+                                         </px-dropdown>
+								
+								<input type="hidden" name="equipId" id="equipId"/>	
+                      </div>
+                    </td>
+                  </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第二步：选择维修计划类型 / Step 2: Select the maintenance plan type:</b>
+                  </label>
+                  <table>
+                    <tr>
+                        <td align="right">
+                            <label class="control-label" style="width:100px;">
+                              <b>计划类型 / Plan Type：</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            <div style="width:155px;margin-left:20px;display:inline-block;">
+                             <byutv-jsonp id="test"  params='{"Type":"PLAN_TYPE"}' url="http://localhost:8081/pmms-api/getSchMaintPlanType" last-response="{{docplantyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintPlanType" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docplantyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="planType" id="planType"/>
+                            </div>
+                          </td>
+                          <td align="right"><b>Enter Maintenance Year:</b></td>
+                          <td align="left">
+                          <input type="text" name="maintYear" id="maintYearM"/>
+                          </td>
+                          <tr id="diveqipcat" style="visibility: hidden;">
+                          <td align="right" >
+                            <label class="control-label" style="width:100px;">
+                              <b>是否扫描 / Whether to scan</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            Yes
+                            <input type="radio" value="Y" name="wscan" id="wscan">
+                          </td>
+                          <td align="left">
+                            No
+                            <input type="radio" value="N" name="wscan" id="wscan">
+                          </td>
+                          </tr>
+                        <input type="hidden" name="barCoding" id="barCoding"/>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第三步：选择维修计划月份和内容 / Step 3: Select the maintenance plan month and content</b>
+                  </label>
+                  <br>
+                  <div style="width:850px">
+               
+                   <table style="width: 100%" border="0">
+                   <thead>
+										<tr>
+										<th align="right">Select</th>
+											<th align="left">Month</th>
+											<th>Plan Start Date(YY-MM-DD)</th>
+											<th>Plan End Date(YY-MM-DD)</th>											
+										</tr>
+										</thead>
+							
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Jan" value="1">
+			</td>
+			<td align="left">
+			<b>Jan</b>
+			</td>			
+          <!-- <td align="right">
+          <b>Plan Start Date : </b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate1"/>
+         <!--  <img src="../images/cal.gif" onclick="javascript:NewCssCal('planStartDate1')" style="cursor:pointer"/> -->
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate1"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth1" id="maintMonth1" />
+			
+	
+		<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Feb" value="2">
+			</td>
+			<td align="left">
+			<b>Feb</b>
+			</td>
+			 <!-- <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate2"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate2"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth2" id="maintMonth2" />			
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Mar" value="3">
+			</td>
+			<td align="left">
+			<b>Mar</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate3"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate3"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth3" id="maintMonth3" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Apr" value="4">
+			</td>
+			<td align="left">
+			<b>Apr</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date:</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate4"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate4"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth4" id="maintMonth4"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="May" value="5">
+			</td>
+			<td align="left">
+			<b>May</b>
+			</td>
+			 <!-- <td align="right">
+          <b>Plan Start Date:</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate5"/>
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date:</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate5"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth5" id="maintMonth5" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Jun" value="6">
+			</td>
+			<td align="left">
+			<b>Jun</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate6"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate6"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth6" id="maintMonth6"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Jul" value="7">
+			</td>
+			<td align="left">
+			<b>Jul</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate7"/>
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate7"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth7" id="maintMonth7" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Aug" value="8">
+			</td>
+			<td align="left">
+			<b>Aug</b>
+			</td>
+			 <!-- <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate8"/>
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate8"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth8" id="maintMonth8"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Sept" value="9">
+			</td>
+			<td align="left">
+			<b>Sept</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate9"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate9"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth9" id="maintMonth9" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Oct" value="10">
+			</td>
+			<td align="left">
+			<b>Oct</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate10"/>
+          </td>
+         <!--  <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate10"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth10" id="maintMonth10" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Nov" value="11">
+			</td>
+			<td align="left">
+			<b>Nov</b>
+			</td>
+			 <!-- <td align="right">
+          <b>Plan Start Date : </b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate11"/>
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate11"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth11" id="maintMonth11" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonth" id="Dec" value="12">
+			</td>
+			<td align="left">
+			<b>Dec</b>
+			</td>
+			<!--  <td align="right">
+          <b>Plan Start Date:</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planStartDateY" id="planStartDate12"/>
+          </td>
+          <!-- <td align="right">
+          <b>Plan End Date :</b>
+          </td> -->
+          <td align="center">
+          <input type="text" name="planEndDateYr" id="planEndDate12"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth12" id="maintMonth12" />
+			
+			
+			<!-- <td align="center"><input type="checkbox" name="maintMonth" id="Jan" value="1"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Feb" value="2"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Mar" value="3"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Apr" value="4"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="May" value="5"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Jun" value="6"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Jul" value="7"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Aug" value="8"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Sept" value="9"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Oct" value="10"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Nov" value="11"></td>
+			<td align="center"><input type="checkbox" name="maintMonth" id="Dec" value="12"></td> -->
+	
+	
+			</table>
+                  </div>
+                  <input type="hidden" name="maintMon" id="maintMon"/>  <!-- This is for year tab -->
+                  <input type="hidden" name="planStartDate" id="planStartDate"/>  <!-- This is for year tab -->
+                   <input type="hidden" name="planEndDate" id="planEndDate"/>  <!-- This is for year tab -->
+                </td>
+              </tr>
+            <!--  <tr>
+                <td align="left">
+                  <paper-button raised onclick="upload.open()" class="btn btn-large btn-primary">  Add Plans</paper-button>
+					<paper-dialog id="upload"> <paper-dialog-scrollable>
+					<template is="dom-bind" id="uploadPaperDialog">				
+          							<table style="width: 500px;height: 300px">
+										<caption>立即生成当前月 </caption>									
+										<tr>
+											<td align="right"><b>Select Month : </b></td>
+											
+											<td align="left">
+											 <px-dropdown id="pxSchMaintYear" display-value="--全部 Select --">
+          <px-dropdown-content extend-dropdown="true" extend-dropdown-by="20" max-cont-character-width="5" 
+          items='[{"key":"0", "val":"--全部 Select --"}, {"key":"1", "val":"January"},{"key":"2", "val":"February"},{"key":"2017", "val":"2017"},{"key":"2018", "val":"2018"},{"key":"2019", "val":"2019"},{"key":"2020", "val":"2020"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+											</td>
+										</tr>
+										<tr>
+										<td align="right">
+										<b>Maintenance Type : </b>
+										</td>
+										<td align="left"><input type="text" name="maintType" id="maintType" placeholder="SM"/>
+											</td>
+										</tr>
+										<tr>
+												<td align="right">
+												<b>Equipment Type</b>
+												</td>
+												<td align="left"><byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+												  <px-dropdown id="pxSchMaintEQType" selected-key="{{fileCategory}}" display-value="--全部 Select --" > 
+												  <px-dropdown-content class="px-dropdown-content"
+				                                                extend-dropdown="true" extend-dropdown-by="50"
+				                                                max-cont-character-width="15"
+				                                                items="{{doctyperesponse}}">
+				                                  </px-dropdown-content> </px-dropdown>
+												
+												<input type="hidden" name="workOrderType" id="workOrderType"/>
+											</td>
+										</tr>
+										<tr>
+												<td align="right">
+												<b>Plan Start Date</b>
+												</td>
+												<td align="left">
+												<input type="text" name="planStartDate" id="planStartDate" />
+											</td>
+										</tr>
+										<tr>
+												<td align="right">
+												<b>Plan End Date</b>
+												</td>
+												<td align="left">
+												<input type="text" name="planEndDate" id="planEndDate" />
+											</td>
+										</tr>																					
+							</table>
+       </template> 	</paper-dialog-scrollable>
+									
+										<div class="buttons">
+												<paper-button dialog-dismiss>Cancel</paper-button>
+												<paper-button id="upload12" dialog-confirm autofocus on-click="editFileDelete">Delete File</paper-button> 
+												<input type="button" onclick="deleteF()" value="Submit" /> 
+												<paper-button raised on-click="deleteF()" dialog-dismiss id="deletef">Delete File</paper-button>
+							<input type="submit" value="Submit"/>
+							 this is also working 
+							<input type="button" value="submit" onclick="tosub()"/>
+							<input type="button" onclick="uploadFile()" value="Submit" />
+										</div>
+										
+										
+	
+      						 </paper-dialog>
+     
+                </td>
+              </tr>              -->
+					</table>
+	 				</template> </paper-dialog-scrollable>
+					<div class="buttons">
+						<paper-button dialog-dismiss>Cancel</paper-button>
+						<paper-button dialog-confirm autofocus
+							on-click="addSchedulingTool">Save</paper-button>
+					</div>
+					</paper-dialog>
+				</form>
+      </td>
+      <!-- ******************************************************************************************************
+	 	------------------------------------------------Edit PopUp for first tab(YEAR)----------------------
+	  ****************************************************************************************************** -->
+	<!-- <td style="align:left">
+	<div class="legendmain mb10 pull-left">
+				<form is="iron-form" content-type="application/json"
+					id="SMschedulEdit" on-iron-form-response="ironformresponse" method="post">	
+					<paper-button class="btn btn-large btn-primary" raised
+							onclick="editSMSchTool.open()">EditY</paper-button>									
+					<paper-dialog id="editSMSchTool"> 
+					<paper-dialog-scrollable>
+					<table style="width:700px">
+					<tr>
+                <td align="left">
+                    <label class="control-label" style="width:100px;">
+                        <b>第一步：选择设备 / Step 1: Select the device:</b>
+                      </label>
+                      <br>                     
+                  <table style="width:90%">
+                    <tr>
+                      <td align="right">                        
+                          <b>区域 / Area:</b>                        
+                      </td>
+                      <td align="left">
+                               <div style="width:155px;margin-left:20px;display:inline-block;">
+                               <byutv-jsonp id="test"  params='{"Type":"DEPT"}' url="http://localhost:8081/pmms-api/getSchMaintDeptType" last-response="{{depttyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintDeptTypeEdit" selected-key="{{deptCategory}}" display-value="--全部 Select --" disabled="true" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{depttyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+                        <px-dropdown display-value="--全部--">
+                        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                        </px-dropdown-content>
+                        </px-dropdown>
+                        <input type="hidden" name="deptId" id="deptIdEdit"/>
+                      </div>
+                      </td>
+                      <td align="right">
+                       <label class="control-label" style="width:100px;">
+                        <b>设备类型 / Type of Facility:</b>
+                     </label>
+                      </td>
+                      <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQTypeYEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>								
+								<input type="hidden" name="equipType" id="equipTypeYearEdit"/>
+                      </div>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备名称:/Device Name:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  url="http://localhost:8081/pmms-api/getSchMaintEqName" last-response="{{eqpnameresponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQNameEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{eqpnameresponse}}">
+                                  </px-dropdown-content> </px-dropdown>								
+								<input type="hidden" name="equipNameId" id="equipNameIdEdit"/>
+                      </div>
+                      </td>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备编号 / device ID:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                     <byutv-jsonp id="dropdowneqid"  url="http://localhost:8081/pmms-api/getDvId" last-response="{{docdvidresponse}}" auto></byutv-jsonp>					
+								<px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown>
+								<px-dropdown id="pxDequipIdEdit" display-value="--全部 Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docdvidresponse}}">
+                                         </px-dropdown-content> 
+                                         </px-dropdown>
+								
+								<input type="hidden" name="equipId" id="equipIdEdit"/>	
+                      </div>
+                    </td>
+                    <td colspan="2"><input type="hidden" id="editMeasureId"
+						name="id" /></td>
+                    
+                  </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第二步：选择维修计划类型 / Step 2: Select the maintenance plan type:</b>
+                  </label>
+                  <table>
+                    <tr>
+                        <td align="right">
+                            <label class="control-label" style="width:100px;">
+                              <b>计划类型 / Plan Type：</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            <div style="width:155px;margin-left:20px;display:inline-block;">
+                             <byutv-jsonp id="test"  params='{"Type":"PLAN_TYPE"}' url="http://localhost:8081/pmms-api/getSchMaintPlanType" last-response="{{docplantyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintPlanTypeEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docplantyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>								
+								<input type="hidden" name="planType" id="planTypeEdit"/>
+                            </div>
+                          </td>
+                          <td align="right"><b>Entered Maintenance Year:</b></td>
+                          <td align="left">
+                          <input type="text" name="maintYear" id="maintYearEdit"/>
+                          </td>
+                          <tr id="diveqipcatEdit" style="visibility: hidden;">
+                          <td align="right" >
+                            <label class="control-label" style="width:100px;">
+                              <b>是否扫描 / Whether to scan</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            Yes
+                            <input type="radio" value="Y" name="wscanEdit" id="wscanEdit">
+                          </td>
+                          <td align="left">
+                            No
+                            <input type="radio" value="N" name="wscanEdit" id="wscanEdit">
+                          </td>
+                          </tr>
+                        <input type="hidden" name="barCoding" id="barCodingEdit"/>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第三步：选择维修计划月份和内容 / Step 3: Select the maintenance plan month and content</b>
+                  </label>
+                  <br>
+                  <div style="width:850px">
+                  
+                    <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+                    <iron-ajax id="test" url="/sample-data/work-maint-plan.json" last-response="{{minidata}}" auto></iron-ajax>
+                    <px-data-table enable-column-resize striped="true" table-data="{{minidata}}" >
+                      <px-data-table-column filterable name="种类" type="html"></px-data-table-column>
+                      <px-data-table-column name="1月份" selectable label="1月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="2月份" selectablelabel="2月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="3月份" selectable label="3月份"></px-data-table-column>
+                      <px-data-table-column name="4月份" label="4月份"></px-data-table-column>
+                      <px-data-table-column name="5月份" label="5月份"></px-data-table-column>
+                      <px-data-table-column name="6月份" label="6月份"></px-data-table-column>
+                      <px-data-table-column name="7月份" label="7月份"></px-data-table-column>
+                      <px-data-table-column name="8月份" label="8月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="9月份" label="9月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="10月份" label="10月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="11月份" label="11月份" type="html"></px-data-table-column>
+                      <px-data-table-column name="12月份" label="12月份" type="html"></px-data-table-column>
+                    </px-data-table>
+                   <table style="width: 100%" border="0">
+				
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Jan" value="1">
+			</td>
+			<td align="left">
+			<b>Jan</b>
+			</td>
+			
+
+          <td align="right">
+          <b>Plan Start Date : </b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate1"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate1"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth1" id="maintMonth1" />
+			
+		
+		
+		<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Feb" value="2">
+			</td>
+			<td align="left">
+			<b>Feb</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate2"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate2"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth2" id="maintMonth2" />			
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Mar" value="3">
+			</td>
+			<td align="left">
+			<b>Mar</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate3"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate3"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth3" id="maintMonth3" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Apr" value="4">
+			</td>
+			<td align="left">
+			<b>Apr</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date:</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate4"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate4"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth4" id="maintMonth4"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="May" value="5">
+			</td>
+			<td align="left">
+			<b>May</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date:</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate5"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date:</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate5"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth5" id="maintMonth5" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Jun" value="6">
+			</td>
+			<td align="left">
+			<b>Jun</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate6"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate6"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth6" id="maintMonth6"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Jul" value="7">
+			</td>
+			<td align="left">
+			<b>Jul</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate7"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate7"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth7" id="maintMonth7" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Aug" value="8">
+			</td>
+			<td>
+			<b>Aug</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate8"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate8"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth8" id="maintMonth8"/>
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Sept" value="9">
+			</td>
+			<td align="left">
+			<b>Sept</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate9"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate9"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth9" id="maintMonth9" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Oct" value="10">
+			</td>
+			<td>
+			<b>Oct</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate10"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate10"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth10" id="maintMonth10" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Nov" value="11">
+			</td>
+			<td align="left">
+			<b>Nov</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date : </b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate11"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate11"/>
+          </td>
+			</tr>	
+			<input type="hidden" name="maintMonth11" id="maintMonth11" />
+			<tr>
+			<td align="right">
+			<input type="checkbox" name="maintMonthYE" id="Dec" value="12">
+			</td>
+			<td>
+			<b>Dec</b>
+			</td>
+			 <td align="right">
+          <b>Plan Start Date:</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planStartDateYYE" id="planStartDate12"/>
+          </td>
+          <td align="right">
+          <b>Plan End Date :</b>
+          </td>
+          <td align="left">
+          <input type="text" name="planEndDateYrYE" id="planEndDate12"/>
+          </td>
+			</tr>	
+			</table>
+			 <input type="hidden" name="maintMon" id="maintMonYE"/>  This is for year tab
+                  <input type="hidden" name="planStartDate" id="planStartDateYE"/>  This is for year tab
+                   <input type="hidden" name="planEndDate" id="planEndDateYE"/>  This is for year tab
+                  </div>
+                  <input type="hidden" name="maintMon" id="maintMonEYE"/>   This is for year edit tab
+                </td>
+              </tr>
+              <tr>
+                <td align="left">
+                  <button class="btn btn--primary modal-trigger">
+                    立即生成当前月 / Immediately generates the current month
+                  </button>
+                </td>
+              </tr>
+					</table>
+	 	</paper-dialog-scrollable>
+					<div class="buttons">
+						<paper-button dialog-dismiss>Cancel</paper-button>
+						<paper-button dialog-confirm autofocus
+							on-click="editSMSchTool">Save</paper-button>
+					</div>
+			</paper-dialog>
+			</form>
+			</div>
+		</td>
+       -->
+       
+        <!-- ******************************************************************************************************
+	 		------------------------------------------------Delete PopUp for Year tab------------------------------------------------
+			****************************************************************************************************** -->						
+		<td>
+			<div>
+				<form is="iron-form" content-type="application/json"
+					on-iron-form-response="ironformresponse"
+					id="smSchDeleteY" method="post">
+					<input type="hidden" id="deleteSMSchIdY"
+						name="deleteSMSchIdY" value="{{deleteSMSchIdY}}" />
+					<paper-button class="btn btn-large btn-primary" raised
+						on-click="deleteSMSchToolY">DeleteY</paper-button>
+				</form>
+			</div>
+		</td>
+       <!--  <td style="align:left">
+          <button type="button" id="delete1" class="btn btn-primary btn-lg btn-block" style="margin-left:20px">删除/Delete</button>
+        </td>
+        <td style="align:right">
+          <button type="button" id="download1" class="btn btn-primary btn-lg btn-block" style="margin-left:30px">下载/Download</button>
+                <div style="float: right;padding: 0px 50px 0px 0px; width:120px;" class="box">
+                        <input type="image" src="../images/download.png" width='25px' height='25px' />
+                </div>
+        </td>
+        <td style="align:right">
+          <div id="hoverDivTop" class="legendmain mb10 pull-left">
+            <span class="label" style="background-color:grey;display:inline-block;margin-left:50px">
+            <b>--注解--</b>
+            <div style="float: right;padding: 0px 25px 0px 0px; width:25px;" class="box">
+            <input type="image" src="/images/table.png" width='25px' height='25px' /></div>
+            </span>
+          </div>
+          <px-tooltip for="hoverDivTop" orientation="bottom">
+            <h2><b>计划查看说明 / Schedule View the instructions</b></h2>
+            <hr>
+            <b>保养计划类型 / Type of maintenance plan</b>
+            <hr>
+            用Y,Q,M表示
+            <br>
+            <hr>
+            Y--年度保养 / YY - annual maintenance
+            <hr>
+            Q--季度保养 / Q - Quarterly maintenance
+            <hr>
+            Y--月度保养 / Y - monthly maintenance
+          </px-tooltip> 
+        </td> -->
+      </tr>
+    </table>    
+        <byutv-jsonp id="yearplangrid" url="http://localhost:8081/pmms-api/getAllSMDetails" on-response="ironformresponse1"
+				last-response="{{minidata1}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+	 	<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" on-px-row-click="selectedDocData" table-data="{{minidata1}}" id="documenttable">
+           <!-- <px-data-table  enable-column-resize selectable table-data="{{minidata1}}" id="documenttable">  -->
+             <!-- <px-data-table-column name="id" id="id" label="序号 /No."></px-data-table-column> -->
+                <px-data-table-column name="planId" id="planIdGrid" label="计划编号 /Plan No."></px-data-table-column>
+              <px-data-table-column name="maintYear" id="maintYearGrid" label="Year"></px-data-table-column>   
+              <!-- <px-data-table-column name="planType" id="planTypeGrid" label="Plan Type"></px-data-table-column> -->
+               <px-data-table-column name="woType" id="woTypeGrid" label="Work Order Category "></px-data-table-column>	         
+	            <px-data-table-column name="equipType" id="equipTypeGrid" label="EquipType"></px-data-table-column>
+	            <px-data-table-column name="maintMon" id="maintMonYY" label="Maintenance Month"></px-data-table-column>	 	
+	                <px-data-table-column name="planStartDate" id="planStartDateYY" label="Plan Start Date"></px-data-table-column>	         
+	            <px-data-table-column name="planEndDate" id="planEndDateY" label="Plan End Date"></px-data-table-column>	 
+              <px-data-table-column name="deptId" id="deptIdGrid" label="Department"></px-data-table-column>   
+              <px-data-table-column name="equipId" id="equipIdGrid" label="设备编号 /Device ID"></px-data-table-column>  
+              <px-data-table-column name="equipNameId" id="equipNameIdGrid" label="设备编号 /Device Name"></px-data-table-column>   
+               
+	            <px-data-table-column name="pxSchMaintDeptTypeEdit" label="pxSchMaintDeptTypeEdit" hide></px-data-table-column> 
+	            <px-data-table-column name="pxSchMaintEQTypeYEdit" label="pxSchMaintEQTypeYEdit" hide></px-data-table-column>   
+	            <px-data-table-column name="pxSchMaintEQNameEdit" label="pxSchMaintEQNameEdit" hide></px-data-table-column>   
+	            
+	                           	            	           	          
+        </px-data-table>
+    </section>
+
+    <!-- 当月保养计划 -->
+    <section>
+    <br><br>
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Add PopUp for Month tab------------------------------
+     ****************************************************************************************************** -->
+      <table>
+        <tr>
+          <td style="align:left">
+           <form is="iron-form" content-type="application/json"
+					id="scheduleManagementAddM" on-iron-form-invalid="ironforminvalid"
+					on-iron-form-response="ironformresponse" method="post">
+					<paper-button raised onclick="addm.open()"
+						class="btn btn-large btn-primary">新增/AddM</paper-button>
+					<paper-dialog id="addm"> <paper-dialog-scrollable>
+					<template is="dom-bind" id="addPaperDialog">
+					<table style="width:700px">
+					<tr>
+                <td align="left">
+                    <label class="control-label" style="width:100px;">
+                        <b>第一步：选择设备 / Step 1: Select the device:</b>
+                      </label>
+                      <br>                     
+                  <table style="width:90%">
+                    <tr>
+                      <td align="right">                        
+                          <b>区域 / Area:</b>                        
+                      </td>
+                      <td align="left">
+                               <div style="width:155px;margin-left:20px;display:inline-block;">
+                               <byutv-jsonp id="test"  params='{"Type":"DEPT"}' url="http://localhost:8081/pmms-api/getSchMaintDeptType" last-response="{{depttyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintDeptTypeM" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{depttyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+                      <!--   <px-dropdown display-value="--全部--">
+                        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                        </px-dropdown-content>
+                        </px-dropdown> -->
+                        <input type="hidden" name="deptId" id="deptIdM"/>
+                      </div>
+                      </td>
+                      <td align="right">
+                       <label class="control-label" style="width:100px;">
+                        <b>设备类型 / Type of Facility:</b>
+                     </label>
+                      </td>
+                      <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQTypeM"  display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="equipType" id="equipTypeMonth"/>
+                      </div>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备名称:/Device Name:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  url="http://localhost:8081/pmms-api/getSchMaintEqName" last-response="{{eqpnameresponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQNameM" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{eqpnameresponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="equipNameId" id="equipNameIdM"/>
+                      </div>
+                      </td>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备编号 / device ID:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                     <byutv-jsonp id="dropdowneqid"  url="http://localhost:8081/pmms-api/getDvId" last-response="{{docdvidresponse}}" auto></byutv-jsonp>					
+								<!-- <px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown> -->
+								<px-dropdown id="pxDequipIdM" display-value="--全部 Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docdvidresponse}}">
+                                         </px-dropdown-content> 
+                                         </px-dropdown>
+								
+								<input type="hidden" name="equipId" id="equipIdM"/>	
+                      </div>
+                    </td>
+                  </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第二步：选择维修计划类型 / Step 2: Select the maintenance plan type:</b>
+                  </label>
+                  <table>
+                    <tr>
+                        <td align="right">
+                            <label class="control-label" style="width:100px;">
+                              <b>计划类型 / Plan Type：</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            <div style="width:155px;margin-left:20px;display:inline-block;">
+                             <byutv-jsonp id="test"  params='{"Type":"PLAN_TYPE"}' url="http://localhost:8081/pmms-api/getSchMaintPlanType" last-response="{{docplantyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintPlanTypeM" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docplantyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="planType" id="planTypeM"/>
+                            </div>
+                          </td>
+                          
+                          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <tr id="diveqipcatM" style="visibility: hidden;">
+                          <td align="right" >
+                            <label class="control-label" style="width:100px;">
+                              <b>是否扫描 / Whether to scan</b>
+                            </label>
+                          </td>
+                           <td align="left">
+                            Yes
+                            <input type="radio" value="Y" name="wscanM" id="wscanM">
+                          </td>
+                          <td align="left">
+                            No
+                            <input type="radio" value="N" name="wscanM" id="wscanM">
+                          </td>
+                          </tr>
+                        <input type="hidden" name="barCoding" id="barCodingM"/>
+                        </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第三步：选择维修计划月份和内容 / Step 3: Select the maintenance plan month and content</b>
+                  </label>
+                  <br>
+                  <div style="width:850px">
+                     <table style="width: 100%" border="0">
+		
+			<tr>									
+				<td align="right"><b>Current Month:</b></td>
+				<td align="left"><input type="text" name="maintMon" id="currentMonth"></td>
+				<td align="right"><b>Enter Maintenance Year:</b></td>
+                          <td align="left">
+                          <input type="text" name="maintYear" id="maintYearMEdit"/>
+                          </td>
+			</tr>									
+		<tr>			
+		<td align="right"><b>Plan Start Date:</b></td>
+		<td align="left"><input type="text" name="planStartDate" id="planStartDate"></td>
+			<!-- <td align="center"><input type="checkbox" name="maintMonthM" id="Oct" value="10"></td>
+			<td align="center"><input type="checkbox" name="maintMonthM" id="Nov" value="11"></td>
+			<td align="center"><input type="checkbox" name="maintMonthM" id="Dec" value="12"></td> -->
+			<td align="right"><b>Plan End Date:</b></td>
+		<td align="left"><input type="text" name="planEndDate" id="planEndDate"></td>
+		</tr>
+		
+		<!-- <input type="hidden" name="maintMon" id="maintMonM"/> -->  <!-- This is for month tabs -->
+	
+			</table>
+                  </div>
+                </td>
+              </tr>
+           <!--    <tr>
+                <td align="left">
+                  <button class="btn btn--primary modal-trigger">
+                    立即生成当前月 / Immediately generates the current month
+                  </button>
+                </td>
+              </tr> -->
+            
+					</table>
+	 				</template> </paper-dialog-scrollable>
+					<div class="buttons">
+						<paper-button dialog-dismiss>Cancel</paper-button>
+						<paper-button dialog-confirm autofocus
+							on-click="addSchedulingToolM">Save</paper-button>
+					</div>
+					</paper-dialog>
+				</form>
+          </td>
+          <!-- ******************************************************************************************************
+	 		------------------------------------------------Edit PopUp for month tab------------------------------------------------
+			****************************************************************************************************** -->
+			<!-- <td style="align:left">
+	<div class="legendmain mb10 pull-left">
+			<form is="iron-form" content-type="application/json" on-iron-form-response="ironformresponse" id="SMschedulEditMonth" method="post">
+			<paper-button raised class="btn btn-large btn-primary" onclick="editSMSchToolMonth.open()">EditM</paper-button>
+			<paper-dialog id="editSMSchToolMonth">
+          <paper-dialog-scrollable>
+					<template is="dom-bind" id="editPaperDialog">
+					<table style="width:700px">
+					<tr>
+                <td align="left">
+                    <label class="control-label" style="width:100px;">
+                        <b>第一步：选择设备 / Step 1: Select the device:</b>
+                      </label>
+                      <br>                     
+                  <table style="width:90%">
+                    <tr>
+                      <td align="right">                        
+                          <b>区域 / Area:</b>                        
+                      </td>
+                      <td align="left">
+                               <div style="width:155px;margin-left:20px;display:inline-block;">
+                               <byutv-jsonp id="test"  params='{"Type":"DEPT"}' url="http://localhost:8081/pmms-api/getSchMaintDeptType" last-response="{{depttyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintDeptTypeMEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{depttyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+                        <px-dropdown display-value="--全部--">
+                        <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                        </px-dropdown-content>
+                        </px-dropdown>
+                        <input type="hidden" name="deptId" id="deptIdMEdit"/>
+                      </div>
+                      </td>
+                      <td align="right">
+                       <label class="control-label" style="width:100px;">
+                        <b>设备类型 / Type of Facility:</b>
+                     </label>
+                      </td>
+                      <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getSchMaintEQType" last-response="{{doctyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQTypeMEdit"  display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="equipType" id="equipTypeMonthEdit"/>
+                      </div>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备名称:/Device Name:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                      <byutv-jsonp id="test"  url="http://localhost:8081/pmms-api/getSchMaintEqName" last-response="{{eqpnameresponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintEQNameMEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{eqpnameresponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="equipNameId" id="equipNameIdMEdit"/>
+                      </div>
+                      </td>
+                    <td align="right">
+                      <label class="control-label" style="width:100px;">
+                        <b>设备编号 / device ID:</b>
+                      </label>
+                    </td>
+                    <td align="left">
+                      <div style="width:155px;margin-left:20px;display:inline-block;">
+                     <byutv-jsonp id="dropdowneqid"  url="http://localhost:8081/pmms-api/getDvId" last-response="{{docdvidresponse}}" auto></byutv-jsonp>					
+								<px-dropdown display-value="Please choose" data-ng-model="equipmentModel" id="equipmentModel" selected-key="{{equipId}}"> 						
+									<px-dropdown-content extend-dropdown="true" extend-dropdown-by="10" max-cont-character-width="5" items="{{doceqmodelresponse}}">
+									</px-dropdown-content> 
+								</px-dropdown>
+								<px-dropdown id="pxDequipIdMEdit" display-value="--全部 Select --" > <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docdvidresponse}}">
+                                         </px-dropdown-content> 
+                                         </px-dropdown>
+								
+								<input type="hidden" name="equipId" id="equipIdMEdit"/>	
+                      </div>
+                    </td>
+                     <td colspan="2"><input type="hidden" id="editMeasureIdEdit"
+						name="id" /></td>
+                  </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第二步：选择维修计划类型 / Step 2: Select the maintenance plan type:</b>
+                  </label>
+                  <table>
+                    <tr>
+                        <td align="right">
+                            <label class="control-label" style="width:100px;">
+                              <b>计划类型 / Plan Type：</b>
+                            </label>
+                          </td>
+                          <td align="left">
+                            <div style="width:155px;margin-left:20px;display:inline-block;">
+                             <byutv-jsonp id="test"  params='{"Type":"PLAN_TYPE"}' url="http://localhost:8081/pmms-api/getSchMaintPlanType" last-response="{{docplantyperesponse}}" auto></byutv-jsonp>													
+								  <px-dropdown id="pxSchMaintPlanTypeMEdit" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{docplantyperesponse}}">
+                                  </px-dropdown-content> </px-dropdown>
+								</span>
+								<input type="hidden" name="planType" id="planTypeMEdit"/>
+                            </div>
+                          </td>
+                          <td align="right"><b>Enter Maintenance Year:</b></td>
+                          <td align="left">
+                          <input type="text" name="maintYear" id="maintYearMonthEdit"/>
+                          </td>
+                          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <tr id="diveqipcatMEdit" style="visibility: hidden;">
+                          <td align="right" >
+                            <label class="control-label" style="width:100px;">
+                              <b>是否扫描 / Whether to scan</b>
+                            </label>
+                          </td>
+                           <td align="left">
+                            Yes
+                            <input type="radio" value="Y" name="wscanMEdit" id="wscanMEdit">
+                          </td>
+                          <td align="left">
+                            No
+                            <input type="radio" value="N" name="wscanMEdit" id="wscanMEdit">
+                          </td>
+                          </tr>
+                        <input type="hidden" name="barCoding" id="barCodingMEdit"/>
+                        
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label" style="width:100px;">
+                    <b>第三步：选择维修计划月份和内容 / Step 3: Select the maintenance plan month and content</b>
+                  </label>
+                  <br>
+                  <div style="width:850px">
+                     <table style="width: 100%" border="0">
+			<thead>	
+			<tr>									
+				<th style="background:#F0F0F0;">Oct</th>
+				<th style="background:#F0F0F0;">Nov</th>
+				<th style="background:#F0F0F0;">Dec</th>
+			</tr>	
+			
+		</thead>	
+		<tbody>	
+		<tr>			
+			<td align="center"><input type="checkbox" name="maintMonthMEdit" id="Oct" value="10"></td>
+			<td align="center"><input type="checkbox" name="maintMonthMEdit" id="Nov" value="11"></td>
+			<td align="center"><input type="checkbox" name="maintMonthMEdit" id="Dec" value="12"></td>
+		</tr>
+		<input type="hidden" name="maintMon" id="maintMonMEdit"/>  This is for month edit
+	</tbody>
+			</table>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">
+                  <button class="btn btn--primary modal-trigger">
+                    立即生成当前月 / Immediately generates the current month
+                  </button>
+                </td>
+              </tr>
+            
+					</table>
+	 				</template> </paper-dialog-scrollable>
+					<div class="buttons">
+						<paper-button dialog-dismiss>Cancel</paper-button>
+						<paper-button dialog-confirm autofocus
+							on-click="editSMSchToolMonth">Save</paper-button>
+					</div>
+					</paper-dialog>
+				</form>
+				</div>
+          </td> -->
+          
+           <!-- ******************************************************************************************************
+	 		------------------------------------------------Delete PopUp for Month tab------------------------------------------------
+			****************************************************************************************************** -->						
+		<td>
+			<div>
+				<form is="iron-form" content-type="application/json"
+					on-iron-form-response="ironformresponse"
+					id="smSchDeleteY" method="post">
+
+
+					<input type="hidden" id="deleteSMSchIdY"
+						name="deleteSMSchIdY" value="{{deleteSMSchIdY}}" />
+					<paper-button class="btn btn-large btn-primary" raised
+						on-click="deleteSMSchToolY">Deletem</paper-button>
+
+				</form>
+			</div>
+		</td>
+         <!--  <td style="align:left">
+            <button type="button" id="delete2" class="btn btn-primary btn-lg btn-block" style="margin-left:20px">删除/Delete</button>
+            <button type="button" id="submit2" class="btn btn-primary btn-lg btn-block" style="margin-left:20px">提交/Submit</button>
+          </td>
+          
+          <td style="align:right">
+            <button type="button" id="download2" class="btn btn-primary btn-lg btn-block" style="margin-left:30px">下载/Download</button>
+            <div style="float: right;padding: 0px 50px 0px 0px; width:120px;" class="box">
+                        <input type="image" src="/images/download.png" width='25px' height='25px' />
+                </div>
+          </td> -->
+        </tr>
+      </table>
+       <br>
+       <table>
+        <tr>
+          <td>          
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+					floatingLabel="Search" on-input="searchKeyChanged"
+					style="margin-left:20px;">
+			</paper-input>							  
+        </td>
+        <td>
+        <label><b>搜索/Search</b></label>
+        </td>
+        </tr>
+      </table>
+        <byutv-jsonp id="monthplangrid" url="http://localhost:8081/pmms-api/getAllSMDetails" on-response="ironformresponse2"
+				last-response="{{mydata}}" debounce-duration="300" auto="true">
+			</byutv-jsonp>
+	 	<px-data-table enable-column-resize selectable selected-rows="{{selectedRows87}}" on-px-row-click="selectedDocData" table-data="{{mydata}}" id="documenttable">
+           <!-- <px-data-table  enable-column-resize selectable table-data="{{minidata1}}" id="documenttable">  -->             
+	            <!--  <px-data-table-column name="id" id="id" label="序号 /No."></px-data-table-column> -->
+                <px-data-table-column name="planId" id="planIdGridM" label="计划编号 /Plan No."></px-data-table-column>
+            <!--   <px-data-table-column name="maintMon" id="maintMonGrid" label="Month(s)"></px-data-table-column>  -->      
+               <px-data-table-column name="planType" id="planTypeGridM" label="Plan Type"></px-data-table-column>
+               <px-data-table-column name="woType" id="woTypeGridM" label="Work Order Category "></px-data-table-column>	         
+	            <px-data-table-column name="equipType" id="equipTypeGridM" label="EquipType"></px-data-table-column>
+	            <px-data-table-column name="maintMon" id="maintMonM" label="Maintenance Month"></px-data-table-column>
+	          <px-data-table-column name="planStartDate" id="planStartDateM" label="Plan Start Date"></px-data-table-column>
+	          <px-data-table-column name="planEndDate" id="planEndDateM" label="Plan End Date"></px-data-table-column>
+              <px-data-table-column name="deptId" id="deptIdGridM" label="Department"></px-data-table-column>   
+              <px-data-table-column name="equipId" id="equipIdGridM" label="设备编号 /Device ID"></px-data-table-column>  
+              <px-data-table-column name="equipNameId" id="equipNameIdGridM" label="设备编号 /Device Name"></px-data-table-column>   
+              
+	            <px-data-table-column name="pxSchMaintDeptTypeMEdit" label="pxSchMaintDeptTypeMEdit" hide></px-data-table-column> 
+	            <px-data-table-column name="pxSchMaintEQTypeMEdit" label="pxSchMaintEQTypeMEdit" hide></px-data-table-column>   
+	            <px-data-table-column name="pxSchMaintEQNameMEdit" label="pxSchMaintEQNameMEdit" hide></px-data-table-column> 	             		                                 
+        </px-data-table>
+       
+    </section>
+  </px-tab-pages>
+  </px-card>
+</template>
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'SMSched-mngt',	
+		selected : 0,
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			deleteSMSchIdY : {
+				type : String,
+				notify : true
+			},
+			equipType : {
+				type : String,
+				notify : true,
+				value : ""
+			},
+			SMSchedulingData: {
+				type : String,
+				notify : true,
+				value : ""
+			}
+		},	
+		searchKey : null,
+
+		searchKeyChanged : function(event) {
+			//console.log(this.equipType);
+			this.searchKey = event.target.value;
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.mydata = [];
+			this.mydata = array;
+		},
+		FacilityTransactionDates : function() {
+			var yearTypeSearch = document.getElementById('yearTypeSearch').value;
+			var equipTypeSearch = document.getElementById('equipTypeSearch').value;			
+			if ((pxSchMaintYear == undefined || pxSchMaintYear == null || pxSchMaintYear == "" || pxSchMaintYear == "--全部 Select --") || 
+			    (equipTypeSearch == undefined || equipTypeSearch == null || equipTypeSearch == "--全部 Select --") || equipTypeSearch == "")
+				alert("Please select Year and Type to search.");
+			else {	
+				//document.getElementById("SMSchedulingData").value = equipTypeSearch; 
+				document.getElementById("SMSchedulingData").value = "{'equipType':'"
+						+ equipTypeSearch 
+						+"', 'yearType':'" + yearTypeSearch +"'}";
+				document.getElementById("searchSMscheduling").action = "http://localhost:8081/pmms-api/searchSMscheduling";
+				document.getElementById('searchSMscheduling').submit();
+			}
+
+		},
+		handleSMScheduling : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.minidata1 = details.response;
+				this._refreshTable("documenttable");
+			} else {
+				alert("error in searching/refreshing!!!!");
+
+			}
+		},		
+		selectedDocData : function(e) {
+			var monthtext;
+			var clickedRow = e.detail.row;
+			//console.log("Clicked Row values for doc type are:"+clickedRow.row.description.value)
+				//console.log("fileType is :"+clickedRow.row.fileType.value)
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.id.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.id.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);	
+			  document.getElementById("deleteSMSchIdY").value = clickedRow.row.id.value;
+			  document.getElementById("editMeasureId").value = clickedRow.row.id.value;		
+			  document.getElementById("editMeasureIdEdit").value = clickedRow.row.id.value;
+				 /* First dropdown  */
+			  
+		 	 document.querySelector("#pxSchMaintDeptTypeEdit").displayValue  = clickedRow.row.deptId.value;
+		 	 document.getElementById("deptIdEdit").value = clickedRow.row.deptId.value;
+		 	 
+		 	 document.querySelector("#pxSchMaintDeptTypeMEdit").displayValue  = clickedRow.row.deptId.value;
+		 	 document.getElementById("deptIdMEdit").value = clickedRow.row.deptId.value;
+		 	 
+		 	
+		 	 /* Second dropdown  */
+		 
+		 	document.querySelector("#pxSchMaintEQTypeYEdit").displayValue  = clickedRow.row.equipType.value;
+		 	document.getElementById("equipTypeYearEdit").value = clickedRow.row.equipType.value;
+		 	 
+		 	document.querySelector("#pxSchMaintEQTypeMEdit").displayValue  = clickedRow.row.equipType.value;
+		 	document.getElementById("equipTypeMonthEdit").value = clickedRow.row.equipType.value;
+		 	 
+		 	 /* third dropdown  */
+		 	 
+		 	document.querySelector("#pxSchMaintEQNameEdit").displayValue  = clickedRow.row.equipNameId.value;
+		 	document.getElementById("equipNameIdEdit").value = clickedRow.row.equipNameId.value;
+		 	
+		 	document.querySelector("#pxSchMaintEQNameMEdit").displayValue  = clickedRow.row.equipNameId.value;
+		 	document.getElementById("equipNameIdMEdit").value = clickedRow.row.equipNameId.value;
+		 	
+		 	/* Fourth drop-down */
+		 	
+		 	document.querySelector("#pxDequipIdEdit").displayValue  = clickedRow.row.equipId.value;
+		 	document.getElementById("equipIdEdit").value = clickedRow.row.equipId.value;
+		 	document.querySelector("#pxDequipIdMEdit").displayValue  = clickedRow.row.equipId.value;
+		 	document.getElementById("equipIdMEdit").value = clickedRow.row.equipId.value;
+		 	
+		 	/* Fifths drop-down */
+		 	
+		 	document.querySelector("#pxSchMaintPlanTypeEdit").displayValue  = clickedRow.row.woType.value;
+		 	document.getElementById("planTypeEdit").value = clickedRow.row.woType.value;
+		 	
+			document.querySelector("#pxSchMaintPlanTypeMEdit").displayValue  = clickedRow.row.woType.value;
+		 	document.getElementById("planTypeMEdit").value = clickedRow.row.woType.value;
+		 	
+		 	/* End dropdown */
+		 	
+		 	document.getElementById("maintYearEdit").value = clickedRow.row.maintYear.value;
+		 	document.getElementById("maintYearMonthEdit").value = clickedRow.row.maintYear.value;
+		 	
+		 	/* monthtext = clickedRow.row.maintMon.value;
+		 	
+		 	alert(monthtext);
+		 	 */
+		 	
+		 	
+			},
+			ironformresponse1 : function() {
+				document.querySelector('SMSched-mngt').refreshData();
+				this.$.yearplangrid.generateRequest();	        					
+			},
+			/* ironformresponse2 : function() {
+				document.querySelector('SMSched-mngt').refreshData();
+				this.$.monthplangrid.generateRequest();        					
+			}, */
+		handleResponse : function(event) {
+			this._refreshTable();
+		},		
+		refreshData : function() {
+			this.$.yearplangrid.generateRequest();
+			this.$.monthplangrid.generateRequest();
+		},
+		/* 
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		}, */
+		addSchedulingTool : function() {
+			//var log;
+			var str_chk = document.getElementsByName('maintMonth');
+			var pl_st_dt = document.getElementsByName('planStartDateY');
+			var pl_en_dt = document.getElementsByName('planEndDateYr');
+			var bar_chk = document.getElementsByName('wscan');
+			//alert(bar_chk);
+			var values = [];
+			var plan_st_dt = [];
+			var plan_en_dt = [];
+			var radios = [];
+			
+			for (i = 0; i < str_chk.length; i++) {
+        			if (str_chk[i].checked == true) {
+            		values.push(str_chk[i].value);
+        				}
+    			}
+			for (m = 0; m < pl_st_dt.length; m++) {
+    			if (pl_st_dt[m].value != null && pl_st_dt[m].value != "" && pl_st_dt[m].value.length > 0) {
+    				plan_st_dt.push(pl_st_dt[m].value);    				
+    				}
+			}
+			for (n = 0; n < pl_en_dt.length; n++) {
+    			if (pl_en_dt[n].value != null && pl_en_dt[n].value !="" && pl_en_dt[n].value.length > 0) {
+    				plan_en_dt.push(pl_en_dt[n].value);
+    				}
+			}
+
+    		/* alert(values.join());
+			alert(plan_st_dt.join());
+			 */
+    		
+    		for(var j = 0, length = bar_chk.length; j < length; j++)
+    			{
+    			 if (bar_chk[j].checked) 
+    				 {
+    				 radios.push(bar_chk[j].value);
+    				 }
+    			}
+    		document.getElementById("maintMon").value = values.join();
+    		document.getElementById("planStartDate").value = plan_st_dt.join();
+    		document.getElementById("planEndDate").value = plan_en_dt.join();
+    		document.getElementById("barCoding").value = radios.join();
+			
+    		/* checkbox value code by Kailash
+			var checkedBoxes = document.querySelector('input[name=maintMonth]:checked').value;
+			var test = document.querySelectorAll('input[value][type="checkbox"]:not([value=""])');
+			alert(checkedBoxes);
+			alert(test); */
+			
+			
+		    document.getElementById("scheduleManagementAdd").action = "http://localhost:8081/pmms-api/saveSchMaintenance ";
+			document.getElementById('scheduleManagementAdd').submit();
+			this.$.yearplangrid.generateRequest(); 
+			alert("Data has been saved successfully");
+			 
+
+		},
+		/* This is for month add tab without edit */
+		addSchedulingToolM : function() {
+			//var log;
+			//var str_chkM = document.getElementsByName('maintMonthM')
+			var bar_chkM = document.getElementsByName('wscanM');
+			//alert(bar_chk);
+			var valuesM = [];
+			var radiosM = [];
+			/* for (k = 0; k < str_chkM.length; k++) {
+        			if (str_chkM[k].checked == true) {
+        				valuesM.push(str_chkM[k].value);
+        				}
+    			} */
+			
+    		//alert(values.join());
+    		for(var p = 0, length = bar_chkM.length; p < length; p++)
+    			{
+    			 if (bar_chkM[p].checked) 
+    				 {
+    				 radiosM.push(bar_chkM[p].value);
+    				 }
+    			}
+    	//	document.getElementById("maintMonM").value = valuesM.join();
+    		document.getElementById("barCodingM").value = radiosM.join();
+			/* checkbox value code by Kailash
+			var checkedBoxes = document.querySelector('input[name=maintMonth]:checked').value;
+			var test = document.querySelectorAll('input[value][type="checkbox"]:not([value=""])');
+			alert(checkedBoxes);
+			alert(test); */
+			
+			
+			document.getElementById("scheduleManagementAddM").action = "http://localhost:8081/pmms-api/saveSchMaintenanceMonth";
+			document.getElementById('scheduleManagementAddM').submit();
+			this.$.monthplangrid.generateRequest();
+			alert("Monthly Plan Has Been Successfully Configured!")
+
+		},
+		editSMSchTool : function() {
+			
+			var str_chkEdit = document.getElementsByName('maintMonthEdit')
+			var pl_st_dtYE = document.getElementsByName('planStartDateYYE');
+			var pl_en_dtYE = document.getElementsByName('planEndDateYrYE');
+			var bar_chkEdit = document.getElementsByName('wscanEdit');
+			//alert(bar_chk);
+			var valuesEdit = [];
+			var plan_st_dtYE = [];
+			var plan_en_dtYE = [];
+			var radiosEdit = [];
+			for (r = 0; r < str_chkEdit.length; r++) {
+        			if (str_chkEdit[r].checked == true) {
+        				valuesEdit.push(str_chkEdit[r].value);
+        				}
+    			}
+			for (m = 0; m < pl_st_dtYE.length; m++) {
+    			if (pl_st_dtYE[m].value != null && pl_st_dtYE[m].value != "" && pl_st_dtYE[m].value.length > 0) {
+    				plan_st_dtYE.push(pl_st_dtYE[m].value);    				
+    				}
+			}
+			for (n = 0; n < pl_en_dtYE.length; n++) {
+    			if (pl_en_dtYE[n].value != null && pl_en_dtYE[n].value !="" && pl_en_dtYE[n].value.length > 0) {
+    				plan_en_dtYE.push(pl_en_dtYE[n].value);
+    				}
+			}
+			//alert(plan_st_dtYE.join());
+    		//alert(values.join());
+    		for(var h = 0, length = bar_chkEdit.length; h < length; h++)
+    			{
+    			 if (bar_chkEdit[h].checked) 
+    				 {
+    				 radiosEdit.push(bar_chkEdit[h].value);
+    				 }
+    			}
+    		document.getElementById("maintMonYE").value = valuesEdit.join();
+    		document.getElementById("planStartDateYE").value = plan_st_dtYE.join();
+    		document.getElementById("planEndDateYE").value = plan_en_dtYE.join();
+    		document.getElementById("barCodingEdit").value = radiosEdit.join();
+    		 
+			document.getElementById('SMschedulEdit').action = "http://localhost:8081/pmms-api/saveSchMaintenance";
+			document.getElementById('SMschedulEdit').submit();
+			this.$.yearplangrid.generateRequest();
+			alert("Data has been edited successfully");
+			
+		},
+		/* This is for edit record in month tab */
+	editSMSchToolMonth : function() {
+			
+			//var str_chkMEdit = document.getElementsByName('maintMonthMEdit')
+			var bar_chkMEdit = document.getElementsByName('wscanMEdit');
+			//alert(bar_chk);
+			var valuesMEdit = [];
+			var radiosMEdit = [];
+			/* for (t = 0; t < str_chkMEdit.length; t++) {
+        			if (str_chkMEdit[t].checked == true) {
+        				valuesMEdit.push(str_chkMEdit[t].value);
+        				}
+    			} */
+			
+    		//alert(values.join());
+    		for(var z = 0, length = bar_chkMEdit.length; z < length; z++)
+    			{
+    			 if (bar_chkMEdit[z].checked) 
+    				 {
+    				 radiosMEdit.push(bar_chkMEdit[z].value);
+    				 }
+    			}
+    		//document.getElementById("maintMonMEdit").value = valuesMEdit.join();
+    		document.getElementById("barCodingMEdit").value = radiosMEdit.join();
+    		 
+			document.getElementById('SMschedulEditMonth').action = "http://localhost:8081/pmms-api/saveSchMaintenanceMonth";
+			document.getElementById('SMschedulEditMonth').submit();
+			this.$.monthplangrid.generateRequest();
+		},
+		deleteSMSchToolY : function() {
+			var result = confirm("Want to delete?");
+			
+			if (result) {
+				if (this.ids.length > 0) {
+					this.deleteSMSchIdY = this.ids.toString();				
+					document.getElementById('smSchDeleteY').action = "http://localhost:8081/pmms-api/deleteSMSchY";
+					document.getElementById('smSchDeleteY').submit();
+					this.$.yearplangrid.generateRequest();
+					alert("Record deleted successfully");
+				}
+			}
+			
+		},
+		ironformresponse : function() {
+			document.querySelector('SMSched-mngt').refreshData();
+		}
+
+	});
+	HTMLImports.whenReady(function() {		
+		
+		var pxSchMaintDeptType = document.querySelector('#pxSchMaintDeptType');
+		var pxSchMaintDeptTypeEdit = document.querySelector('#pxSchMaintDeptTypeEdit');
+		var pxSchMaintDeptTypeM = document.querySelector('#pxSchMaintDeptTypeM');
+		var pxSchMaintDeptTypeMEdit = document.querySelector('#pxSchMaintDeptTypeMEdit');
+		
+		var pxSchMaintEQTypeY = document.querySelector('#pxSchMaintEQTypeY');
+		var pxSchMaintEQTypeYEdit = document.querySelector('#pxSchMaintEQTypeYEdit');
+		var pxSchMaintEQTypeM = document.querySelector('#pxSchMaintEQTypeM');
+		var pxSchMaintEQTypeMEdit = document.querySelector('#pxSchMaintEQTypeMEdit')
+		
+		
+		var pxSchMaintEQName = document.querySelector('#pxSchMaintEQName');
+		var pxSchMaintEQNameEdit = document.querySelector('#pxSchMaintEQNameEdit');
+		var pxSchMaintEQNameM = document.querySelector('#pxSchMaintEQNameM');
+		var pxSchMaintEQNameMEdit = document.querySelector('#pxSchMaintEQNameMEdit');
+		
+		
+		var pxDequipId = document.querySelector('#pxDequipId');
+		var pxDequipIdEdit = document.querySelector('#pxDequipIdEdit');
+		var pxDequipIdM = document.querySelector('#pxDequipIdM');
+		var pxDequipIdMEdit = document.querySelector('#pxDequipIdMEdit');
+		
+		var pxSchMaintPlanType = document.querySelector('#pxSchMaintPlanType');
+		var pxSchMaintPlanTypeEdit = document.querySelector('#pxSchMaintPlanTypeEdit');
+		var pxSchMaintPlanTypeM = document.querySelector('#pxSchMaintPlanTypeM');
+		var pxSchMaintPlanTypeMEdit = document.querySelector('#pxSchMaintPlanTypeMEdit');
+		
+		var d = new Date();
+		var n = d.getMonth();
+		document.querySelector('#currentMonth').value = n+1;
+		/* document.querySelector('#maintMonMEdit').value = n+1;
+		/* For search */
+		var pxSchMaintYear = document.querySelector('#pxSchMaintYear');
+		var pxSchMaintEQType = document.querySelector('#pxSchMaintEQType');
+		
+		
+		
+		pxSchMaintYear.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#yearTypeSearch").value = event.detail.textValue;
+				});
+		pxSchMaintEQType.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipTypeSearch").value = event.detail.textValue;
+				});
+		
+		/* First dropdown */
+		
+		pxSchMaintDeptType.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#deptId").value = event.detail.textValue;
+				});
+		/*Temp hide edit
+		pxSchMaintDeptTypeEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#deptIdEdit").value = event.detail.textValue;
+				}); */
+		
+		pxSchMaintDeptTypeM.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#deptIdM").value = event.detail.textValue;
+				});
+				/*Temp hide edit
+		pxSchMaintDeptTypeMEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#deptIdMEdit").value = event.detail.textValue;
+				}); */
+		
+		
+		/* Second drop-down */
+		
+		pxSchMaintEQTypeY.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipTypeYear").value = event.detail.textValue;
+				});
+				
+		/*Later for edit 		
+		pxSchMaintEQTypeYEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipTypeYearEdit").value = event.detail.textValue;
+				}); */
+		pxSchMaintEQTypeM.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipTypeMonth").value = event.detail.textValue;
+				});
+				/* later require for edit
+		pxSchMaintEQTypeMEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipTypeMonthEdit").value = event.detail.textValue;
+				}); */
+		
+		/* third drop-down */
+		
+		pxSchMaintEQName.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipNameId").value = event.detail.key;
+				});
+		/* Later require for edit
+		pxSchMaintEQNameEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipNameIdEdit").value = event.detail.textValue;
+				});
+		*/
+		pxSchMaintEQNameM.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipNameIdM").value = event.detail.key;
+				});
+		/*Later require for edit
+		pxSchMaintEQNameMEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			//alert("Month tab edit for equipment name id."+event.detail.textValue)
+			document.querySelector("#equipNameIdMEdit").value = event.detail.textValue;
+				}); */
+		
+		/* Fourth drop down */
+		
+		pxDequipId.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipId").value = event.detail.key;
+				});
+				/*Later require for edit
+		pxDequipIdEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipIdEdit").value = event.detail.textValue;
+				});
+					*/
+		pxDequipIdM.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipIdM").value = event.detail.key;
+				});
+		/*Later require for edit
+		pxDequipIdMEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+				{
+			document.querySelector("#equipIdMEdit").value = event.detail.textValue;
+				}); */
+		
+		/* Fifth drop - down */
+		
+		pxSchMaintPlanType.addEventListener('dropdown_content_value_changed',
+				function(event) 
+			{
+			if(event.detail.key === "PM")
+			{
+				document.querySelector("#diveqipcat").style.visibility = "visible";			
+			}
+			else
+			{
+			//alert('value is:'+event.detail.textValue);
+				document.querySelector("#diveqipcat").style.visibility = "hidden";						
+			}
+			document.querySelector("#planType").value = event.detail.textValue;
+		});
+		/*Later require for edit
+		pxSchMaintPlanTypeEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+			{
+			if(event.detail.key === "PM")
+			{
+				document.querySelector("#diveqipcatEdit").style.visibility = "visible";			
+			}
+			else
+			{
+			//alert('value is:'+event.detail.textValue);
+				document.querySelector("#diveqipcatEdit").style.visibility = "hidden";						
+			}
+			document.querySelector("#planTypeEdit").value = event.detail.textValue;
+		}); */
+		pxSchMaintPlanTypeM.addEventListener('dropdown_content_value_changed',
+				function(event) 
+			{
+			if(event.detail.key === "PM")
+			{
+				document.querySelector("#diveqipcatM").style.visibility = "visible";			
+			}
+			else
+			{
+			//alert('value is:'+event.detail.textValue);
+				document.querySelector("#diveqipcatM").style.visibility = "hidden";						
+			}
+			document.querySelector("#planTypeM").value = event.detail.textValue;
+		});
+		/* Later require for edit
+		pxSchMaintPlanTypeMEdit.addEventListener('dropdown_content_value_changed',
+				function(event) 
+			{
+			if(event.detail.key === "PM")
+			{
+				document.querySelector("#diveqipcatMEdit").style.visibility = "visible";			
+			}
+			else
+			{
+			//alert('value is:'+event.detail.textValue);
+				document.querySelector("#diveqipcatMEdit").style.visibility = "hidden";						
+			}
+			document.querySelector("#planTypeMEdit").value = event.detail.textValue;
+		});		*/		
+	});
+	
+	</script>
+</dom-module>

@@ -1,0 +1,246 @@
+<template id="my-tabs" is="dom-bind">
+   <px-card icon="fa-suitcase" header-text="FacilitiesWO Disposal" chevron>
+	<px-tab-set selected="{{selected}}">
+			<px-tab>FacilitiesWO</px-tab>
+			</px-tab-set>
+  
+  <px-tab-pages selected="{{selected}}">
+     	
+   <!-- local DOM goes here -->
+   	 
+	<section> <br>
+	
+	  <form is="iron-form" content-type="application/json"
+						id="FacilitiesDisposal"
+						on-iron-form-presubmit="ironformpresubmit"
+						on-iron-form-response="ironformresponse" method="post">
+	
+ <table>
+                     <tr>
+                     
+                   
+                           <td><label class="control-label"
+                                  ><b>SSO*:</b></label></td>
+
+                           <td >
+                           <paper-input class="input-medium search-query span3"
+                                  id="creatorSSO" name="creatorSSO"  style="width: 180px;"
+                                  required auto-validate error-message="{{localize('ssoid')}}">
+                                  </paper-input>      </td>
+                    <td>
+				<label class="control-label" style="width: 130px;"> <b>Maintenance Type:</b>
+				</label>
+					
+					<byutv-jsonp id="dropdpwnmaintype" 
+					url="http://localhost:8081/pmms-api/getMaintenanceType"
+					params='{"Type":"REPAIR_TYPE"}'
+					last-response="{{maintenanceType}}" debounce-duration="300" auto="true"></byutv-jsonp>
+					
+					<px-dropdown display-value="--å…¨éƒ¨ Select --" data-ng-model="maintypeDropDown"
+						id="maintypeDropDown" selected-key="{{Key}}"> 
+						<px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{maintenanceType}}">
+					</px-dropdown-content> </px-dropdown>	
+			
+                                  
+                   </td>
+                   <td>                   
+          
+				<label class="control-label" style="width: 130px;"> <b>Issue Type:</b>
+				</label>
+
+			
+					<byutv-jsonp id="dropdpwnissuetype" params='{"Type":"ISSUE_TYPE"}' 
+						url="http://localhost:8081/pmms-api/getIssueType" 
+						last-response="{{issueTyp}}" auto></byutv-jsonp>
+						
+					<px-dropdown display-value="--å…¨éƒ¨ Select --" id="issueDropDown"
+						selected-key="{{Key}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{issueTyp}}">
+					</px-dropdown-content> </px-dropdown>
+
+			
+               </td>
+              <td>                     
+           
+				<label class="control-label" style="width: 130px;"> <b>Location:</b>
+				</label>
+			
+
+					<byutv-jsonp id="dropdpwnloc" params='{"Type":"FAULT_LOCATION"}'
+								url="http://localhost:8081/pmms-api/getLocations"
+								last-response="{{local}}" auto></byutv-jsonp>
+
+						<px-dropdown display-value="--å…¨éƒ¨ Select --" id="factoryName"
+								selected-key="{{Key}}"> <px-dropdown-content
+								extend-dropdown="true" extend-dropdown-by="25"
+								max-cont-character-width="5" items="{{local}}">
+						</px-dropdown-content> </px-dropdown>
+			
+             </td>
+             </tr> 
+                 <tr>
+                           <td><label class="control-label"
+                                  ><b>Comments*:</b></label></td>
+
+                           <td >
+                           <paper-input class="input-medium search-query span3"
+                                  id="comments" name="comments"  style="width: 180px;"
+                                  required auto-validate error-message="{{localize('comments')}}">
+                                  </paper-input>      </td>
+                                  
+                     </tr>        
+                  
+                 </table> 
+                 
+                 <input type="hidden" id="workOrderNumber" name="workOrderNumber"
+					value="{{currentRow.row.workOrderNumber.value}}">
+				
+
+				<input type="hidden" id="id" name="id"
+					value="{{currentRow.row.id.value}}">
+				
+				<input type="hidden" id="maintType" name="maintType"
+					value="{{currentRow.row.maintType.value}}">
+				
+
+				<input type="hidden" id="wordOrderStatus" name="wordOrderStatus"
+					value="{{currentRow.row.wordOrderStatus.value}}">
+				
+
+				<input type="hidden" id="workOrderType" name="workOrderType"
+					value="{{currentRow.row.workOrderType.value}}">
+			
+				
+				<input type="hidden" id="createdDate" name="createdDate"
+					value="{{currentRow.row.createdDate.value}}">
+				
+				
+            
+		<table>
+			<tr>
+			<td style="align: center"><paper-button raised
+				on-click="startFacility" class="btn btn-large btn-primary">Start</paper-button></td>
+								
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Close</button>
+				</td>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Pause/Resume</button>
+				</td>
+				<td style="align: center; margin-left: 40px;">
+					<button type="button" style="margin-left: 20px;"
+						class="btn btn-large btn-primary">Confirm</button>
+				</td>
+			</tr>
+			
+			  <tr>                      
+              <td>
+				<label class="control-label" style="width: 130px;"> <b>Factories:</b>
+				</label></td>
+			<td>
+				<byutv-jsonp id="dropdpwnfact" params='{"Type":"FACILITY_NAME"}'
+								url="http://localhost:8081/pmms-api/getFactoryNames"
+								last-response="{{factoryNam}}" auto></byutv-jsonp>
+
+						<px-dropdown display-value="--å…¨éƒ¨ Select --" id="factoryNames"
+								selected-key="{{Key}}"> <px-dropdown-content
+								extend-dropdown="true" extend-dropdown-by="25"
+								max-cont-character-width="5" items="{{factoryNam}}">
+						</px-dropdown-content> </px-dropdown>
+
+				</td>
+			
+               </tr> 
+              
+			
+		</table> 
+	 
+		
+		</form>
+       </section> 
+   </px-tab-pages>
+   </px-card>
+  </template>
+
+  <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'facilities-disposal',
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+
+		searchKey : null,
+		
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+			maintId : {
+				type : String,
+				notify : true
+			},
+
+			status : {
+				type : String,
+				notify : true
+			},
+			
+			getMaintId : function(maintId) {
+				return {
+					maintId : maintId
+				};
+			},
+             
+			handleResponse : function(event) {
+				this._refreshTable();
+			},
+			
+			startFacility : function() {
+
+				document.getElementById("FacilitiesDisposal").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+				document.getElementById('FacilitiesDisposal').submit();
+			},
+			
+			closeFacility : function() {
+				var inspectionResultsData = document
+						.getElementById("inspectionResultsData");
+
+				var length = inspectionResultsData.__data__.tableData.length;
+				var inspectArr = [];
+
+				for (var i = 0; i < length; i++) {
+					var inspectionArr = [
+							this.workOrderNumber = inspectionResultsData.__data__.tableData[i]['workOrderNumber'],
+							this.wordOrderStatus = inspectionResultsData.__data__.tableData[i]['wordOrderStatus'],
+							this.maintType = inspectionResultsData.__data__.tableData[i]['maintType'],
+							this.workOrderType = inspectionResultsData.__data__.tableData[i]['workOrderType'],
+							this.id = inspectionResultsData.__data__.tableData[i]['id'],
+							this.createdDate = inspectionResultsData.__data__.tableData[i]['createdDate']
+
+					];
+					inspectArr.push(inspectionArr);
+
+				}
+				this.status = "关闭";
+				this.maintainanceArr = inspectArr;
+				document.getElementById("FacilitiesDisposal").action = "http://localhost:8081/pmms-api/updateAndInsertfacilities";
+
+				document.getElementById('FacilitiesDisposal').submit();
+
+			}
+
+		}
+		});
+	
+	</script>
+                     
+ 

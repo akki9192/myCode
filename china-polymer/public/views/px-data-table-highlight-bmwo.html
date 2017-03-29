@@ -1,0 +1,16 @@
+<script>
+	PxHighlight = {
+			isPerfect : function isPerfect(value) {
+				console.log("NoIssues");
+				return ((value == "0") ? true : false);
+			},
+			isIssues : function isIssues(value) {
+				console.log("Issues Occured");
+				return ((value == "1") ? true : false);
+			},			
+			isNoIssuesTracked : function isNoIssuesTracked(value) {
+				console.log("No more issues being tracked");
+				return ((value == "01") ? true : false);
+			}
+		};
+</script>

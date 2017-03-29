@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="/../css/button-style.html">
+<dom-module id="OperatorInspection-RecordMonthly">
+	<template>
+		<px-card icon="fa-suitcase" header-text="" chevron>
+			<section>
+				<br><br>
+					<form is="iron-form" content-type="application/json" id="searchWithDatesAndParameters" on-iron-form-invalid="ironforminvalid"
+						on-iron-form-response="handleFilteredData" method="post">			
+							<input type="hidden" id="FilteredData" name="FilteredData" value="{{FilteredData}}">		
+					</form>
+						<div  class="module-body pull-left" style="width: 100%">			
+						<byutv-jsonp id="spareTrans" url="http://localhost:8081/pmms-api/getOperationInspectionRecord" last-response="{{OperationRecordMonthly}}" debounce-duration="300" auto="true">
+						</byutv-jsonp>
+						<px-data-table id="spareTable" enable-column-resize selectable table-data="{{OperationRecordMonthly}}" > 
+					
+							<px-data-table-column name="id" label="ID" hide></px-data-table-column>  
+							<px-data-table-column name="maintId" label="Maintainance Id" > </px-data-table-column> 
+							<px-data-table-column name="status" label="Status"></px-data-table-column>
+							<px-data-table-column name="frequency" label="Frequency"></px-data-table-column>
+							<px-data-table-column name="equipName" label="Device Name"></px-data-table-column>
+							<px-data-table-column name="equipId" label="Device Id"></px-data-table-column>
+							<px-data-table-column name="plannedStartDt" label="Scheduled Date"></px-data-table-column>
+							<px-data-table-column name="plannedEndDt" label="Plan" hide></px-data-table-column>
+							<px-data-table-column name="actualStartDt" label="Actual Date"></px-data-table-column>
+							<px-data-table-column name="actualEndDt" label="" hide></px-data-table-column>
+						    <px-data-table-column name="sso" label="Technician Id" hide></px-data-table-column>
+							<px-data-table-column name="createdBy" label="Creator" hide></px-data-table-column>
+							<px-data-table-column name="createdDt" label="Created Date" hide></px-data-table-column>
+						    <px-data-table-column name="lastUpdatedBy" label="Updater" hide></px-data-table-column>
+							<px-data-table-column name="lastUpdatedDt" label="Last Updated Date" hide></px-data-table-column>
+						
+						</px-data-table>
+						</div>
+			</section>
+		</px-card>
+	</template>
+	
+<script>
+Polymer({
+	/* this is the element's prototype */
+	is : 'OperatorInspection-RecordMonthly',	
+});
+
+</script>
+</dom-module>

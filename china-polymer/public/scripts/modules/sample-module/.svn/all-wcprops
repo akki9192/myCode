@@ -1,0 +1,137 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/PMMS_30670_SVN/!svn/ver/1368/PMMS/pmms/public/scripts/modules/sample-module
+END
+sample-filter.js
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/sample-filter.js
+END
+sample-module.js
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/sample-module.js
+END
+predix-user-service.js
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/predix-user-service.js
+END
+predix-asset-service.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/predix-asset-service.js
+END
+dashboard-controller.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/dashboard-controller.js
+END
+login-form.js
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/PMMS_30670_SVN/!svn/ver/326/PMMS/pmms/public/scripts/modules/sample-module/login-form.js
+END
+scheduledmaint-controller.js
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/scheduledmaint-controller.js
+END
+documentManagement.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PMMS_30670_SVN/!svn/ver/789/PMMS/pmms/public/scripts/modules/sample-module/documentManagement.js
+END
+user.js
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/PMMS_30670_SVN/!svn/ver/70/PMMS/pmms/public/scripts/modules/sample-module/user.js
+END
+sample-service.js
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/sample-service.js
+END
+SaveRole.js
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/PMMS_30670_SVN/!svn/ver/340/PMMS/pmms/public/scripts/modules/sample-module/SaveRole.js
+END
+fault-report.js
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/PMMS_30670_SVN/!svn/ver/274/PMMS/pmms/public/scripts/modules/sample-module/fault-report.js
+END
+main.js
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/PMMS_30670_SVN/!svn/ver/718/PMMS/pmms/public/scripts/modules/sample-module/main.js
+END
+WorkOrderMaintainance.js
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/1360/PMMS/pmms/public/scripts/modules/sample-module/WorkOrderMaintainance.js
+END
+fault-repair.js
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/PMMS_30670_SVN/!svn/ver/1368/PMMS/pmms/public/scripts/modules/sample-module/fault-repair.js
+END
+sample-directive.js
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/sample-directive.js
+END
+jquery-3.1.1.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/PMMS_30670_SVN/!svn/ver/718/PMMS/pmms/public/scripts/modules/sample-module/jquery-3.1.1.min.js
+END
+webcomponents-lite.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/718/PMMS/pmms/public/scripts/modules/sample-module/webcomponents-lite.min.js
+END
+predix-view-service.js
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/predix-view-service.js
+END
+SparePart.js
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/PMMS_30670_SVN/!svn/ver/342/PMMS/pmms/public/scripts/modules/sample-module/SparePart.js
+END
+sample-controller.js
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/2/PMMS/pmms/public/scripts/modules/sample-module/sample-controller.js
+END
+SystemSave.js
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/PMMS_30670_SVN/!svn/ver/958/PMMS/pmms/public/scripts/modules/sample-module/SystemSave.js
+END

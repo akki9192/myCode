@@ -1,0 +1,555 @@
+<!-- Second Tab : Kailash -->
+
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="fault-repair">
+ <template>
+<style include="button-style">
+</style>
+<!-- local DOM goes here -->
+<section>
+	<br>
+	<form name="addFaultReports1" data-ng-controller="editFaultController"
+		novalidate>
+		<input type="hidden"  id="workOrderStatusId" name="workOrderStatusId"  ></input>
+		<table id="faultRepairTable">
+			
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px"><b>设备代码/EQSN*:</b></label></td>
+				<td style="padding: 5px"><input type="text" id="editEquipid"
+					class="input-medium search-query span3" style="width: 180px"
+					name="editEquipid" data-ng-model="editEquipid"
+					value="{{currentRow.faultReport.value.equipId2}}"></td>
+				
+				<td style="padding: 5px">
+				<label id="editEquipidNameLabel"></label>
+				 <input type="text" id="editEquipidName" class="textField" style="width: 180px" name="editEquipidName" data-ng-model="editEquipidName"
+					value="{{currentRow.faultReport.value.equipmentInfo.equipNameInfo.equipNameId}}" disabled> 
+					</td>
+				
+			</tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px"><b>维修工编号/SSO:</b></label></td>
+				<td style="padding: 5px"><input type="text" id="editUpdaterSso"
+					class="input-medium search-query span3" style="width: 180px"
+					name="updatersso" data-ng-model="editUpdaterSso"
+					value="{{currentRow.faultReport.value.creatorSSO}}">
+				</td>
+				<td style="padding: 5px">
+				<label id="ssoName"></label>
+				 <input type="text" id="ssoNameText" class="textField" style="width: 180px" name="ssoName" data-ng-model="ssoName"
+					value="{{currentRow.result.value}}" disabled> 
+					</td>
+			</tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px;"> <b>故障种类/FaultType: </b>
+				</label></td>
+				<td style="padding: 5px">
+					<div style="width: 180px; display: inline-block;">
+					<!--  Changed for defect no 126 on 6th Jan -->
+						<px-dropdown display-value="--選擇Select --" id="faulttype"
+							value="{{currentRow.faultType.value}}"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5"
+							items='[{"key":"1", "val": "--選擇Select --"},{"key":"电气故障", "val": "电气故障"}, {"key":"机械故障", "val": "机械故障"}, {"key":"液压故障", "val": "液压故障"},{"key":"软件故障", "val": "软件故障"},{"key":"其他故障", "val": "其他故障"}]'>
+						</px-dropdown-content> </px-dropdown>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px;"> <span style="width: 120px;"><b>工单操作人/SSO</b></span><span style="width: 10px;" id="ssoMandatory"  style="display: none;"><b>*</b></span><b>:</b>
+				</label></td>
+				<td style="padding: 5px"><input type="text" id="editCreaterSso"
+					class="input-medium search-query span3" name="creatersso"
+					data-ng-model="editCreaterSso"
+					style="width: 180px"></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px;"> <b>备注/Remarks: </b>
+				</label></td>
+				<td style="padding: 5px"><textarea id="remarks" rows="3"
+						class="input-medium search-query span3"
+						style="margin: 0px; width: 181px; height: 59px;" name="remarks"
+						data-ng-model="remarks"
+						value="{{currentRow.remarks.value}}"></textarea>
+				</td>
+			</tr>
+			<tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px;"> <b>等备件/WaitSP:</b>
+				</label></td>
+				<td>
+				<paper-checkbox id="sparePartInvolved" name="sparePartInvolved"></paper-checkbox>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding: 5px"><label class="control-label"
+					style="width: 200px;"> <b>等外部服务/WaitService:</b>
+				</label></td>
+				<td>
+				<paper-checkbox id="externalServiceInvolved" name="externalServiceInvolved"></paper-checkbox>
+				 </td>
+			</tr>
+	<byutv-jsonp id="isEquipDataValSSO" url="http://localhost:8081/pmms-api/isValidSSO" params='{{getParamssso(sso)}}' on-response="handlessoResponse"
+			last-response="{{ssoData}}" debounce-duration="300" auto="true"></byutv-jsonp>
+
+		</table>
+	
+		<div style="margin-left: 80px">
+			<table>
+				<tr>
+					<td style="align: center;">
+						<button id = "condCloseButton"  type="button" class="btn btn-large btn-primary"
+							data-ng-click="condClose()" disabled>带遗留问题运行/Conditional Close</button>
+					</td>
+					<td style="align: center; margin-left: 50px;">
+						<button id = "startButton" type="button" class="btn btn-large btn-primary"
+							style="margin-left: 20px;" data-ng-click="startMaintainance()" disabled>开始维修/Start</button>
+					</td>
+					<td style="align: center; margin-left: 40px;">
+						<button id = "closeButton" type="button" class="btn btn-large btn-primary"
+							style="margin-left: 20px;" data-ng-click="closeMaintainance()" disabled>结束维修/Close</button>
+					</td>
+					<td style="align: center;">
+						<button id = "pauseResumeButton" type="button" class="btn btn-large btn-primary"
+							style="margin-left: 20px;" data-ng-click="outageMaintainance()" disabled>中断/恢复/Pause/Resume</button>
+					</td>
+					<td style="align: center;">
+						<button id="confirmButton" type="button" class="btn btn-large btn-primary"
+							style="margin-left: 20px;" data-ng-click="confirmed()" disabled>确认/Confirm</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	<br> <br>
+	<div class="pull-left" style="margin-top:-17px">
+		<div class="control-group pull-left" style="width: 300px">
+			<label class="control-label" style="width: 130px;"> <b>区域/Department:</b>
+			</label>
+			<div class="controls"
+					style="width: 150px; display: inline-block; margin-left: 20px;">
+					<byutv-jsonp id="dropdpwndept"
+						url="http://localhost:8081/pmms-api/getDepartmentName"
+						last-response="{{department}}" auto></byutv-jsonp>
+					<px-dropdown display-value="--全部 Select --" data-ng-model="deptDropDown"
+						id="deptDropDown" selected-key="{{deptId}}"> <px-dropdown-content
+						extend-dropdown="true" extend-dropdown-by="25"
+						max-cont-character-width="5" items="{{department}}">
+					</px-dropdown-content> </px-dropdown>
+
+				</div>
+		</div>
+		<div class="control-group pull-left"
+			style="width: 300px; margin-left: 40px">
+				
+				
+				
+			<label class="control-label" style="width: 130px;"> <b>设备种类/EQType:</b>
+			</label>
+			
+								</span>
+								
+			<div class="controls"
+				style="width: 150px; display: inline-block; margin-left: 20px;">
+				<!-- <byutv-jsonp id="test"  params='{"Type":"equip_type"}' url="http://localhost:8081/pmms-api/getDocumentTypeNames" last-response="{{doctyperesponse}}" auto></byutv-jsonp>					
+								
+								  <px-dropdown id="equiptDropDown" selected-key="{{equipType}}" display-value="--全部 Select --" > 
+								  <px-dropdown-content
+                                                extend-dropdown="true" extend-dropdown-by="25"
+                                                max-cont-character-width="5"
+                                                items="{{doctyperesponse}}"> 
+                                  </px-dropdown-content> </px-dropdown> -->
+                                  
+                                  <byutv-jsonp id="equiptDropDown"
+					params='{"Type":"Category"}'
+					url="http://localhost:8081/pmms-api/getEquipmentCategory"
+					last-response="{{dropdownCategory}}" auto></byutv-jsonp>
+				<px-dropdown display-value="--全部 Select --" id="factoryName"
+					selected-key="{{equipType}}"> <px-dropdown-content
+					extend-dropdown="true" extend-dropdown-by="25"
+					max-cont-character-width="5" items="{{dropdownCategory}}">
+				</px-dropdown-content> </px-dropdown>
+                                  
+				
+			</div>
+		</div>
+		
+		<div class="control-group pull-left" style="margin-top:-25px; margin-left:43px">
+		<label class="control-label" style="width: 130px;"> <b>Search:</b></label>
+
+		<div style="width: 200px; display: inline-block; margin-left: 20px;">
+			<paper-input floatingLabel id="searchId" value="{{searchKey}}"
+				floatingLabel="Search" on-input="searchKeyChanged"></paper-input>
+		</div>
+
+	    </div>
+	</div>
+		
+	<br> <br>
+
+	<div class="module-body pull-left" style="width: 100%">
+		<byutv-jsonp id="workOrderDetails"
+			url="http://localhost:8081/pmms-api/getFaultMaintainanceDetails"
+			params='{{getParams("EQ",deptId,equipType)}}' on-response="handleResponse" last-response="{{mydata}}"
+			 debounce-duration="300" auto="true"></byutv-jsonp>
+
+		<px-data-table id="workordertable" selectable on-px-row-click="rowSelected"
+			selected-rows="{{selectedRows6}}" table-data="{{filteredData}}">
+		<px-data-table-column name="id" label="ID" hide></px-data-table-column>
+		<px-data-table-column name="workOrderType" label="WorkOrderType" hide></px-data-table-column>
+		<px-data-table-column name="workOrderNumber" label="工单号/WOSN"></px-data-table-column>
+		<px-data-table-column name="faultReport.wordOrderStatus" label="WorkOrderStatus"> 
+		  <!-- <px-data-table-highlight highlight-type="row" highlight-value="low" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+          <px-data-table-highlight highlight-type="row" highlight-value="high" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+          <px-data-table-highlight highlight-type="row" highlight-value="condclose"  highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+          <px-data-table-highlight highlight-type="row" highlight-value="medium"  highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+          <px-data-table-highlight highlight-type="row" highlight-value="white"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight> -->
+         	<px-data-table-highlight highlight-type="row" highlight-value="paused" highlight-method="isPaused" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="start" highlight-method="isStart" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="condclose" highlight-method="isCondClose" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="notstart" highlight-method="isNotStarted" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+			<px-data-table-highlight highlight-type="row" highlight-value="closed"  highlight-method="isClosed" import="/../views/frontend/px-data-table-highlight-rules.html"></px-data-table-highlight>
+		</px-data-table-column>
+			
+		<px-data-table-column name="faultReport.equipmentInfo.equipId" label="设施代码/EQSN"></px-data-table-column>
+		<px-data-table-column name="faultReport.equipmentInfo.equipNameInfo.deviceName" label="设施名称/EQNM"></px-data-table-column> 
+		<px-data-table-column name="faultReport.equipmentInfo.equipModel" label="设施型号/ EQModel"></px-data-table-column>
+		<px-data-table-column name="faultReport.equipmentInfo.assetsID"	label="固定资产号/AssetSN"></px-data-table-column> 
+		<px-data-table-column name="faultReport.faultDescription" label="需求描述/FaultDesc"></px-data-table-column>
+		<px-data-table-column name="faultReport.creatorSSO" label="申报人/Requestor"></px-data-table-column>
+		
+		<px-data-table-column name="faultReport.createdDate" label="申报时间/ReqTime"></px-data-table-column>
+		<px-data-table-column name="faultReport.safetyInvolved" label="涉及安全隐患/Safety"></px-data-table-column>
+		<px-data-table-column name="faultReport.shutdownFlag" label="是否需停机/Shutdown"></px-data-table-column>
+		<px-data-table-column name="faultReport.updaterSSO" label="维修工/Maintainer"></px-data-table-column>
+		<px-data-table-column name="faultReport.maintStartDate"	label="维修开始时间/MaintStart"></px-data-table-column> 
+		
+		<px-data-table-column name="faultReport.equipmentInfo.deptInfo.deptName" label="使用部门/Department"></px-data-table-column> 
+		<px-data-table-column name="remarks" label="备注/Remark"></px-data-table-column>
+			
+		<px-data-table-column name="faultReport.maintType" id="maintType" label="MAintainanceType" hide></px-data-table-column> 
+		<px-data-table-column name="faultReport.planId" label="PlanID" hide></px-data-table-column> 
+		<px-data-table-column name="faultReport.planStartMonth" label="planStartMonth" hide></px-data-table-column>
+		<px-data-table-column name="faultReport.smsFlag" label="smsFlag" hide></px-data-table-column>
+		<px-data-table-column name="faultReport.widsequence" label="widsequence" hide></px-data-table-column>
+		<px-data-table-column name="faultReport.createdDate" label="CreatedDate" hide></px-data-table-column>
+		<px-data-table-column name="faultReport.lastUpdatedDate" label="lastUpdatedDate" hide></px-data-table-column>		
+		
+		<px-data-table-column name="sparePartInvolved" label="等备件/WaitSP"></px-data-table-column> 
+		<px-data-table-column name="externalServiceInvolved" label="等外部服务/WaitService"></px-data-table-column> 
+		<px-data-table-column name="faultType" label="故障种类/FaultType"></px-data-table-column>
+		
+		</px-data-table>
+
+
+
+	</div>
+	
+	<br/><br/>
+	<div class="legendmain mb10 pull-center">
+		<span class="label wo_not_started_legend">未开始</span>
+		<span class="label wo_in_progress_legend">进行中</span>
+		<span class="label wo_pause_legend">暂停</span>
+		<span class="label wo_close_legend">关闭</span>
+		<span class="label wo_conditional_close_legend">带遗留问题运行</span>
+	</div>
+</section>
+<!-- <paper-dialog heading="Dialog" modal role="alertdialog" transition="paper-dialog-transition-bottom" id="dialogBox">
+    <div id="alertHeader">Alert</div>
+    <div  id="alertContent"></div>
+    <paper-button affirmative autofocus raised on-click="hideAlert" class="btn px-modal" id="alertOKButton">Ok</paper-button>
+</paper-dialog>
+
+<modal-dialog show='modalShown' width='400px' height='60%'>
+  <p>Modal Content Goes here<p>
+</modal-dialog> -->
+</template> <script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'fault-repair',
+
+		searchKey : null,
+		//currentrow: {},
+		
+		properties: {
+		currentRow: {
+			type: Object,
+			notify: true,
+			value: function() {
+				return {};
+			}
+		} ,
+		EquipNameID : {
+			
+			type: String,
+			notify: true,
+			value: ""
+		},
+		
+		sso: {
+  			type: String,
+  			notify: true
+  		},
+      }, 
+		
+		rowSelected:function(e){
+			var clickedRow = e.detail.row;		
+			
+			
+			try {
+				this.currentRow = clickedRow.row;
+			}
+			catch(err) {
+			   console.log(err.message);
+			}
+			var faultStatus = clickedRow.row.faultReport.value.wordOrderStatus;
+			
+			if (faultStatus != null) {
+				document.getElementById("workOrderStatusId").value = faultStatus;
+			} else {
+				document.getElementById("workOrderStatusId").value = clickedRow.row.workorderStatus.value;
+			}
+			
+			if (clickedRow.row.workorderStatus != null) {
+				document.getElementById("workOrderStatusId").value = clickedRow.row.workorderStatus.value;
+			} else {
+				document.getElementById("workOrderStatusId").value = faultStatus;
+			}
+
+			if (clickedRow.row.externalServiceInvolved.value) {
+				document.getElementById("externalServiceInvolved").checked = true;
+			} else {
+				document.getElementById("externalServiceInvolved").checked = false;
+			}
+
+			if (clickedRow.row.sparePartInvolved.value) {
+				document.getElementById("sparePartInvolved").checked = true;
+			} else {
+				document.getElementById("sparePartInvolved").checked = false;
+			}
+
+			//04-Jan-17: Fixed button enable issue based on WO Status
+			//var statusOfWorkorder = (clickedRow.row.workorderStatus.value == null) ? faultStatus : clickedRow.row.workorderStatus.value;
+			var statusOfWorkorder = (faultStatus == null) ? clickedRow.row.workorderStatus.value : faultStatus;
+
+			
+			if(!clickedRow._selected){
+				
+				var sso = clickedRow.row.faultReport.value.creatorSSO;
+				if (!(sso == null)) {
+					$.ajax({
+						type : "POST",
+						contentType : 'application/json; charset=utf-8',
+						dataType : 'json',
+						url : "http://localhost:8081/pmms-api/getName",
+						data : sso, // Note it is important
+						success : function(result) {
+							// add.close();
+							console.log("result----." + result);
+							document.getElementById("ssoNameText").value = result;
+						}
+					});
+				}
+				
+				if (statusOfWorkorder == "关闭") {
+
+					document.getElementById("confirmButton").disabled = false;
+					document.getElementById("ssoMandatory").style.display = 'block';
+				} else {
+					document.getElementById("confirmButton").disabled = true;
+					document.getElementById("ssoMandatory").style.display = 'none';
+				}
+
+				if (statusOfWorkorder == "未开始") {
+
+					document.getElementById("startButton").disabled = false;
+
+				} else {
+
+					document.getElementById("startButton").disabled = true;
+				}
+
+				if (statusOfWorkorder == "进行中") {
+					document.getElementById("ssoMandatory").style.display = 'block';
+					document.getElementById("condCloseButton").disabled = false;
+					document.getElementById("closeButton").disabled = false;
+				} else {
+					//document.getElementById("ssoMandatory").style.display = 'none'
+					document.getElementById("condCloseButton").disabled = true;
+					document.getElementById("closeButton").disabled = true;
+
+				}
+				if (statusOfWorkorder == "进行中" || statusOfWorkorder == "暂停") {
+
+					document.getElementById("pauseResumeButton").disabled = false;
+					
+					//Start 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"					
+					if(statusOfWorkorder == "进行中")
+						document.getElementById("pauseResumeButton").innerHTML="中断/Pause";
+					else
+						document.getElementById("pauseResumeButton").innerHTML="恢复/Resume";
+					//End 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"	
+
+				} else {
+					
+					//Start 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"	
+					document.getElementById("pauseResumeButton").innerHTML="中断/恢复/Pause/Resume";
+					//End 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"
+					
+					document.getElementById("pauseResumeButton").disabled = true;
+
+				}
+				
+				if (statusOfWorkorder == "带遗留问题运行") {
+
+					document.getElementById("closeButton").disabled = false;
+					document.getElementById("ssoMandatory").style.display = 'block';
+					document.getElementById("confirmButton").disabled = false;
+
+				}
+				
+				
+				//Start 02-Jan-16: Fix for faultType dropdown auto selection on work order row seletion
+				var faultTypeValue = (clickedRow.row.faultType.value == null) ? "--全部 Select --" : clickedRow.row.faultType.value;
+				document.getElementById("faulttype").displayValue = faultTypeValue;
+				
+				if(faultTypeValue == "--全部 Select --")
+					document.getElementById("faulttype").selectedKey = "1";
+				else
+		    		document.getElementById("faulttype").selectedKey = faultTypeValue;
+				
+				document.getElementById("editEquipid").value = clickedRow.row.faultReport.value.equipId2;
+				document.getElementById("editUpdaterSso").value = clickedRow.row.faultReport.value.creatorSSO;
+				document.getElementById("editCreaterSso").value = "";
+				document.getElementById("remarks").value = clickedRow.row.remarks.value;
+				document.getElementById("editEquipidName").value = clickedRow.row.faultReport.value.equipmentInfo.equipNameInfo.equipNameId;
+				//End 02-Jan-16: Fix for faultType dropdown auto selection on work order row seletion
+				
+				
+			}
+			else{
+				
+				//Start 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"	
+				document.getElementById("pauseResumeButton").innerHTML="中断/恢复/Pause/Resume";
+				//End 02-Jan-16: Changes related to requirement "Button for Pause/Resume is a Pingpong type"
+				
+				document.getElementById("editEquipid").value = "";
+				document.getElementById("editUpdaterSso").value = "";
+				document.getElementById("editCreaterSso").value = "";
+				document.getElementById("remarks").value = "";
+				document.getElementById("editEquipidName").value = "";
+				document.getElementById("ssoNameText").value = "";
+				
+				document.getElementById("faulttype").selectedKey = "1";
+				document.getElementById("faulttype").displayValue = "--全部 Select --";
+				
+				
+				var sparePartInvolvedCheckBox = document.querySelector("#sparePartInvolved");
+				sparePartInvolvedCheckBox.checked = false;
+	  			var externalServiceInvolvedCheckBox = document.querySelector("#externalServiceInvolved");
+	  			externalServiceInvolvedCheckBox.checked = false;
+	  			
+	  			
+
+				document.getElementById("startButton").disabled = true;
+				document.getElementById("pauseResumeButton").disabled = true;
+				document.getElementById("condCloseButton").disabled = true;
+				document.getElementById("closeButton").disabled = true;
+				document.getElementById("confirmButton").disabled = true;
+				document.getElementById("ssoMandatory").style.display = 'none';
+			}
+		},
+		attached : function(myItem) {
+			this.currentRow = {};
+
+			console.log("currentrow:" + this.currentRow);
+		},
+
+		getParams : function(workOrderType, deptId, equipType) {
+			return {
+				workOrderType : "EQ",
+				deptId : deptId,
+				equipType : equipType
+
+			};
+		},
+
+		refreshData : function() {
+			this.$.workOrderDetails.generateRequest();
+		},
+
+		searchKeyChanged : function(event) {
+			var test = document.getElementById("workordertable");
+			if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+				test.selectable=false;
+				test.selectedRows[0]._selected=false;
+				test.selectedRows=[];
+				test.selectable=true;
+			}
+			
+			this.searchKey = event.target.value;
+			//test.selectable=true;
+			this._refreshTable();
+		},
+
+		handleResponse : function(event) {
+			this._refreshTable();
+		},
+
+		_matches : function(jsonObject, searchKey) {
+			for (field in jsonObject) {
+				var fieldValue = jsonObject[field];
+
+				if (fieldValue === Object(fieldValue)
+						&& this._matches(fieldValue, searchKey)) {
+					return true;
+				} else if (fieldValue && fieldValue.indexOf
+						&& fieldValue.indexOf(this.searchKey) >= 0) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		_refreshTable : function() {
+			var array = [];
+			if (!this.searchKey) {
+				array = this.mydata;
+			} else {
+				for ( var i in this.mydata) {
+					var jsonObject = this.mydata[i];
+					if (this._matches(jsonObject, this.searchKey)) {
+						array.push(jsonObject);
+					}
+				}
+			}
+
+			this.filteredData = [];
+			this.filteredData = array;
+		},
+
+		getParams : function(workOrderType, deptId, equipType) {
+			return {
+				workOrderType : "EQ",
+				deptId : deptId,
+				equipType : equipType
+			};
+		},
+
+		getParamssso : function(sso) {
+			return {
+				sso : sso
+
+			};
+		}
+	});
+</script>
+	
+ </dom-module>

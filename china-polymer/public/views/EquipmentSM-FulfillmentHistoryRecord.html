@@ -1,0 +1,374 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="EquipmentSM-FulfillmentHistoryRecord">
+<template>
+<px-card icon="fa-suitcase" header-text="" chevron>
+<br><br>
+<px-tab-set selected={{selected}}> <px-tab>Current Month
+</px-tab> <px-tab>Rolling Plan Current Year</px-tab> 
+ </px-tab-set> 
+<px-tab-pages selected={{selected}}> 
+
+<section>
+<br><br>
+<!-- ---------------------------------------- -->
+<h2>MonthlyPlan</h2>
+<br><br><br><br>
+
+<table>
+<tr>
+<td>
+<form is="iron-form" content-type="application/json"id="searchWithMonthAndYear" on-iron-form-response="ironformresponse"method="post">
+<input type="hidden" id="SearchMYData" name="SearchMYData" value="{{SearchMYData}}">
+
+<table>
+
+<tr>
+
+<td>
+<label class="control-label" style="width: 100px;"> <b>Year:*</b></label>
+<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+<byutv-jsonp url="http://localhost:8081/pmms-api/getMonthAndYear" params='{"Type":"Year"}' last-response="{{yearRES}}"auto></byutv-jsonp>
+<px-dropdown display-value="--Select --"selected-key="{{equipType}}"> <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{yearRES}}">
+</px-dropdown-content> </px-dropdown>
+</div>
+</td>
+
+<td>
+<label class="control-label" style="width: 100px;"> <b>Month:*</b></label>
+<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+<byutv-jsonp url="http://localhost:8081/pmms-api/getMonthAndYear" params='{"Type":"Month"}' last-response="{{monthRES}}"auto></byutv-jsonp>
+<px-dropdown display-value="--Select --"selected-key="{{equipType}}"> <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{monthRES}}">
+</px-dropdown-content> </px-dropdown>
+</div>
+</td>
+<!-- 
+<td><label class="control-label" style="width: 100px;" style="margin-left: 40px;"><b>Year</b></label></td>
+<td><paper-input class="span3"	style="width: 170px; margin-left: 40px;" id="SearchByYear" name="year"></paper-input></td> -->
+
+<td><paper-button class="btn btn-large btn-primary" raised on-click="searchByMonthandYearOnly" style="margin-left: 20px;">Search</paper-button></td>
+</tr>
+</table>
+</form>
+</td>
+<!-- ******************************************************************************************************
+	 ------------------------------------------------ViewAll PopUp------------------------------------------------
+	****************************************************************************************************** -->
+	<td>
+<div class="legendmain mb10 pull-left"  style="margin-left: 40px;">
+	<form is="iron-form" content-type="application/json"id="ismViewAllForm" on-iron-form-response="ironformresponse"method="post">
+		
+	<paper-button raised onclick="viewAll.open()"
+			class="btn btn-large btn-primary">ViewAll</paper-button>
+		<paper-dialog id="viewAll"> <paper-dialog-scrollable>
+	<table>
+	
+	<tr>
+    <td>  <input type="hidden" id="monthlyDataId" name="id"></td>
+   </tr>
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Month:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="month" id="month" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Area:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipCategory" id="equipCategory" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>WS:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="deptId" id="deptId" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Machine:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="equipId" id="equipId" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Plan Start Date:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="planStartDate" id="planStartDate" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Plan End Date:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="planEndDate" id="planEndDate" disabled></paper-input></td>
+	</tr>
+	
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>Actual Start Date:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="actualStartDate" id="actualStartDate" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>Actual End Date:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="actualEndDate" id="actualEndDate" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM Type:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmType" id="pmType" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmStop" id="pmStop" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PM No Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmNoStop" id="pmNoStop" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PM State:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pmState" id="pmState" disabled></paper-input></td>
+	
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM Type:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmType" id="qmType" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmStop" id="qmStop" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>QM No Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmNoStop" id="qmNoStop" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>QM State:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="qmState" id="qmState" disabled></paper-input></td>
+	
+	</tr>
+	
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM Type:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmType" id="pcmType" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmStop" id="pcmStop" disabled></paper-input></td>
+	</tr>
+	
+	<tr>
+	<td><label class="control-label"	style="width: 100px; margin-left: 5px;"> <b>PCM No Stop:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmNoStop" id="pcmNoStop" disabled></paper-input></td>
+	
+	<td><label class="control-label"style="width: 100px; margin-left: 5px;"> <b>PCM State:</b></label></td>
+	<td><paper-input class="span3"style="width: 170px; margin-left:5px;"name="pcmState" id="pcmState" disabled></paper-input></td>
+	
+	</tr>
+	
+	
+	
+	</table>
+		</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss>Cancel</paper-button>
+			<paper-button dialog-confirm>OK</paper-button>
+		</div>
+		</paper-dialog>
+	</form>
+</div>
+</td>
+</tr>
+</table>
+<br><br><br>
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%">
+
+
+	 <byutv-jsonp id="History1-1Data"
+		url="http://localhost:8081/pmms-api/getInspectionSMHistoryRecordTrackingwithaparameter" params='{{getParams(month)}}'on-response="handleResponse" last-response="{{mydata}}"debounce-duration="300" auto="true"></byutv-jsonp>
+
+ <!-- <byutv-jsonp id="History1-1Data"
+		url="http://localhost:8081/pmms-api/getInspectionSMHistoryRecordTrackingwithoutaparameter" on-response="handleResponse" last-response="{{mydata}}"debounce-duration="300" auto="true"></byutv-jsonp>  -->
+
+	<px-data-table id="History1-1DataTable" table-data="{{mydata}}" on-px-row-click="FirstTabRowClick" selectable> 
+		<px-data-table-column name="id" label="id" hide></px-data-table-column>  
+		<px-data-table-column name="month" label="Group" id="group"> </px-data-table-column> 
+		<px-data-table-column name="ismequipCategory" label="Area" id="area" ></px-data-table-column> 
+		<px-data-table-column name="equipId" label="Machine" id="machine"></px-data-table-column>
+	    <px-data-table-column name="deptId" label="WS" id="deptid"></px-data-table-column>
+	    <px-data-table-column name="planStartDate" label="Plan Start Date" id="planstartdate"></px-data-table-column>
+	    <px-data-table-column name="planEndDate" label="Plan End Date" id="planenddate"></px-data-table-column>
+	    <px-data-table-column name="actualStartDate" label="Actual Start Date" id="actualstartdate"></px-data-table-column> 
+		<px-data-table-column name="actualEndDate" label="Actual End Date" id="actualenddate"></px-data-table-column>
+		<px-data-table-column name="comments" label="Comments" id="comments"></px-data-table-column>
+	    <px-data-table-column name="pmType" label="PM Type" id="pmtype" hide></px-data-table-column>
+	    <px-data-table-column name="pmStop" label="PM Stop" id="pmstop" hide></px-data-table-column>
+	    <px-data-table-column name="pmNoStop" label="PM NoStop" id="pmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="pmState" label="PM State"  id="pmstate" hide></px-data-table-column>
+	    <px-data-table-column name="qmType" label="QM Type" id="qmtype" hide></px-data-table-column>
+	    <px-data-table-column name="qmStop" label="QM Stop"  id="qmstop" hide></px-data-table-column>
+	    <px-data-table-column name="qmNoStop" label="QM NoStop"  id="qmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="qmState" label="QM State"  id="qmstate" hide></px-data-table-column>
+	    <px-data-table-column name="pcmType" label="PCM Type" id="pcmtype" hide></px-data-table-column>
+	    <px-data-table-column name="pcmStop" label="PCM Stop"  id="pcmstop" hide></px-data-table-column>
+	    <px-data-table-column name="pcmNoStop" label="PCM NoStop"  id="pcmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="pcmState" label="PCM State" id="pcmstate"hide></px-data-table-column>
+	
+	</px-data-table>
+</div>
+
+</section>
+<!-- ----------------------------------2nd Tab Rolling Plan----------------------------------------------------- -->
+<section>
+<h2>Rolling(yearly)Plan</h2>
+<br><br><br><br>
+
+<form is="iron-form" content-type="application/json"id="searchWithYear" on-iron-form-response="ironformresponse"method="post">
+<table>
+
+<tr>
+
+<td>
+<label class="control-label" style="width: 100px;"> <b>Year:*</b></label>
+<div style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+<byutv-jsonp url="http://localhost:8081/pmms-api/getMonthAndYear" params='{"Type":"Year"}' last-response="{{yearRES1}}"auto></byutv-jsonp>
+<px-dropdown display-value="--Select --"> <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="5" items="{{yearRES1}}">
+</px-dropdown-content> </px-dropdown>
+</div>
+</td>
+
+<td><paper-button class="btn btn-large btn-primary" raised on-click="searchWithYearOnly" style="margin-left: 20px;">Search</paper-button></td>
+</tr>
+
+</table>
+</form>
+
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%">
+
+
+	<byutv-jsonp id="History1-2Data"
+		url="http://localhost:8081/pmms-api/getRollingPlanYearly"on-response="handleResponse" last-response="{{mydata2}}"debounce-duration="300" auto="true"></byutv-jsonp>
+
+        <px-data-table id="History1-2DataTable" table-data="{{mydata2}}" on-px-row-click="secondTabRowClick" selectable> 
+	    <px-data-table-column name="id" label="id" hide></px-data-table-column>  
+		<px-data-table-column name="month" label="Group" id="group"> </px-data-table-column> 
+		<px-data-table-column name="equipCategory" label="Area" id="area" ></px-data-table-column> 
+		<px-data-table-column name="equipId" label="Machine" id="machine"></px-data-table-column>
+	    <px-data-table-column name="deptId" label="WS" id="deptid"></px-data-table-column>
+	    <px-data-table-column name="planStartDate" label="Plan Start Date" id="planstartdate"></px-data-table-column>
+	    <px-data-table-column name="planEndDate" label="Plan End Date" id="planenddate"></px-data-table-column>
+	    <px-data-table-column name="actualStartDate" label="Actual Start Date" id="actualstartdate"></px-data-table-column> 
+		<px-data-table-column name="actualEndDate" label="Actual End Date" id="actualenddate"></px-data-table-column>
+		<px-data-table-column name="comments" label="Comments" id="comments"></px-data-table-column>
+	    <px-data-table-column name="pmType" label="PM Type" id="pmtype" hide></px-data-table-column>
+	    <px-data-table-column name="pmStop" label="PM Stop" id="pmstop" hide></px-data-table-column>
+	    <px-data-table-column name="pmNoStop" label="PM NoStop" id="pmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="pmState" label="PM State"  id="pmstate" hide></px-data-table-column>
+	    <px-data-table-column name="qmType" label="QM Type" id="qmtype" hide></px-data-table-column>
+	    <px-data-table-column name="qmStop" label="QM Stop"  id="qmstop" hide></px-data-table-column>
+	    <px-data-table-column name="qmNoStop" label="QM NoStop"  id="qmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="qmState" label="QM State"  id="qmstate" hide></px-data-table-column>
+	    <px-data-table-column name="pcmType" label="PCM Type" id="pcmtype" hide></px-data-table-column>
+	    <px-data-table-column name="pcmStop" label="PCM Stop"  id="pcmstop" hide></px-data-table-column>
+	    <px-data-table-column name="pcmNoStop" label="PCM NoStop"  id="pcmnostop" hide></px-data-table-column>
+	    <px-data-table-column name="pcmState" label="PCM State" id="pcmstate"hide></px-data-table-column>
+	    </px-data-table>
+	    </div>
+
+</section>
+
+</px-card>
+
+</template>
+
+<!-- ----------------------------------Script----------------------------------------------------- -->
+<script>
+	Polymer({
+		/* this is the element's prototype */
+		is : 'EquipmentSM-FulfillmentHistoryRecord',
+		 behaviors : [ PmmsBehaviors.LanguageBehavior ],
+			properties : {
+				currentRow : {
+					type : Object,
+					notify : true,
+					value : function() {
+						return {};
+					}
+				},
+				month : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				SearchMYData : {
+					type : String,
+					notify : true
+				},	
+				year : {
+					type : String,
+					notify : true,
+					value : ""
+				}
+				
+			},
+			
+		
+		searchByMonthandYearOnly : function(){
+	    	this.month = this.$.month.value;
+			/* this.year = this.$.year.value; */
+	 
+	    	if ((this.month == undefined|| this.month == null || this.month == ""))
+	    		
+				{
+	    		//this.$.History1-1Data.generateRequest();
+				}
+	    
+	    /* else {
+			
+			this.SearchMYData = "{'month':"	+ this.month + "}";
+			document.getElementById("searchWithMonthAndYear").action = "http://localhost:8081/pmms-api/searchWithMonthAndDateParameters";
+			document.getElementById('searchWithMonthAndYear')
+					.submit();
+		} */
+		},
+		handleResponse : function(e) {
+			var details = e.detail;
+			if (details.status == 200) {
+				this.mydata = details.response;
+				this.refreshTable("History1-1Data");
+			}
+		},
+		refreshTable : function() {
+
+			var array = [];
+			array = this.mydata;
+			this.mydata = array;
+		},
+		/* -----------------------------first Tab Row Click View All------------------------------ */
+		FirstTabRowClick: function(e) {
+  	        var clickedRow = e.detail.row;
+  	  		 this.currentRow = clickedRow.row;
+  	  		if(this.ids == undefined)
+				this.ids=[];
+			 var index = this.ids.indexOf((clickedRow.row.id.value));
+			 if(clickedRow._selected==false && index == -1)//not present in ids list
+				  this.ids.push(clickedRow.row.id.value);
+			  else if(index > -1) //already there
+				  this.ids.splice(index,1); 
+  	  		document.getElementById("monthlyDataId").value=clickedRow.row.id.value;
+  	 		document.getElementById("month").value=clickedRow.row.month.value;		  	 		
+  	 		document.getElementById("equipCategory").value=clickedRow.row.equipCategory.value;
+  	 		document.getElementById("equipId").value=clickedRow.row.equipId.value;
+  	 		document.getElementById("deptId").value=clickedRow.row.deptId.value;
+  	 		document.getElementById("planStartDate").value=clickedRow.row.planStartDate.value;
+  	 		document.getElementById("planEndDate").value=clickedRow.row.planEndDate.value;
+  	 		document.getElementById("actualStartDate").value=clickedRow.row.actualStartDate.value;
+  	 		document.getElementById("actualEndDate").value=clickedRow.row.actualEndDate.value;
+  	 		document.getElementById("comments").value=clickedRow.row.comments.value;
+  	 		document.getElementById("pmType").value=clickedRow.row.pmType.value;
+  	 		document.getElementById("pmStop").value=clickedRow.row.pmStop.value;
+  	 		document.getElementById("pmNoStop").value=clickedRow.row.pmNoStop.value;
+  	 		document.getElementById("pmState").value=clickedRow.row.pmState.value;
+  	 		document.getElementById("qmType").value=clickedRow.row.qmType.value;
+  	 		document.getElementById("qmStop").value=clickedRow.row.qmStop.value;
+  	 		document.getElementById("qmNoStop").value=clickedRow.row.qmNoStop.value;
+  	 		document.getElementById("qmState").value=clickedRow.row.qmState.value;
+  	 		document.getElementById("pcmType").value=clickedRow.row.pcmType.value;
+  	 		document.getElementById("pcmStop").value=clickedRow.row.pcmStop.value;
+  	 		document.getElementById("pcmNoStop").value=clickedRow.row.pcmNoStop.value;
+  	 		document.getElementById("pcmState").value=clickedRow.row.pcmState.value;
+		}
+		
+		});
+</script> </dom-module>

@@ -1,0 +1,232 @@
+<template id="my-tabs" is="dom-bind">
+  <px-card icon="fa-suitcase" header-text="计划维修内容" chevron>
+  <px-tab-set selected="{{selected}}">
+    <px-tab>操作工点检</px-tab>
+    <px-tab>维修工点检</px-tab>
+    <px-tab>QM</px-tab>
+    <px-tab>PCM</px-tab>
+    <px-tab>PM</px-tab>
+    <px-tab>跟踪表</px-tab>
+  </px-tab-set>
+  <px-tab-pages selected="{{selected}}">
+    <section>
+    <br><br>
+      <px-modal btn-modal-positive="Save" btn-modal-negative="Back" modal-heading="新增操作工点检内容">
+        <button class="btn btn--primary modal-trigger">新增/Add</button>
+        <table>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>区域:</b>
+            </label>
+          </td>
+          <td align="left">
+              <px-dropdown display-value="--全部--">
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                </px-dropdown-content>
+              </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>设备类型:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--所有类型--">
+              <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"machine1", "val":"机加工设备"}, {"key":"machine2", "val":"铆焊设备"}, {"key": "machine3", "val":"电机设备"},{"key":"machine4","val":"特种设备"},{"key":"machine5","val":"其他设备"}]'> 
+              </px-dropdown-content>
+            </px-dropdown>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>设备名称:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--选择--">
+            <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"jichang1", "val":"机床1"}, {"key":"jichang2", "val":"机床2"}, {"key": "jichang3", "val":"机床3"},{"key":"jichang4","val":"机床4"},{"key":"jichang5","val":"机床5"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检项目:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检标准:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检方法:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检周期:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--选择--">
+            <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"dayly", "val":"日检"}, {"key":"weekly", "val":"周检"}, {"key": "monthly", "val":"月检"}，{"key": "monthlyam", "val":"每月AM"}, {"key": "quarterly", "val":"季检"}，{"key": "yearly", "val":"年检"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>一点课程:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+        </tr>
+      </table>
+      </px-modal>
+
+      <px-modal btn-modal-positive="Save" btn-modal-negative="Back" modal-heading="修改操作工点检内容">
+        <button class="btn btn--primary modal-trigger">修改/Modify</button>
+        <table>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>区域:</b>
+            </label>
+          </td>
+          <td align="left">
+              <px-dropdown display-value="--全部--">
+                <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"F1", "val": "F1"}, {"key":"F2", "val": "F2"}, {"key":"F3", "val": "F3"},{"key":"F4", "val": "F4"},{"key":"F5", "val": "F5"},{"key":"OTHER", "val": "其他"}]'> 
+                </px-dropdown-content>
+              </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>设备类型:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--所有类型--">
+              <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"machine1", "val":"机加工设备"}, {"key":"machine2", "val":"铆焊设备"}, {"key": "machine3", "val":"电机设备"},{"key":"machine4","val":"特种设备"},{"key":"machine5","val":"其他设备"}]'> 
+              </px-dropdown-content>
+            </px-dropdown>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>设备名称:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--选择--">
+            <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"jichang1", "val":"机床1"}, {"key":"jichang2", "val":"机床2"}, {"key": "jichang3", "val":"机床3"},{"key":"jichang4","val":"机床4"},{"key":"jichang5","val":"机床5"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检项目:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检标准:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检方法:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+          </tr>
+          <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>点检周期:</b>
+            </label>
+          </td>
+          <td align="left">
+            <px-dropdown display-value="--选择--">
+            <px-dropdown-content extend-dropdown="true" extend-dropdown-by="25"max-cont-character-width="10" items='[{"key":"dayly", "val":"日检"}, {"key":"weekly", "val":"周检"}, {"key": "monthly", "val":"月检"}，{"key": "monthlyam", "val":"每月AM"}, {"key": "quarterly", "val":"季检"}，{"key": "yearly", "val":"年检"}]'> 
+          </px-dropdown-content>
+          </px-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">
+            <label class="control-label" style="width:100px;">
+              <b>一点课程:</b>
+            </label>
+          </td>
+          <td align="left">
+            <textarea></textarea>
+          </td>
+        </tr>
+      </table>
+      </px-modal>
+      <button type="button" id="delete" class="btn btn-primary btn-lg btn-block" style="display:inline-block;">删除/Delete</button>
+      <br>
+      <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+      <iron-ajax id="operator" url="/sample-data/operator-work-order.json" last-response="{{minidata1}}" auto></iron-ajax>
+          <px-data-table show-column-chooser enable-column-resize filterable selectable table-data="{{minidata1}}">
+            <px-data-table-column filterable name="序号"></px-data-table-column>
+            <px-data-table-column filterable name="设备编号"></px-data-table-column>
+            <px-data-table-column filterable name="设备名称"></px-data-table-column>
+            <px-data-table-column filterable name="设备型号"></px-data-table-column>
+            <px-data-table-column filterable name="点检项目"></px-data-table-column>
+            <px-data-table-column filterable name="点检标准"></px-data-table-column>
+            <px-data-table-column filterable name="点检方法"></px-data-table-column>
+            <px-data-table-column filterable name="周期"></px-data-table-column>
+            <px-data-table-column filterable name="一点课程"></px-data-table-column>
+          </px-data-table>
+    </section>
+
+
+    <section>
+      
+    </section>
+  </px-tab-pages>
+  </px-card>
+  </template>

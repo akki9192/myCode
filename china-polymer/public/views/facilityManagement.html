@@ -1,0 +1,641 @@
+<link rel="import" href="/../css/button-style.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<dom-module id="facility-Management"> <template
+	id="mytabs"> <px-card icon="fa-suitcase"
+	header-text="Facility Management" chevron>
+<table>
+	<tr>
+		<td><label class="control-label" style="width: 100px;"> <b>FacilityCategories
+					:</b>
+		</label>
+			<div
+				style="width: 175px; height: 50px; display: inline-block; margin-left: 16px;">
+
+				<byutv-jsonp id="ddFacilityCategory" url="http://localhost:8081/pmms-api/getFacilityCategories" params='{"facilityCategory":"facilityCategory"}' last-response="{{facilityCategoryData}}" auto></byutv-jsonp>
+				<px-dropdown display-value="--å…¨éƒ¨ Select --" id="equiptypeDropDown" selected-key="{{facilityCategory}}"> 
+				<px-dropdown-content extend-dropdown="true" extend-dropdown-by="25" max-cont-character-width="5" items="{{facilityCategoryData}}">
+				</px-dropdown-content> </px-dropdown>
+			</div></td>
+	</tr>
+</table>
+
+<!-- ADD FUNCTIONALITY  Facility Id, Fixed assets, Facility Name:,Facility model,
+				Facility Category,First time Use,Serial number:,Manufacturer:
+				Location,Department,Technical Description (Text Area),Remark  (Text Area)-->
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------Add PopUp------------------------------------------------
+	****************************************************************************************************** -->
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"
+		id="facilityManagementAdd" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="ironformresponse" method="post">
+		<br>
+		<br>
+
+		<paper-button raised onclick="add.open()"
+			class="btn btn-large btn-primary">ADD</paper-button>
+		<paper-dialog id="add"> <paper-dialog-scrollable>
+		<table>
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							SN:</b>
+				</label></td>
+				<td><paper-input class="span3"
+						style="width: 170px; margin-left: 5px;" name="equipId" id="equipId"></paper-input>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="control-label" style="width: 100px;">
+						<b>FacilityName</b>
+				</label></td>
+				<td>
+					<div
+						style="width: 170px; height: 50px; margin-left: 5px; display: inline-block; margin-top: 18px">
+
+						<byutv-jsonp id="getfacilityNameData" params='{"equipType":"设施"}'
+							url="http://localhost:8081/pmms-api/getfacilityNames"
+							last-response="{{facilityName}}" auto></byutv-jsonp>
+						<px-dropdown  display-value="-- Select --" id="cbofacilityName">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{facilityName}}"> </px-dropdown-content> </px-dropdown>
+						<input type="hidden" name="equipMainId2" id="equipMainId2Add" />
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							Category</b></label>
+				<td><paper-input class="span3" name="facilityCategory"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							model</b></label>
+				<td><paper-input class="span3" name="equipModel"
+						style="margin-left:5px; width: 170px;"> </paper-input></td>
+			</tr>
+
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Serial
+							number</b></label>
+				<td><paper-input class="span3" name="serialNo"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Manufacturer</b></label>
+				<td><paper-input class="span3" name="source" id="Field5"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Location</b></label>
+				<td><paper-input class="span3" name="facilityLocation"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							Area</b></label>
+				<td><paper-input class="span3" name="facilityArea"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Asset No.</b></label>
+				<td><paper-input class="span3" name="assetsID"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Department</b></label>
+				<td>
+					<div
+						style="width: 170px; height: 50px; margin-left: 5px; display: inline-block;">
+						<byutv-jsonp id="dropdpwncat"
+							url="http://localhost:8081/pmms-api/getDeptNames"
+							params='{"Type":"DEPT"}' last-response="{{deptName}}" auto></byutv-jsonp>
+						<px-dropdown display-value="-- Select --" id="cboPDdeptName"
+							name="cboPDdeptName"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{deptName}}">
+						</px-dropdown-content> </px-dropdown>
+						<input type="hidden" name="deptId2" id="deptId2Add" />
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Technical
+							Description</b></label>
+				<td><paper-input class="span3" name="technicalDescription"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Remark</b></label>
+				<td><paper-input class="span3" name="remark"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+		</table>
+		</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss on-click="resetFacility">Cancel</paper-button>
+			<paper-button dialog-confirm autofocus on-click="addingFacility">Submit</paper-button>
+		</div>
+		</paper-dialog>
+	</form>
+
+</div>
+
+<!-- ******************************************************************************************************
+	 ------------------------------------------------EDIT PopUp------------------------------------------------
+	****************************************************************************************************** -->
+<br>
+<br>
+<!-- EDIT FUNCTIONALITY-->
+
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"
+		id="facilityManagementEdit" on-iron-form-invalid="ironforminvalid"
+		on-iron-form-response="ironformresponse" on-iron-form-presubmit="_preSubmit" method="post">
+
+		<paper-button raised on-click="editFac"
+			class="btn btn-large btn-primary">Edit</paper-button>
+		<paper-dialog id="edit"> <paper-dialog-scrollable>
+		<table>
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility SN:</b>
+				</label></td>
+				<td><paper-input class="span3"
+						style="width: 170px; margin-left: 5px;" name="equipId" id="equipIdEdit"></paper-input>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="control-label" style="width: 100px;">
+						<b>Facility Name</b>
+				</label></td>
+				<td>
+					<div
+						style="width: 170px; height: 50px; margin-left: 5px; display: inline-block; margin-top: 18px">
+
+						<byutv-jsonp id="getfacilityNameData" params='{"equipType":"设施"}'
+							url="http://localhost:8081/pmms-api/getfacilityNames"
+							last-response="{{facilityNameEdit}}" auto></byutv-jsonp>
+						<px-dropdown display-value="--Select --" id="ddFacilityNameEdit">
+						<px-dropdown-content extend-dropdown="true"
+							extend-dropdown-by="25" max-cont-character-width="5"
+							items="{{facilityNameEdit}}"> </px-dropdown-content> </px-dropdown>
+						<input type="hidden" name="equipMainId2" id="equipMainId2Edit" />
+						<input type="hidden" name="id" id="idEdit" />
+						
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							Category</b></label>
+				<td><paper-input class="span3" name="facilityCategory"
+						id="facilityCategoryEdit" style="margin-left:5px; width: 170px;">
+					</paper-input></td>
+			</tr>
+
+
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Model
+							number</b></label>
+				<td><paper-input class="span3" name="equipModel"
+						id="modelNoEdit" style="margin-left:5px; width: 170px;" required
+						auto-validate error-message="This cannot be empty">
+					</paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Location</b></label>
+				<td><paper-input class="span3" name="facilityLocation"
+						id="facilityLocationEdit" style="margin-left:5px; width: 170px;"
+						required auto-validate error-message="This cannot be empty">
+					</paper-input></td>
+			</tr>
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Facility
+							Area</b></label>
+				<td><paper-input class="span3" name="facilityArea"
+						id="facilityAreaEdit" style="margin-left:5px; width: 170px;"
+						required auto-validate error-message="This cannot be empty">
+					</paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Asset No.</b></label>
+				<td><paper-input class="span3" name="assetsID"
+						id="assetsIDEdit" style="margin-left:5px; width: 170px;" required
+						auto-validate error-message="This cannot be empty">
+					</paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Department</b></label>
+				<td>
+					<div
+						style="width: 170px; height: 50px; margin-left: 5px; display: inline-block;">
+						<byutv-jsonp id="dropdpwncat"
+							url="http://localhost:8081/pmms-api/getDeptNames"
+							params='{"Type":"DEPT"}' last-response="{{deptNameEdit}}" auto></byutv-jsonp>
+						<px-dropdown display-value="-- Select --" id="cboPDdeptNameEdit"
+							name="cboPDdeptName"> <px-dropdown-content
+							extend-dropdown="true" extend-dropdown-by="25"
+							max-cont-character-width="5" items="{{deptNameEdit}}">
+						</px-dropdown-content> </px-dropdown>
+						<input type="hidden" name="deptId2" id="deptId2Edit" />
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Technical
+							Description</b></label>
+				<td><paper-input class="span3" name="technicalDescription"
+						id="technicalDescriptionEdit"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Remark</b></label>
+				<td><paper-input class="span3" name="remark" id="remarkEdit"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+			
+			<tr>
+				<td><label class="control-label"
+					style="width: 100px; margin-left: 5px;"> <b>Serial No.</b></label>
+				<td><paper-input class="span3" name="serialNo" id="serialNoEdit"
+						style="margin-left:5px; width: 170px;" required auto-validate
+						error-message="This cannot be empty"> </paper-input></td>
+			</tr>
+
+		</table>
+
+
+
+		</paper-dialog-scrollable>
+		<div class="buttons">
+			<paper-button dialog-dismiss raised on-click="resetFacility">Cancel</paper-button>
+			<paper-button dialog-confirm autofocus on-click="editFacilityTool">Update</paper-button>
+		</div>
+		</paper-dialog>
+
+	</form>
+</div>
+
+<!-------------------------------------- DELETE FUNCTIONALITY------------------------------------- -->
+<div class="legendmain mb10 pull-left">
+	<form is="iron-form" content-type="application/json"
+		on-iron-form-response="ironformresponse" id="facilityDelete"
+		method="post">
+
+
+		<input type="hidden" id="deleteEquipmentId" name="deleteEquipmentId"
+			value="{{deleteEquipmentId}}" />
+
+		<paper-button class="btn btn-large btn-primary" raised
+			on-click="deleteFacility">Delete</paper-button>
+	</form>
+</div>
+<!-- -----------------------------Download------------------------------------------------- -->
+	<div class="legendmain mb10 pull-left">
+	<form content-type="application/xls" id="downloadExcelFaclity" method="GET">
+			<div class="control-group pull-left" style="width: 130px">
+	<paper-button class="btn btn-large btn-primary" raised on-click="callDownloadExcelEquipment">Download</paper-button> 
+		</div>		
+		</form>
+		</div>
+<br>
+<!-- *************************************************************************************************************
+---------------------------------px-datatable--------------------------------------------------------------------
+******************************************************************************************************** -->
+
+<div class="module-body pull-left" style="width: 100%"
+	data-ng-controller="equipmentfacilCntrl">
+
+	<!-- 	<byutv-jsonp url="http://localhost:8081/pmms-api/getSparePart" id="spareStockTable" last-response="{{minidata1}}" auto>
+		</byutv-jsonp>
+		<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}"  table-data="{{minidata1}}" on-px-row-click="selectedRow">  
+		 -->
+
+	<byutv-jsonp url="http://localhost:8081/pmms-api/getFacilityDetails"
+		id="facilityTable" last-response="{{mydata}}" debounce-duration="300" params='{{getParams(facilityCategory)}}'  auto="true"></byutv-jsonp>
+
+	<px-data-table id="facilityData" enable-column-resize selectable
+		selected-rows="{{selectedRows6}}" table-data="{{mydata}}"
+		on-px-row-click="selectedRows1" selectable> 
+	<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+	<px-data-table-column name="equipId" label="FacilitySN"></px-data-table-column>
+	<px-data-table-column name="deviceName" label="FacilityName"></px-data-table-column>
+	<px-data-table-column name="facilityCategory" label="Category"></px-data-table-column>
+	<px-data-table-column name="facilityArea" label="Facility Area"></px-data-table-column>
+	<px-data-table-column name="equipModel" label="Model No."></px-data-table-column>
+	<px-data-table-column name="deptInfo.deptName" label="Department"></px-data-table-column>
+	<px-data-table-column name="assetsID" label="AssetSN"></px-data-table-column>
+	<px-data-table-column name="remark" label="Remark"></px-data-table-column>
+	<px-data-table-column name="serialNo" label="Serial No."></px-data-table-column>
+	</px-data-table>
+</div>
+
+
+</px-card> </template> 
+<script>
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var count=0;
+	Polymer({
+		/* this is the element's prototype */
+		is : 'facility-Management',
+		selected : 0,
+
+		behaviors : [ PmmsBehaviors.LanguageBehavior ],
+		properties : {
+
+			currentRow : {
+				type : Object,
+				notify : true,
+				value : function() {
+					return {};
+				}
+			},
+
+			deleteEquipmentId : {
+				type : String,
+				notify : true
+			}
+		},
+		
+		
+
+		isEmpty: function(obj) {
+		    
+		    if (obj == null) return true;
+
+		    if (obj.length > 0)    return false;
+		    if (obj.length === 0)  return true;
+
+		    if (typeof obj !== "object") return true;
+
+		    for (var key in obj) {
+		        if (hasOwnProperty.call(obj, key)) return false;
+		    }
+
+		    return true;
+		},
+		
+		deleteFacility : function() {
+			if (count==0 || this.isEmpty(this.ids)) {
+				alert("please select a row to delete");
+			}
+			else{
+				var x = confirm("Are you sure you want to delete?");
+				if(x)
+					{
+				this.deleteEquipmentId = this.ids.toString();
+				document.getElementById('facilityDelete').action = "http://localhost:8081/pmms-api/removeFacilityDetails";
+				document.getElementById('facilityDelete').submit();
+				this.ids=null;
+				this.clearDatatableSelections();
+				return true;
+					}
+			}
+
+		},
+
+		getParams : function(facilityCategory) {
+			return {
+				facilityCategory : facilityCategory,
+
+			};
+		},
+		
+		selectedRows1 : function(e) {
+			console.log("event :"+ e.detail.row._selected);
+			if(e.detail.row._selected== false)
+			 count=count+1;
+			if(e.detail.row._selected== true)
+				count=count-1;
+			console.log("count:"+count);
+			var clickedRow = e.detail.row;
+			this.currentRow = clickedRow;
+			if (this.ids == undefined)
+				this.ids = [];
+			var index = this.ids.indexOf((clickedRow.row.id.value));
+			if (clickedRow._selected == false && index == -1)//not present in ids list
+				this.ids.push(clickedRow.row.id.value);
+			else if (index > -1) //already there
+				this.ids.splice(index, 1);
+			
+// 			document.getElementById("deleteEquipmentId").value = clickedRow.row.id.value;
+		},
+
+		//----------------------------------------------------------------------
+		ironformresponse : function() {
+
+			document.querySelector('facility-Management').refreshData();
+		},
+
+// 		console.log("dropdown values for facility are:"+ equipCategory);
+		refreshData : function() {
+			this.$.facilityTable.generateRequest();
+		},
+
+		refreshData1 : function() {
+			this.$.getfacilityNameData.generateRequest();
+		},
+
+// 		handleResponse : function(event) {
+// 			this._refreshTable();
+// 		},
+		/* getParams : function(equipType) {
+			return {
+				equipType : "设施"
+				
+			};
+		}, */
+		//----------------------------------------------------------------------	
+		addingFacility : function() {
+
+			document.getElementById("facilityManagementAdd").action = "http://localhost:8081/pmms-api/saveFacilityInformation";
+			document.getElementById('facilityManagementAdd').submit();
+			document.querySelector('facility-Management').resetFacility();
+// 			this.$.facilityManagementAdd.reset();
+			alert("Facilty Data Saved.");
+
+		},
+		
+		resetFacility : function(event) {
+			this.$.facilityManagementAdd.reset();
+			this.clearDatatableSelections();
+			this.refreshData1();
+					},
+		
+		//----------------------------------------------------------------------
+		editFacilityTool : function() {
+			document.getElementById('facilityManagementEdit').action = "http://localhost:8081/pmms-api/saveFacilityInformation";
+			document.getElementById('facilityManagementEdit').submit();
+			document.querySelector('facility-Management').resetFacility();
+			alert("Facilty Data Updated");
+		},
+		editFac : function editFac(e) {
+			//console.log("row count: "+);
+			var rowCount=this.$.facilityData.selectedRows[0];
+			
+			if(typeof rowCount !== "undefined" && count != 0)
+			{
+				if(count>1)
+					{
+					alert("you have selected "+count+" rows"+" please select only one row");
+					}
+				else
+					{
+					this.$.idEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.id.value;
+					this.$.ddFacilityNameEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.deviceName.value;
+					this.$.equipIdEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.equipId.value;
+					this.$.facilityCategoryEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.facilityCategory.value;
+					this.$.facilityAreaEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.facilityArea.value;
+					this.$.facilityLocationEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.facilityLocation.value;
+					this.$.assetsIDEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.assetsID.value;
+					this.$.remarkEdit.value = this.$.facilityData.__data__.selectedRows["0"].row.remark.value;
+					this.$.modelNoEdit.value=this.$.facilityData.__data__.selectedRows["0"].row.equipModel.value;	
+					this.$.technicalDescriptionEdit.value=this.$.facilityData.__data__.selectedRows["0"].row.technicalDescription.value; 
+					this.$.serialNoEdit.value=this.$.facilityData.__data__.selectedRows["0"].row.serialNo.value;
+					
+					
+					//display value for dropdowns
+		 			this.$.cboPDdeptNameEdit.displayValue = this.$.facilityData.__data__.selectedRows["0"].row.deptId2.value;
+		 			this.$.ddFacilityNameEdit.displayValue = this.$.facilityData.__data__.selectedRows["0"].row.deviceName.value;
+					edit.open();
+					
+					//actual value
+					this.$.deptId2Edit.value = this.$.facilityData.__data__.selectedRows["0"].row.deptId2.value;
+					this.$.equipMainId2Edit.value = this.$.facilityData.__data__.selectedRows["0"].row.equipMainId2.value;
+					}
+			}
+			else{
+				alert("please select a row to edit");
+			}},
+			
+			clearDatatableSelections : function(){
+				var test = document.getElementById("facilityData");
+				if(test.selectedRows!=undefined && test.selectedRows!=null && test.selectedRows.length>0){
+					test.selectable=false;
+					test.selectedRows[0]._selected=false;
+					test.selectedRows=[];
+					test.selectable=true;
+					count=0;
+				}
+			},
+			
+			_allClick: function()
+			{
+				count=0;
+				
+			},
+		
+		_preSubmit: function(e){
+			console.log(JSON.stringify(this.$.facilityManagementEdit.request.body));
+		},
+		
+		callDownloadExcelEquipment : function() {
+			 document.getElementById("downloadExcelFaclity").action = "http://localhost:8081/pmms-api/getFacilityInformationDownlaod";
+			 document.getElementById("downloadExcelFaclity").submit();
+
+			}
+	});
+
+	//----------------------------------------------------------------------
+	HTMLImports
+			.whenReady(function() {
+				;
+				var cboPDdeptName = document.querySelector('#cboPDdeptName');
+				var cbofacilityName = document.querySelector('#cbofacilityName');
+				var cboPDdeptNameEdit= document.querySelector('#cboPDdeptNameEdit');
+				var ddFacilityNameEdit=document.querySelector('#ddFacilityNameEdit');
+
+				cboPDdeptName
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var mytabs = document
+											.getElementById('mytabs');
+									document.getElementById('deptId2Add').value = e.detail.key;
+
+								});
+				cbofacilityName
+						.addEventListener(
+								'dropdown_content_value_changed',
+								function(e) {
+									var mytabs = document
+											.getElementById('mytabs');
+									document.getElementById('equipMainId2Add').value = e.detail.key;
+
+								});
+				
+// 				cboPDdeptNameEdit.addEventListener('dropdown_content_value_changed',function(e) {
+// 					var mytabs = document
+// 							.getElementById('mytabs');
+// 					document.getElementById('deptId2Add').value = e.detail.key;
+
+// 				});
+				
+				cboPDdeptNameEdit.addEventListener('dropdown_content_value_changed',function(e) {
+							var mytabs = document
+									.getElementById('mytabs');
+							document.getElementById('deptId2Edit').value = e.detail.key;
+
+						});
+				ddFacilityNameEdit
+				.addEventListener(
+						'dropdown_content_value_changed',
+						function(e) {
+							var mytabs = document
+									.getElementById('mytabs');
+							document.getElementById('equipMainId2Edit').value = e.detail.key;
+
+						});
+
+			});
+</script> </dom-module>

@@ -1,0 +1,258 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="sparePartView-elem">
+
+<template> 
+<px-card icon="fa-suitcase" header-text="Spare Part Management" chevron>
+	<px-tab-set selected={{selected}}> 
+		<px-tab>Equipment Spare parts inventory</px-tab> 
+		<px-tab>Facility Spare parts Inventory</px-tab> 		
+	</px-tab-set> 
+	<px-tab-pages selected={{selected}}> 
+<!--*************************************************TAB-1************************************************************-->		
+		<section>
+			<br>			
+				<div>
+					<form is="iron-form" content-type="application/json" id="SearchEquipment" on-iron-form-invalid="ironforminvalid"
+						 on-iron-form-response="handleFilteredDataEquipment" method="post">	
+						 
+						 <input type="hidden" id="EquipFilteredData" name="EquipFilteredData" value="{{EquipFilteredData}}">		
+					</form>
+						<div class="control-group pull-left" style="width: 450px;">
+					<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>Spare Part Name:</b>
+					</label>
+					<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+						<paper-input class="span3" name="spareName" id="spareName" style="width: 180px;"> </paper-input>
+					</div>
+				</div>
+				<div class="control-group pull-left" style="width: 450px;">
+					<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>Manufacturer:</b>
+					</label>
+					<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+						<paper-input class="span3" name="manufacturer" id="equipManufacturer" style="width: 180px;"> </paper-input>
+					</div>
+				</div>
+				
+				<div class="control-group pull-left" style="width: 450px;">
+					<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>ModelNo.:</b>
+					</label>
+					<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+						<paper-input class="span3" name="model" id="equipModel" style="width: 180px;"> </paper-input>
+					</div>
+					<div class="control-group pull-left" style="width: 130px">
+					<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="equipmentSearch">Search</paper-button>
+				</div>
+				</div>	
+		</div>
+				
+			<div  class="module-body pull-left" style="width: 100%">				
+				<byutv-jsonp id="spareEquipView" url="http://localhost:8081/pmms-api/getSparePartDataEquipment" last-response="{{spareView}}" debounce-duration="300" auto="true">
+				</byutv-jsonp>
+				<px-data-table id="spareTable" enable-column-resize selectable table-data="{{spareView}}" > 
+					
+						<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+						<px-data-table-column name="sparePartNo" label="Spare Part No." id="modelNo"></px-data-table-column> 
+						<px-data-table-column name="name" label="Name" id="name"></px-data-table-column>
+						<px-data-table-column name="type" label="Type" id="type"></px-data-table-column>
+						<px-data-table-column name="source" label="Source" id="manufacturer"></px-data-table-column> 
+						<px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column>
+						<px-data-table-column name="price" label="Price" id="price"></px-data-table-column>
+						<px-data-table-column name="stock" label="Stock" id="stock"></px-data-table-column> 
+						 <px-data-table-column name="safteyStock" label="Saftey Stock" id="safty"></px-data-table-column> 
+						 <px-data-table-column name="sysSafteyStock" label="Sys Saftey Stock" id="system"></px-data-table-column> 
+						 <px-data-table-column name="location" label="Loacation" id="loc"></px-data-table-column> 
+						 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column>  
+						 
+					</px-data-table>
+				</div>
+		</section>
+<!--********************************************************TAB-2********************************************************-->		
+		<section>
+			<br>					
+					<form is="iron-form" content-type="application/json" id="SearchFacility" on-iron-form-invalid="ironforminvalid"
+						 on-iron-form-response="handleFilteredDataFacility" method="post">	
+						 
+						 <input type="hidden" id="FacilityFilteredData" name="FacilityFilteredData" value="{{FacilityFilteredData}}">		
+					</form>
+					<div class="control-group pull-left" style="width: 450px;">
+					<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>Spare Part Type:</b>
+					</label>
+					<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+						<paper-input class="span3" name="type" id="facType" style="width: 180px;"> </paper-input>
+					</div>
+				</div>
+				
+				<div class="control-group pull-left" style="width: 450px;">
+					<label class="control-label" style="width: 80px; margin-left: 40px;"> <b>ModelNo.:</b>
+					</label>
+					<div class="controls" style="display: inline-block; width: 265px; margin-left: 20px;">
+						<paper-input class="span3" name="model" id="model" style="width: 180px;"> </paper-input>
+					</div>
+					<div class="control-group pull-left" style="width: 130px">
+					<paper-button lass="btn btn-large btn-primary" style="display: inline-block;" on-click="facilitySearch">Search</paper-button>
+				</div>
+				</div>	
+					
+			<div class="module-body pull-left" style="width: 100%">
+					<byutv-jsonp id="sparePartViewFacility" url="http://localhost:8081/pmms-api/getSparePartDataFacility" last-response="{{FacilityData}}" auto on-response="handleResponse">
+					</byutv-jsonp>
+					<px-data-table enable-column-resize selectable selected-rows="{{selectedRows6}}" table-data="{{FacilityData}}" on-px-row-click="selectedRow">  
+					
+						<px-data-table-column name="id" label="id" hide></px-data-table-column> 
+						<px-data-table-column name="sparePartNo" label="Facility Code" id="modelNo"></px-data-table-column> 
+						<px-data-table-column name="name" label="Facility Name" id="name"></px-data-table-column>
+						<px-data-table-column name="type" label="Facility Category" id="type"></px-data-table-column>
+						<px-data-table-column name="modelSpecifications" label="Facility Model" id="modelSpecifications"></px-data-table-column> 
+						<!-- <px-data-table-column name="measurement" label="Measurement" id="unit"></px-data-table-column> -->
+						<px-data-table-column name="price" label="Purchasing Cycle" id="price"></px-data-table-column>
+						<px-data-table-column name="stock" label=" Actual Stock" id="stock"></px-data-table-column> 
+						 <px-data-table-column name="safteyStock" label="Facility Saftey Stock" id="safty"></px-data-table-column> 
+						 <px-data-table-column name="sysSafteyStock" label="Recommended Stock" id="system"></px-data-table-column> 
+						 <!-- <px-data-table-column name="location" label="Loacation" id="loc"></px-data-table-column> 
+						 <px-data-table-column name="remark" label="Remark" id="remark"></px-data-table-column>   -->
+						 
+					</px-data-table>
+				</div>
+		</section>
+	</px-tab-pages>
+</px-card>
+</template>
+
+<script>
+			Polymer({
+			    /* this is the element's prototype */
+			    is: 'sparePartView-elem',
+			    behaviors : [ PmmsBehaviors.LanguageBehavior ],
+			    
+			    EquipFilteredData: {
+					type : String,
+					notify : true
+				},
+				
+				FacilityFilteredData: {
+					type : String,
+					notify : true
+				},
+				modelEq : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				modelFac : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				type : {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				manufacturer: {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				spareName: {
+					type : String,
+					notify : true,
+					value : ""
+				},
+				equipmentSearch : function() {
+					if ((this.modelEq == undefined
+							|| this.modelEq == null || this.modelEq == "")
+							|| (this.manufacturer == undefined
+									|| this.manufacturer == null || this.manufacturer == "") ||
+									(this.spareName == undefined
+											|| this.spareName == null || this.spareName == "") )
+						alert("Please insert parameters to search.");
+					else {
+						this.modelEq = this.$.equipModel.value;
+						this.manufacturer = this.$.equipManufacturer.value;
+						this.spareName = this.$.spareName.value;
+						
+						this.EquipFilteredData = "{'modelNo':"
+								+ this.modelEq + ",'equipmentName':"
+								+ this.spareName + ",'equipManufacturer':"
+								+ this.manufacturer 
+								+ "}";
+						document.getElementById("SearchEquipment").action = "http://localhost:8081/pmms-api/equipmentSearch";
+						document.getElementById('SearchEquipment').submit();	
+						
+					}
+				},
+				/* handleFilteredDataEquipment : function(e) {
+					var details = e.detail;
+					if (details.status == 200) {
+						this.spareView = details.response;
+						this._refreshTable("spareEquipView");
+					} else {
+						alert("error in searching list!!!!");
+					}
+				},
+				_refreshTable : function() {
+
+					var array = [];
+					array = this.spareView;
+					this.spareView = array;
+				}, */
+				
+					handleFilteredDataEquipment : function(){
+					
+					document.querySelector('sparePartView-elem').refreshData();
+				 },
+				 
+				 refreshData : function() {
+						this.$.spareEquipView.generateRequest();
+					    },	
+				
+				//***************************************************************************************************************
+				facilitySearch : function() {
+					if ((this.modelFac == undefined
+							|| this.modelFac == null || this.modelFac == "")
+							|| (this.type == undefined
+									|| this.type == null || this.type == ""))
+						alert("Please insert parameters to search.");
+					else {
+						this.modelFac = this.$.model.value;
+						this.type = this.$.facType.value;
+						
+						this.FacilityFilteredData = "{'modelNo':"
+								+ this.modelFac + ",'facilityType':"
+								+ this.type 
+								+ "}";
+								
+						
+						document.getElementById("SearchFacility").action = "http://localhost:8081/pmms-api/facilitySearch";
+						document.getElementById('SearchFacility').submit();
+					}
+				},
+				handleFilteredDataFacility : function(){
+					
+					document.querySelector('sparePartView-elem').refreshData1();
+				 },
+				 
+				 refreshData1 : function() {
+						this.$.sparePartViewFacility.generateRequest();
+					    },	
+				
+				/* handleFilteredDataFacility : function(e) {
+					var details = e.detail;
+					if (details.status == 200) {
+						this.facilityFilteredData = details.response;
+						this._refreshTable("facilityFilteredData");
+					} else {
+						alert("error in searching list!!!!");
+					}
+				},
+				_refreshTable : function() {
+
+					var array = [];
+					array = this.FacilityData;
+					this.spareView = array;
+				} */
+
+
+			});
+			</script>
+</dom-module>
+	

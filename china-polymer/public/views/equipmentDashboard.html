@@ -1,0 +1,75 @@
+<blank-card id="first-card">
+<template id="my-tabs" is="dom-bind">
+<px-tab-set selected="{{selected}}">
+        <px-tab>操作工点检完成率</px-tab>
+        <px-tab>操作工点检记录</px-tab>
+        <px-tab>设备停机率</px-tab>
+</px-tab-set>
+<px-tab-pages selected="{{selected}}">
+        <section>
+        	
+        	<br>
+        <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+        <iron-ajax id="test" url="contacts-mini.json" last-response="{{minidata}}" auto></iron-ajax>
+        <px-data-table show-column-chooser enable-column-resize filterable table-data="{{minidata}}">
+
+  
+      <px-data-table-column filterable name="设备编号" ></px-data-table-column>
+        <px-data-table-column filterable name="设备名称" ></px-data-table-column>
+          <px-data-table-column filterable name="设备型号" ></px-data-table-column>
+            <px-data-table-column filterable name="固定资产号" ></px-data-table-column>
+  <px-data-table-column name="1月"></px-data-table-column>
+   <px-data-table-column name="2月" ></px-data-table-column>
+    <px-data-table-column name="3月" ></px-data-table-column>
+     <px-data-table-column name="4月" ></px-data-table-column>
+      <px-data-table-column name="5月" ></px-data-table-column>
+       <px-data-table-column name="6月" ></px-data-table-column>
+        <px-data-table-column name="7月" ></px-data-table-column>
+         <px-data-table-column name="8月" ></px-data-table-column>
+          <px-data-table-column name="9月" ></px-data-table-column>
+           <px-data-table-column name="10月" ></px-data-table-column>
+            <px-data-table-column name="11月" ></px-data-table-column>
+             <px-data-table-column name="12月" ></px-data-table-column>
+
+
+
+
+       </px-data-table>
+        </section>
+        <section>Tab 2 content</section>
+        <section>
+        	
+        	<br>
+        <iron-ajax url="contacts.json" last-response="{{data}}" auto></iron-ajax>
+        <iron-ajax id="test" url="contacts-mini.json" last-response="{{minidata}}" auto></iron-ajax>
+        <px-data-table show-column-chooser enable-column-resize filterable table-data="{{minidata}}">
+
+  
+      <px-data-table-column filterable name="设备编号" ></px-data-table-column>
+        <px-data-table-column filterable name="设备名称" ></px-data-table-column>
+          <px-data-table-column filterable name="设备型号" ></px-data-table-column>
+            <px-data-table-column filterable name="固定资产号" ></px-data-table-column>
+  <px-data-table-column name="1月"></px-data-table-column>
+   <px-data-table-column name="2月" ></px-data-table-column>
+    <px-data-table-column name="3月" ></px-data-table-column>
+     <px-data-table-column name="4月" ></px-data-table-column>
+      <px-data-table-column name="5月" ></px-data-table-column>
+       <px-data-table-column name="6月" ></px-data-table-column>
+        <px-data-table-column name="7月" ></px-data-table-column>
+         <px-data-table-column name="8月" ></px-data-table-column>
+          <px-data-table-column name="9月" ></px-data-table-column>
+           <px-data-table-column name="10月" ></px-data-table-column>
+            <px-data-table-column name="11月" ></px-data-table-column>
+             <px-data-table-column name="12月" ></px-data-table-column>
+
+
+
+
+       </px-data-table>
+        </section>
+        
+</px-tab-pages>
+</template>
+
+     
+</blank-card>
