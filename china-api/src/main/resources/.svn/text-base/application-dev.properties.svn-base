@@ -1,0 +1,14 @@
+# DataSource Configuration
+spring.datasource.url = jdbc:postgresql://10.72.6.139:5432/d13b97e9a2d394f45bdef396be037db51
+spring.datasource.username = u3457937c1de84abdb8a0cff62b48a00d
+spring.datasource.password = 96616347f0004f4aabeb96acb4bd4d30
+
+# Hibernate Configuration 
+spring.jpa.properties.hibernate.show_sql = true
+
+#Email 
+email.host=e2ksmtp01.e2k.ad.ge.com
+Supervisor = dexi.fu@ge.com
+From = dexi.fu@ge.com
+EMAIL_BODY_IT = Hi\,\nYour Workorder has been closed for workorder no -.
+EMAIL_SUBJECT_IT = WorkOrder closed.

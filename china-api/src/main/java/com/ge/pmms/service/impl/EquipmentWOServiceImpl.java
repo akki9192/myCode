@@ -1,0 +1,166 @@
+package com.ge.pmms.service.impl;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ge.pmms.dao.EquipmentWODao;
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.dto.RouteCauseBean;
+import com.ge.pmms.dto.SIHistoricalBean;
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.FiveWhyDetails;
+import com.ge.pmms.entity.MaintenanceReportDetail;
+import com.ge.pmms.entity.MaintenanceReportHdr;
+import com.ge.pmms.entity.RouteCauseHeader;
+import com.ge.pmms.entity.SIHistoryWO;
+import com.ge.pmms.service.EquipmentWOService;
+
+@Service("equipService")
+@Transactional
+public class EquipmentWOServiceImpl implements EquipmentWOService,Serializable{
+	
+	 private static final long serialVersionUID = 8660080660984105245L;
+
+	    private static final Logger log = LoggerFactory
+	            .getLogger(EquipmentWOServiceImpl.class);
+	
+	@Autowired
+    private EquipmentWODao equipDao;
+	
+
+	@Override
+	public List<FaultReport> getEquipmentWODetails() {
+		
+		return equipDao.getEquipmentWODetails();
+	}
+
+
+	@Override
+	public List<FaultReport> getClosedWODetails(String wordOrderStatus) {
+	
+		return equipDao.getClosedWODetails(wordOrderStatus);
+	}
+
+
+	@Override
+	public List<FaultReport> getOutageWODetails(String wordOrderStatus) {
+		
+		return equipDao.getOutageWODetails(wordOrderStatus);
+	}
+
+
+	/*@Override
+	public void addFiveWHYDetails(FiveWhyHDR fivewhy) {
+		
+		equipDao.addFiveWHYDetails(fivewhy);
+		
+	}*/
+	
+
+
+	@Override
+	public List<DropDownEntry> getDepartmentNames() {
+		
+		return equipDao.getDepartmentNames();
+	}
+
+
+
+	@Override
+	public void addMaintReportInfo(MaintenanceReportHdr maintenanceReportHdr) {
+		
+		equipDao.addMaintReportInfo(maintenanceReportHdr);
+		
+	}
+
+
+	@Override
+	public void addMaintInfo(MaintenanceReportDetail maintenanceReportDetail) {
+		
+		equipDao.addMaintInfo(maintenanceReportDetail);
+	}
+
+
+	@Override
+	public List<MaintenanceReportDetail> getMaintReportDetails() {
+		
+		return equipDao.getMaintReportDetails();
+	}
+
+
+	@Override
+	public List<RouteCauseHeader> getTrackingDetails() {
+		
+		return equipDao.getTrackingDetails();
+	}
+
+
+	
+
+	@Override
+	public void editRouteCauseInf(RouteCauseHeader routeCauseHeader) {
+		
+		equipDao.editRouteCauseInf(routeCauseHeader);
+		
+	}
+
+
+	@Override
+	public String deleteRouteCauseInfo(String deleteId) {
+	
+		return equipDao.deleteRouteCauseInfo(deleteId);
+	}
+
+
+	@Override
+	public void addRouteCauseInf(RouteCauseBean routeCauseBean) {
+		 
+		
+		equipDao.addRouteCauseInf(routeCauseBean);
+	}
+
+
+	@Override
+	public List<MaintenanceReportHdr> getMeasurementPlanDetails() {
+		
+		return equipDao.getMeasurementPlanDetails();
+	}
+
+
+	@Override
+	public void addSIHistoryWOInfo(SIHistoryWO siHistoryWO) {
+		
+		equipDao.addSIHistoryWOInfo(siHistoryWO);
+		
+	}
+
+
+	@Override
+	public void editSIHistoryWOInfo(FiveWhyDetails fiveWhyDetails) {
+
+		equipDao.editSIHistoryWOInfo(fiveWhyDetails);
+		
+	}
+
+
+	@Override
+	public void editMaintReportInfo(MaintenanceReportDetail maintenanceReportDetail) {
+		
+		equipDao.editMaintReportInfo(maintenanceReportDetail);
+		
+	}
+}
+
+
+	
+	
+
+
+	
+

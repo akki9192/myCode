@@ -1,0 +1,298 @@
+package com.ge.pmms.dao.impl;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import com.ge.pmms.Constants;
+import com.ge.pmms.controller.CommonUtil;
+import com.ge.pmms.dao.BasicDao;
+import com.ge.pmms.dao.EquipmentWODao;
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.dto.RouteCauseBean;
+import com.ge.pmms.entity.DepartmantInfo;
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.FiveWhyDetails;
+import com.ge.pmms.entity.FiveWhyHDR;
+<<<<<<< .mine
+=======
+import com.ge.pmms.entity.MaintenanceReportDetail;
+import com.ge.pmms.entity.MaintenanceReportHdr;
+import com.ge.pmms.entity.RoleDto;
+>>>>>>> .r1062
+import com.ge.pmms.entity.RouteCauseHeader;
+import com.ge.pmms.entity.SIHistoryWO;
+
+
+@Repository
+public class EquipmentWODaoImpl extends BasicDao implements EquipmentWODao{
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(EquipmentWODaoImpl.class);
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getEquipmentWODetails() {
+		Criteria c = super.getSession().createCriteria(FaultReport.class, "faultReport");
+		
+		List<FaultReport> list = c.list();
+        return list;
+
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getClosedWODetails(String wordOrderStatus) {
+		
+
+		Criteria c = super.getSession().createCriteria(FaultReport.class, "faultReport");
+		c.add(Restrictions.eq("faultReport.wordOrderStatus",Constants.WO_CONDITIONAL_CLOSE));
+		
+		List<FaultReport> l = c.list();
+     
+		return l;
+     
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getOutageWODetails(String wordOrderStatus) {
+		Criteria c = super.getSession().createCriteria(FaultReport.class, "faultReport");
+		c.add(Restrictions.eq("faultReport.wordOrderStatus", "NW"));
+		/*if (StringUtils.isNotEmpty(wordOrderStatus)) {
+			c.add(Restrictions.eq("wordOrderStatus", wordOrderStatus));			
+			
+		} */
+		
+		List<FaultReport> ls = c.list();
+     
+		return ls;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getDepartmentNames() {
+		
+		Criteria c=super.getSession().createCriteria(DepartmantInfo.class,"departmantInfo")           
+                .setProjection(Projections.projectionList()
+                    .add(Projections.alias(Projections.distinct(Projections.property("departmantInfo.deptId")), "key"))
+                           .add(Projections.alias(Projections.property("departmantInfo.deptName"), "val")))              
+                .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class))
+                .setCacheable(true); 
+		
+	List<DropDownEntry> lis = c.list();
+	List<DropDownEntry> finalList = CommonUtil.addSelect(lis);
+     return finalList;
+         
+	}
+
+	@Override
+	public void addSIHistoryWOInfo(SIHistoryWO siHistoryWO) {
+		
+		FiveWhyDetails fiveWhyDetails = (FiveWhyDetails) super.getSession().createCriteria(FiveWhyDetails.class);
+		/*.add(Restrictions.eq("workorder_id", siHistoryWO.getWorkorder_id())).uniqueResult();*/
+
+		siHistoryWO.setFiveWhyDetails(fiveWhyDetails);
+		super.getSession().saveOrUpdate(siHistoryWO);
+		
+	}
+	
+	@Override
+	public void addMaintReportInfo(MaintenanceReportHdr maintenanceReportHdr) {
+		
+		FaultReport faultReport= (FaultReport)super.getSession().createCriteria(FaultReport.class)
+				.add(Restrictions.eq("workOrderNumber",maintenanceReportHdr.getFaultReport())).uniqueResult();
+		
+		maintenanceReportHdr.setFaultReport(faultReport);
+		
+	
+		EquipmentInfo equipmentInfo =(EquipmentInfo)super.getSession().createCriteria(EquipmentInfo.class)
+				.add(Restrictions.eq("equipId",maintenanceReportHdr.getEquipmentInfo())).uniqueResult();
+		
+		maintenanceReportHdr.setEquipmentInfo(equipmentInfo);
+		
+		/*DepartmantInfo departmentinfo = (DepartmantInfo) super.getSession().createCriteria(DepartmantInfo.class,"departmantInfo")           
+                .setProjection(Projections.projectionList()
+                        .add(Projections.alias(Projections.distinct(Projections.property("departmantInfo.deptId")), "key"))
+                               .add(Projections.alias(Projections.property("departmantInfo.deptName"), "val")))              
+                    .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class))
+                    .setCacheable(true);
+             */
+                  
+		maintenanceReportHdr.setId(56);
+		maintenanceReportHdr.setCreatorSSO("Capgemini");
+		maintenanceReportHdr.setUpdatorSSO("GE");
+	
+		maintenanceReportHdr.setManagersSSO("634576");
+		maintenanceReportHdr.setWorkshop("Workshop");
+		
+		Date date = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String CreatdDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		Date creatdDate = null;
+		try {
+			creatdDate = df.parse(CreatdDate);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		System.out.println("creatdDate date :" +creatdDate);
+		
+		Date date1 = new Date();
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+		String UpdatdDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		Date updatdDate = null;
+		try {
+			updatdDate = df.parse(UpdatdDate);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+             System.out.println("Updated date :" +updatdDate);
+             
+             maintenanceReportHdr.setCreatdDate(creatdDate);
+             maintenanceReportHdr.setUpdatdDate(updatdDate);
+            
+            // c.setFlushMode(flushMode);
+           
+		super.getSession().saveOrUpdate(maintenanceReportHdr);
+	
+	}
+
+	@Override
+	public void addMaintInfo(MaintenanceReportDetail maintenanceReportDetail) {
+		
+		super.getSession().saveOrUpdate(maintenanceReportDetail);
+		
+	}
+	
+	@Override
+	public List<MaintenanceReportDetail> getMaintReportDetails() {
+		
+		Criteria c = super.getSession().createCriteria(MaintenanceReportDetail.class, "maintenanceReportDetail");
+		
+		List<MaintenanceReportDetail> mainlist = c.list();
+        return mainlist;
+	}
+
+
+	@Override
+	public List<RouteCauseHeader> getTrackingDetails() {
+		
+		Criteria c = super.getSession().createCriteria(RouteCauseHeader.class, "routeCauseHeader");
+		
+		List<RouteCauseHeader> li = c.list();
+        return li;
+	}
+	
+	@Override
+	public void addRouteCauseInf(RouteCauseBean routeCauseBean) {
+
+
+		RouteCauseHeader routeCauseHeader = new RouteCauseHeader();
+		
+		Date date = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String modifiedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		Date workOrderDate = null;
+		try {
+			workOrderDate = df.parse(modifiedDate);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		routeCauseHeader.setId(routeCauseBean.getId());
+		
+		routeCauseHeader.setRoutecause("ABCDEF");
+		
+		routeCauseHeader.setFaultDescription("FAULTDESCRIPTION");
+		
+		routeCauseHeader.setCreatorSSO("2453");
+		
+		routeCauseHeader.setUpdaterSSO("6745");
+		
+		Date date1 = new Date();
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+		String modifiedDate1 = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		Date createdDate = null;
+		try {
+			createdDate = df.parse(modifiedDate1);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		Date date2 = new Date();
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+		String modifiedDate2 = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		Date lastUpdatedDate = null;
+		try {
+			lastUpdatedDate = df.parse(modifiedDate2);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		
+		super.getSession().saveOrUpdate(routeCauseHeader);
+		
+	} 
+		
+	
+
+
+	@Override
+	public void editRouteCauseInf(RouteCauseHeader routeCauseHeader) {
+		
+		super.getSession().saveOrUpdate(routeCauseHeader);
+		
+	}
+
+
+	@Override
+	public String deleteRouteCauseInfo(String deleteId) {
+		
+		Session session=this.getSession();
+		String[] ids = deleteId.split(",");
+		for(String id : ids){
+			RouteCauseHeader routeCauseHeader = (RouteCauseHeader) session.load(RouteCauseHeader.class, new Integer(id));
+			if(null != routeCauseHeader){
+				session.delete(routeCauseHeader);
+			}
+		}
+		
+		return "SUCCESS";
+	}
+
+
+	@Override
+	public List<MaintenanceReportHdr> getMeasurementPlanDetails() {
+		
+		Criteria c = super.getSession().createCriteria(MaintenanceReportHdr.class, "maintenanceReportHdr");
+		
+		List<MaintenanceReportHdr> mainhdrlist = c.list();
+        return mainhdrlist;
+	}
+	}
+		
+
+
+
+
+

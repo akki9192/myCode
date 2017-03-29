@@ -1,0 +1,419 @@
+package com.ge.pmms.controller;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
+<<<<<<< .mine
+=======
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+>>>>>>> .r1062
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.dto.Response;
+<<<<<<< .mine
+=======
+import com.ge.pmms.dto.RouteCauseBean;
+import com.ge.pmms.entity.EquipmentInfo;
+>>>>>>> .r1062
+import com.ge.pmms.entity.FacilityWO;
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.FiveWhyDetails;
+import com.ge.pmms.entity.Maintainancecheck;
+import com.ge.pmms.entity.MaintenanceReportDetail;
+import com.ge.pmms.entity.MaintenanceReportHdr;
+import com.ge.pmms.entity.RouteCauseHeader;
+import com.ge.pmms.entity.SIHistoryWO;
+import com.ge.pmms.service.EquipmentWOService;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+/**
+ * Controller for start page.
+ *
+ * @author Tejeswani Asanapuram
+ */
+
+@Controller
+@CrossOrigin
+public class EquipmentWOController {
+	@Autowired
+	private EquipmentWOService equipService;
+	
+	
+	
+	@RequestMapping(value = "/getEquipmentWODetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<FaultReport> getEquipmentWODetails() {
+		
+           return equipService.getEquipmentWODetails();
+    }
+	
+	@RequestMapping(value = "/getClosedWODetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<FaultReport> getClosedWODetails(@RequestParam String wordOrderStatus)  {
+		
+		System.out.println("wordOrderStatus is:"+wordOrderStatus);
+           return equipService.getClosedWODetails(wordOrderStatus);
+    }
+	
+	@RequestMapping(value = "/getOutageWODetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<FaultReport> getOutageWODetails(@RequestParam String wordOrderStatus)  {
+		
+		System.out.println("wordOrderStatus is:"+wordOrderStatus);
+           return equipService.getOutageWODetails(wordOrderStatus);
+    }
+	
+	
+	@RequestMapping(value = "/addSIHistoryWOInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public Response addSIHistoryWOInfo(@RequestBody SIHistoryWO siHistoryWO) {
+		
+		equipService.addSIHistoryWOInfo(siHistoryWO);
+		return Response.successResponse();
+		
+	}
+	
+	
+	@RequestMapping(value = "/getMeasurementPlanDetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<MaintenanceReportHdr> getMeasurementPlanDetails() {
+		
+		return equipService.getMeasurementPlanDetails();
+	}
+	
+	
+	@RequestMapping(value = "/addMaintReportInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public Response addMaintReportInfo(@RequestBody MaintenanceReportHdr maintenanceReportHdr) {
+		
+		equipService.addMaintReportInfo(maintenanceReportHdr);
+		return Response.successResponse();
+		
+	}	
+	
+	
+	/* fetching Department names */
+	@RequestMapping(value = "/getDepartmentNames", method = RequestMethod.GET)
+    @ResponseBody
+    public List<DropDownEntry> getDepartmentNames() {
+		
+           return equipService.getDepartmentNames();
+    }
+	
+	
+	@RequestMapping(value = "/getMaintReportDetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<MaintenanceReportDetail> getMaintReportDetails() {
+		
+		System.out.println("In getMaintReportDetails Controller");
+		
+		return equipService.getMaintReportDetails();
+	}
+	
+	
+	@RequestMapping(value = "/getTrackingDetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<RouteCauseHeader> getTrackingDetails(){
+		
+		return equipService.getTrackingDetails();
+    }
+	
+	
+	@RequestMapping(value = "/saveRouteCauseInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public Response addRouteCauseInf(@RequestBody RouteCauseBean routeCauseBean) {
+		
+		equipService.addRouteCauseInf(routeCauseBean);
+		
+		return Response.successResponse();
+	}
+	
+	@RequestMapping(value = "/removeRoutecauseDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public Response deleteRouteCauseInfo(@RequestBody String deleteEquipmentId) {
+		
+		 if( deleteEquipmentId==null ||  deleteEquipmentId.equalsIgnoreCase(""))
+				return Response.successResponse();
+		  
+			JSONObject jsonData = new JSONObject(deleteEquipmentId);
+
+			String deleteId=(String)jsonData.get("deleteEquipmentId");
+			//Integer id=Integer.parseInt(deleteId);
+			String response="";
+			
+			if(null !=  deleteEquipmentId)
+				response = equipService.deleteRouteCauseInfo(deleteId);
+			if(response.equalsIgnoreCase("SUCCESS"))
+				return Response.successResponse(response);
+			else
+			return Response.errorResponse("Fail");
+		
+	}
+	
+	@RequestMapping(value="/getClosedWODetailsDownloadExcel",method=RequestMethod.GET)
+	@ResponseBody
+	public void downloadExcel(HSSFWorkbook workbook,HttpServletRequest request,HttpServletResponse response,String wordOrderStatus) throws IOException{
+		
+		response.setContentType("application/xls");
+		response.setHeader("content-disposition","attachment;filename=Sample.xls");
+		ServletOutputStream  writer = response.getOutputStream(); 
+	    HSSFSheet sheet = workbook.createSheet("Data");
+	    sheet.setDefaultColumnWidth(30);
+	    
+	    CellStyle style = workbook.createCellStyle();
+	    Font font = workbook.createFont();
+	    font.setFontName("Arial");
+	    style.setFillForegroundColor(HSSFColor.BLUE.index);
+	    style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	    font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+	    font.setColor(HSSFColor.WHITE.index);    
+	    style.setFont(font);
+	     
+	 // create header row
+	    HSSFRow header = sheet.createRow(0);	    
+	     
+	    header.createCell(0).setCellValue("WOSN");
+	    header.getCell(0).setCellStyle(style);
+	     
+	    header.createCell(1).setCellValue("WorkOrderStatus");
+	    header.getCell(1).setCellStyle(style);
+	     
+	    header.createCell(2).setCellValue("EQSN");
+	    header.getCell(2).setCellStyle(style);
+	    
+	   /* header.createCell(3).setCellValue("EQNM");
+	    header.getCell(3).setCellStyle(style);*/
+	     
+	    /*header.createCell(3).setCellValue("EQModel");
+	    header.getCell(3).setCellStyle(style);
+	    
+	    header.createCell(4).setCellValue("AssetSN");
+	    header.getCell(4).setCellStyle(style);*/
+	    
+	    header.createCell(3).setCellValue("FaultDesc");
+	    header.getCell(3).setCellStyle(style);
+	    
+	    header.createCell(4).setCellValue("RequestorSSO");
+	    header.getCell(4).setCellStyle(style);
+	     
+	    header.createCell(5).setCellValue("UpdaterSSO");
+	    header.getCell(5).setCellStyle(style);
+	    
+	    header.createCell(6).setCellValue("CreatedDate");
+	    header.getCell(6).setCellStyle(style);
+	    
+	    header.createCell(7).setCellValue("LastUpdatedDate");
+	    header.getCell(7).setCellStyle(style);
+	    
+	    header.createCell(8).setCellValue("Safety");
+	    header.getCell(8).setCellStyle(style);
+	     
+	    header.createCell(9).setCellValue("Shutdown");
+	    header.getCell(9).setCellStyle(style);
+	    
+	    header.createCell(10).setCellValue("Maintainer");
+	    header.getCell(10).setCellStyle(style);
+
+	   // List<FaultReport> listreport =equipService.getClosedWODetailsDownload();
+	    
+	    int rowCount = 1;
+	    List<FaultReport> listreport =equipService.getClosedWODetails(wordOrderStatus);
+	    for(int i=0;i<listreport.size();i++) {
+	        HSSFRow aRow = sheet.createRow(rowCount++);
+	        
+	        aRow.createCell(0).setCellValue(listreport.get(i).getWorkOrderNumber());
+	        aRow.createCell(1).setCellValue(listreport.get(i).getWordOrderStatus());
+	        aRow.createCell(2).setCellValue(listreport.get(i).getEquipId2());
+	        //aRow.createCell(2).setCellValue(listreport.get(i).getEquipmentInfo().getEquipId());
+	        /*aRow.createCell(3).setCellValue(listreport.get(i).getEquipmentInfo().getEquipNameInfo().getEquipNameId().toString());*/
+	        /*aRow.createCell(3).setCellValue(listreport.get(i).getEquipmentInfo().getEquipModel());
+	        aRow.createCell(4).setCellValue(listreport.get(i).getEquipmentInfo().getAssetsID());*/
+	        aRow.createCell(3).setCellValue(listreport.get(i).getFaultDescription());
+	        aRow.createCell(4).setCellValue(listreport.get(i).getCreatorSSO());
+	        aRow.createCell(5).setCellValue(listreport.get(i).getUpdaterSSO());
+	        aRow.createCell(6).setCellValue(listreport.get(i).getCreatedDate());
+	        aRow.createCell(7).setCellValue(listreport.get(i).getLastUpdatedDate());
+	        aRow.createCell(8).setCellValue(listreport.get(i).getSafetyInvolved());
+	        aRow.createCell(9).setCellValue(listreport.get(i).getShutdownFlag());
+	        aRow.createCell(10).setCellValue(listreport.get(i).getMaintType());
+	    }
+	    workbook.write(writer);
+		   writer.flush();
+		   writer.close();
+			return; 			
+		
+		} 
+	
+	@RequestMapping(value="/printClosedWODetailsInPdf",method=RequestMethod.GET)
+	@ResponseBody
+		public void downloadPDF(HttpServletRequest request,HttpServletResponse response,String wordOrderStatus) throws DocumentException, IOException
+			 {
+		String format1 =null;
+		String format2 = null;
+		Document document = new Document();
+		response.setContentType("application/pdf");
+		PdfWriter.getInstance(document, response.getOutputStream());
+		document.open();
+		document.add(new Paragraph("BreakDown Workorder"));
+		PdfPTable table = new PdfPTable(11); // 11 columns.				
+        table.setWidthPercentage(100); //Width 100%
+        table.setSpacingBefore(10f); //Space before table
+        table.setSpacingAfter(10f); //Space after table
+ 
+        //Set Column widths
+        float[] columnWidths = {1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f};
+       /* float[] columnWidths = {1f, 1f, 1f,1f,1f};*/
+        table.setWidths(columnWidths);	       	       
+		 
+		        PdfPCell cell1 = new PdfPCell(new Paragraph("WOSN"));
+		        cell1.setBorderColor(BaseColor.BLUE);
+		        cell1.setPaddingLeft(10);
+		        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		 
+		        PdfPCell cell2 = new PdfPCell(new Paragraph("WorkOrderStatus"));
+		        cell2.setBorderColor(BaseColor.BLUE);
+		        cell2.setPaddingLeft(10);
+		        cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		 
+		        PdfPCell cell3 = new PdfPCell(new Paragraph("EQSN"));        
+		        cell3.setBorderColor(BaseColor.BLUE);
+		        cell3.setPaddingLeft(10);
+		        cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell4 = new PdfPCell(new Paragraph("FaultDesc"));        
+		        cell4.setBorderColor(BaseColor.BLUE);
+		        cell4.setPaddingLeft(10);
+		        cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell5 = new PdfPCell(new Paragraph("RequestorSSO"));        
+		        cell5.setBorderColor(BaseColor.BLUE);
+		        cell5.setPaddingLeft(10);
+		        cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell6 = new PdfPCell(new Paragraph("UpdaterSSO"));        
+		        cell6.setBorderColor(BaseColor.BLUE);
+		        cell6.setPaddingLeft(10);
+		        cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell7 = new PdfPCell(new Paragraph("CreatedDate"));        
+		        cell7.setBorderColor(BaseColor.BLUE);
+		        cell7.setPaddingLeft(10);
+		        cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell7.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell8= new PdfPCell(new Paragraph("LastUpdatedDate"));        
+		        cell8.setBorderColor(BaseColor.BLUE);
+		        cell8.setPaddingLeft(10);
+		        cell8.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell8.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell9 = new PdfPCell(new Paragraph("Safety"));        
+		        cell9.setBorderColor(BaseColor.BLUE);
+		        cell9.setPaddingLeft(10);
+		        cell9.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell9.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        
+		        PdfPCell cell10 = new PdfPCell(new Paragraph("Shutdown"));        
+		        cell10.setBorderColor(BaseColor.BLUE);
+		        cell10.setPaddingLeft(10);
+		        cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell10.setVerticalAlignment(Element.ALIGN_MIDDLE);
+	    
+		        PdfPCell cell11 = new PdfPCell(new Paragraph("Maintainer"));        
+		        cell10.setBorderColor(BaseColor.BLUE);
+		        cell10.setPaddingLeft(10);
+		        cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell10.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			 
+	
+	
+	List<FaultReport> listreport =equipService.getClosedWODetails(wordOrderStatus);
+	
+	table.addCell(cell1);
+    table.addCell(cell2);
+    table.addCell(cell3);
+    table.addCell(cell4);
+    table.addCell(cell5);
+    table.addCell(cell6);
+    table.addCell(cell7);
+    table.addCell(cell8);
+    table.addCell(cell9);
+    table.addCell(cell10);
+    table.addCell(cell11);
+    
+    table.completeRow();
+
+    for(int i=0;i<listreport.size();i++) {
+    	
+    	table.addCell(listreport.get(i).getWorkOrderNumber());
+    	table.addCell(listreport.get(i).getWordOrderStatus());
+	    table.addCell(listreport.get(i).getEquipId2());
+	    table.addCell(listreport.get(i).getFaultDescription());
+    	table.addCell(listreport.get(i).getCreatorSSO());
+	    table.addCell(listreport.get(i).getUpdaterSSO());	
+	    
+	    format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.ENGLISH).format(listreport.get(i).getCreatedDate());
+	    table.addCell(format1);
+	    format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.ENGLISH).format(listreport.get(i).getLastUpdatedDate());
+	    table.addCell(format2);
+	    
+    	table.addCell(listreport.get(i).getSafetyInvolved());
+	    table.addCell(listreport.get(i).getShutdownFlag());
+	    table.addCell(listreport.get(i).getMaintType());
+	    table.completeRow();
+        
+    }
+    
+    document.add(table);        
+    
+	document.close();
+     
+      return;
+   } 
+}
+/*
+ @RequestMapping(value = "/addFiveWHYDetails", method = RequestMethod.POST)
+@ResponseBody
+public Response addFiveWHYDetails(@RequestBody FiveWhyDetails details) {
+	System.out.println("Helloooooooo");
+	equipService.addFiveWHYDetails(details);
+	return Response.successResponse();
+	addMaintReportInfo
+}*/

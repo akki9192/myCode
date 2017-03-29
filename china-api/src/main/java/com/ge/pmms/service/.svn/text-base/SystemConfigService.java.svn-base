@@ -1,0 +1,21 @@
+package com.ge.pmms.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ge.pmms.entity.SystemConfig;
+import com.ge.pmms.entity.SystemParam;
+
+public interface SystemConfigService {
+
+	
+	List<SystemConfig> getSystemconfiguration();
+
+	void addSystemconfiguration(String jsonString);
+
+	List<SystemParam> getSystemconfigurationSelected(String type);
+
+	Map getMobileNumber(String strSysParamType);
+	
+	Map getEmailReceipt(String strSysParamType);
+}

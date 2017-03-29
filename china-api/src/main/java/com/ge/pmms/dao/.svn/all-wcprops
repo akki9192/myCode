@@ -1,0 +1,227 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/PMMS_30670_SVN/!svn/ver/1411/PMMS/pmms-api/src/main/java/com/ge/pmms/dao
+END
+MeasuringToolTransInfoDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/PMMS_30670_SVN/!svn/ver/479/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/MeasuringToolTransInfoDao.java
+END
+MainatainanceTechnicianDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/PMMS_30670_SVN/!svn/ver/656/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/MainatainanceTechnicianDao.java
+END
+DocumentDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/PMMS_30670_SVN/!svn/ver/763/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/DocumentDao.java
+END
+EquipDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/PMMS_30670_SVN/!svn/ver/1055/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/EquipDao.java
+END
+FaultMaintainanceDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/PMMS_30670_SVN/!svn/ver/1409/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/FaultMaintainanceDao.java
+END
+CheckCompletionRateDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/PMMS_30670_SVN/!svn/ver/511/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/CheckCompletionRateDao.java
+END
+EquipIssueListDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/PMMS_30670_SVN/!svn/ver/1436/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/EquipIssueListDao.java
+END
+EquipmentBDTimestatisticsRptDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/PMMS_30670_SVN/!svn/ver/1115/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/EquipmentBDTimestatisticsRptDao.java
+END
+TopNEquipmentRptDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/PMMS_30670_SVN/!svn/ver/1145/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/TopNEquipmentRptDao.java
+END
+MeasuringToolCalibrationDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/PMMS_30670_SVN/!svn/ver/485/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/MeasuringToolCalibrationDao.java
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/PMMS_30670_SVN/!svn/ver/9/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/package-info.java
+END
+RoleDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/PMMS_30670_SVN/!svn/ver/510/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/RoleDao.java
+END
+EquipFacilityViewDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/PMMS_30670_SVN/!svn/ver/984/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/EquipFacilityViewDao.java
+END
+InspectionSMrdTrkHistoryDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/PMMS_30670_SVN/!svn/ver/995/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/InspectionSMrdTrkHistoryDao.java
+END
+FacilityRepairDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/PMMS_30670_SVN/!svn/ver/1409/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/FacilityRepairDao.java
+END
+InspectionCheckDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PMMS_30670_SVN/!svn/ver/1275/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/InspectionCheckDao.java
+END
+InspectionSMDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PMMS_30670_SVN/!svn/ver/898/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/InspectionSMDao.java
+END
+FacilitiesDisposalDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/PMMS_30670_SVN/!svn/ver/1139/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/FacilitiesDisposalDao.java
+END
+EquipmentWODao.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PMMS_30670_SVN/!svn/ver/1220/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/EquipmentWODao.java
+END
+UserDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PMMS_30670_SVN/!svn/ver/25/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/UserDao.java
+END
+SchedulerDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/PMMS_30670_SVN/!svn/ver/1336/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/SchedulerDao.java
+END
+PictureUploadDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/717/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/PictureUploadDao.java
+END
+BasicDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/PMMS_30670_SVN/!svn/ver/726/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/BasicDao.java
+END
+SMSchedulingDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/1226/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/SMSchedulingDao.java
+END
+MaintainanceDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/1094/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/MaintainanceDao.java
+END
+PreventiveDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/PMMS_30670_SVN/!svn/ver/1421/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/PreventiveDao.java
+END
+MeasuringToolDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/485/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/MeasuringToolDao.java
+END
+FacilityMgmtDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/1425/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/FacilityMgmtDao.java
+END
+OperatorWOInspDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/PMMS_30670_SVN/!svn/ver/679/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/OperatorWOInspDao.java
+END
+ChartDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/PMMS_30670_SVN/!svn/ver/908/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/ChartDao.java
+END
+sparePartDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/PMMS_30670_SVN/!svn/ver/550/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/sparePartDao.java
+END
+OperationLogDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PMMS_30670_SVN/!svn/ver/963/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/OperationLogDao.java
+END
+FacilityWorkOrderDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/PMMS_30670_SVN/!svn/ver/1438/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/FacilityWorkOrderDao.java
+END
+InspectionRecordingDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/1029/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/InspectionRecordingDao.java
+END
+ScheduledMaintainanceDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/784/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/ScheduledMaintainanceDao.java
+END
+LoginDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/PMMS_30670_SVN/!svn/ver/325/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/LoginDao.java
+END
+SystemConfigDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/1354/PMMS/pmms-api/src/main/java/com/ge/pmms/dao/SystemConfigDao.java
+END

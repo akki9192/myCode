@@ -1,0 +1,206 @@
+package com.ge.pmms.dto;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class FacilitiesDisposalBean {
+	
+	private Integer id;
+	private String workOrderNumber;
+	private String workOrderType;
+	private String maintType;
+	private String wordOrderStatus;
+	private String faultDescription;
+	private String  creatorSSO;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date createdDate;
+	
+	private String remarks;
+	private String shutdownFlag;
+	private String  safetyInvolved;
+	private String facilityNum;
+	private String  facilArea;
+	private String facilityCategory;
+	private String factoryName;
+	private String equipId2;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date maintStartDate;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date maintEndDate;
+	
+	private Integer woMaintId;
+	private String mechanic;
+	private String repairIssue;
+	private String issueType;
+	private String faultLocation;
+	
+	
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getWorkOrderNumber() {
+		return workOrderNumber;
+	}
+	public void setWorkOrderNumber(String workOrderNumber) {
+		this.workOrderNumber = workOrderNumber;
+	}
+	public String getWorkOrderType() {
+		return workOrderType;
+	}
+	public void setWorkOrderType(String workOrderType) {
+		this.workOrderType = workOrderType;
+	}
+	public String getMaintType() {
+		return maintType;
+	}
+	public void setMaintType(String maintType) {
+		this.maintType = maintType;
+	}
+	public String getWordOrderStatus() {
+		return wordOrderStatus;
+	}
+	public void setWordOrderStatus(String wordOrderStatus) {
+		this.wordOrderStatus = wordOrderStatus;
+	}
+	public String getFaultDescription() {
+		return faultDescription;
+	}
+	public void setFaultDescription(String faultDescription) {
+		this.faultDescription = faultDescription;
+	}
+	public String getCreatorSSO() {
+		return creatorSSO;
+	}
+	public void setCreatorSSO(String creatorSSO) {
+		this.creatorSSO = creatorSSO;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getShutdownFlag() {
+		return shutdownFlag;
+	}
+	public void setShutdownFlag(String shutdownFlag) {
+		this.shutdownFlag = shutdownFlag;
+	}
+	public String getSafetyInvolved() {
+		return safetyInvolved;
+	}
+	public void setSafetyInvolved(String safetyInvolved) {
+		this.safetyInvolved = safetyInvolved;
+	}
+	public String getFacilityNum() {
+		return facilityNum;
+	}
+	public void setFacilityNum(String facilityNum) {
+		this.facilityNum = facilityNum;
+	}
+	public String getFacilArea() {
+		return facilArea;
+	}
+	public void setFacilArea(String facilArea) {
+		this.facilArea = facilArea;
+	}
+	public String getFacilityCategory() {
+		return facilityCategory;
+	}
+	public void setFacilityCategory(String facilityCategory) {
+		this.facilityCategory = facilityCategory;
+	}
+	public String getFactoryName() {
+		return factoryName;
+	}
+	public void setFactoryName(String factoryName) {
+		this.factoryName = factoryName;
+	}
+	public Date getMaintStartDate() {
+		return maintStartDate;
+	}
+	public void setMaintStartDate(Date maintStartDate) {
+		this.maintStartDate = maintStartDate;
+	}
+	public Date getMaintEndDate() {
+		return maintEndDate;
+	}
+	public void setMaintEndDate(Date maintEndDate) {
+		this.maintEndDate = maintEndDate;
+	}
+	
+	public String getMechanic() {
+		return mechanic;
+	}
+	public void setMechanic(String mechanic) {
+		this.mechanic = mechanic;
+	}
+	
+	public String getRepairIssue() {
+		return repairIssue;
+	}
+	public void setRepairIssue(String repairIssue) {
+		this.repairIssue = repairIssue;
+	}
+	public String getIssueType() {
+		return issueType;
+	}
+	public void setIssueType(String issueType) {
+		this.issueType = issueType;
+	}
+	public String getFaultLocation() {
+		return faultLocation;
+	}
+	public void setFaultLocation(String faultLocation) {
+		this.faultLocation = faultLocation;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	
+	public String getEquipId2() {
+		return equipId2;
+	}
+	public void setEquipId2(String equipId2) {
+		this.equipId2 = equipId2;
+	}
+	public Integer getWoMaintId() {
+		return woMaintId;
+	}
+	public void setWoMaintId(Integer woMaintId) {
+		this.woMaintId = woMaintId;
+	}
+	@Override
+	public String toString() {
+		return "FacilitiesDisposalBean [id=" + id + ", workOrderNumber=" + workOrderNumber + ", workOrderType="
+				+ workOrderType + ", maintType=" + maintType + ", wordOrderStatus=" + wordOrderStatus
+				+ ", faultDescription=" + faultDescription + ", creatorSSO=" + creatorSSO + ", createdDate="
+				+ createdDate + ", remarks=" + remarks + ", shutdownFlag=" + shutdownFlag + ", safetyInvolved="
+				+ safetyInvolved + ", facilityNum=" + facilityNum + ", facilArea=" + facilArea + ", facilityCategory="
+				+ facilityCategory + ", factoryName=" + factoryName + ", equipId2=" + equipId2 + ", maintStartDate="
+				+ maintStartDate + ", maintEndDate=" + maintEndDate + ", woMaintId=" + woMaintId + ", mechanic="
+				+ mechanic + ", repairIssue=" + repairIssue + ", issueType=" + issueType
+				+ ", faultLocation=" + faultLocation + "]";
+	}
+	
+	
+	
+	
+
+	
+
+
+
+}

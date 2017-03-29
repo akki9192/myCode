@@ -1,0 +1,632 @@
+package com.ge.pmms.dao.impl;
+
+import java.sql.Timestamp;
+
+/**
+* The SchedulerDaoImpl program implements batch job functionalities that
+* schedule required task on specified interval.
+*
+* @author  Kailash Nirmal(848316)
+* @version 1.0
+* @since   2014-11-25 
+*/
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ge.pmms.Constants;
+import com.ge.pmms.SMSUtil;
+import com.ge.pmms.dao.BasicDao;
+import com.ge.pmms.dao.SchedulerDao;
+import com.ge.pmms.entity.FacilityWO;
+import com.ge.pmms.entity.SystemConfig;
+
+@Configuration
+@EnableScheduling
+@Repository
+public class SchedulerDaoImpl extends BasicDao implements SchedulerDao 
+{
+
+	/*Scheduler #1 
+	 * Work Order creation Yearly
+	 * 
+	 * */
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 26 1/1 *")
+	public void getYearWO() 
+	{
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		System.out.println("Inside getYearWO method of SchedulerDaoImpl");
+		String SSO = "572015863";
+		Date currentDat = currentDate();
+		String SM_Work_Order_Number; 
+		int year1 = 0;
+		int year2 = 0;
+		java.util.Date date= new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);		
+		year1 = cal.get(Calendar.YEAR);		
+		year2 = year1+1;
+		int upperBound = 9999;
+		int lowerBound = 0001;
+		Date daten = Calendar.getInstance().getTime();
+		int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+		String workdate = sdf.format(daten);
+		SM_Work_Order_Number = workdate+number;
+		String nextMonth = nextMonth();
+		int curMonth = currentMonth();
+		if(curMonth == 12)
+			year1 =year1+1;
+		SQLQuery query_hdr = super.getSession().createSQLQuery("select to_char(dtl.plan_start_dt, 'MM-DD')as plan_start_dt, to_char(dtl.plan_end_dt, 'MM-DD')as plan_end_dt,hdr.plan_id, hdr.equip_name_id, hdr.bar_coding ,hdr.wo_type, hdr.equip_id from pmms.plan_info_hdr hdr,pmms.plan_info_dtl dtl where hdr.plan_type='Y'  and dtl.plan_id = hdr.plan_id and CAST(maint_year AS integer) BETWEEN '"+year1+"' AND '"+year2+"'and CAST(dtl.maint_mon AS integer) = '" + nextMonth + "'");		
+		List<Object[]> result_hdr = query_hdr.list();
+		
+		for(int i=0;i<result_hdr.size();i++)
+		{					  			
+		    Object[] data = result_hdr.get(i);
+		    String plan_startDate = String.valueOf(data[0]);
+	    	String plan_endDate = String.valueOf(data[1]);
+		    String planID = String.valueOf(data[2]);
+		    String equip_name_id = String.valueOf(data[3]);
+		    String barCoding = String.valueOf(data[4]);
+		    String wo_category = String.valueOf(data[5]);
+		    String equip_id = String.valueOf(data[6]);		    	
+		    String sql_maintid = "select maint_item_id,remark from pmms.maint_item where equip_name_id='" + equip_name_id + "'";		 					    
+		    List<Object[]> result_maintid = super.getSession().createSQLQuery(sql_maintid).list();
+		    String sqlInsertWoIno = "insert into pmms.wo_info(wo_id,maint_type,equip_id,wo_status,wo_type,plan_start_dt,plan_end_dt,created_by,created_date ,last_updated_by,last_updated_date)values('"+wo_category+equip_id+SM_Work_Order_Number+"','SM','"+equip_id+"','"+workorderstatus+"','"+wo_category+"','"+year1+"-"+plan_startDate+"','"+year1+"-"+plan_endDate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+   		 	int createdEntities = super.getSession().createSQLQuery(sqlInsertWoIno).executeUpdate();
+   		 	if(createdEntities > 0)
+   			{
+   				System.out.println("Record inserted successfully into wo_info table");
+   			}		 
+		    	 for(int k=0;k<result_maintid.size();k++)
+					{
+		    		 Object[] maintidData = result_maintid.get(k);
+		    		 String maintItemId =  String.valueOf(maintidData[0]);
+		    		 String remark = String.valueOf(maintidData[1]);		    		
+		    		 String sqlInsertWoDtl = "insert into pmms.wo_info_dtl(wo_id,maint_item_id,created_by,created_dt ,last_updated_by,last_updated_dt)values('"+wo_category+equip_id+SM_Work_Order_Number+"','"+maintItemId+"','"+ SSO +"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+		    		 if(createdEntitiesDtl > 0)
+		    			{
+		    				System.out.println(k+"Record inserted successfully into wo_info_dtl table");
+		    			}
+					}		    	
+			}		    		    
+		    	
+	}
+	/*Scheduler #2 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 26 1/1 *")
+	public void getMonthWO()
+	{
+		//FaultReport faultReport = new FaultReport();
+		System.out.println("Inside getMonthWO method of SchedulerDaoImpl");
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		String SSO = "572015863";
+		Date currentDat = currentDate();
+		String SM_Work_Order_Number; 
+		int year1 = 0;
+		int year2 = 0;
+		java.util.Date date= new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);		
+		year1 = cal.get(Calendar.YEAR);		
+		year2 = year1+1;
+		int upperBound = 9999;
+		int lowerBound = 0001;
+		Date daten = Calendar.getInstance().getTime();
+		int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+		String workdate = sdf.format(daten);
+		SM_Work_Order_Number = workdate+number;
+		
+		String nextMonth = nextMonth();
+		int curMonth = currentMonth();
+		if(curMonth == 12)
+			year1 =year1+1;
+		
+		SQLQuery query_hdr = super.getSession().createSQLQuery("select to_char(dtl.plan_start_dt, 'MM-DD')as plan_start_dt, to_char(dtl.plan_end_dt, 'MM-DD')as plan_end_dt,hdr.plan_id, hdr.equip_name_id, hdr.bar_coding ,hdr.wo_type, hdr.equip_id from pmms.plan_info_hdr hdr,pmms.plan_info_dtl dtl where hdr.plan_type='M' and dtl.plan_id = hdr.plan_id and CAST(dtl.maint_mon AS integer) = '" + nextMonth + "'");		
+		List<Object[]> result_hdr = query_hdr.list();
+		
+		for(int i=0;i<result_hdr.size();i++)
+		{					  			
+		    Object[] data = result_hdr.get(i);
+		    String plan_startDate = String.valueOf(data[0]);
+	    	String plan_endDate = String.valueOf(data[1]);
+		    String planID = String.valueOf(data[2]);
+		    String equip_name_id = String.valueOf(data[3]);
+		    String barCoding = String.valueOf(data[4]);
+		    String wo_category = String.valueOf(data[5]);
+		    String equip_id = String.valueOf(data[6]);		    			  
+		    String sql_maintid = "select maint_item_id,remark from pmms.maint_item where equip_name_id='" + equip_name_id + "'";		 					    
+		    List<Object[]> result_maintid = super.getSession().createSQLQuery(sql_maintid).list();
+		    String sqlInsertWoIno = "insert into pmms.wo_info(wo_id,maint_type,equip_id,wo_status,wo_type,plan_start_dt,plan_end_dt,created_by,created_date ,last_updated_by,last_updated_date)values('"+wo_category+equip_id+SM_Work_Order_Number+"','SM','"+equip_id+"','"+workorderstatus+"','"+wo_category+"','"+year1+"-"+plan_startDate+"','"+year1+"-"+plan_endDate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+   		 	int createdEntities = super.getSession().createSQLQuery(sqlInsertWoIno).executeUpdate();
+   		 	if(createdEntities > 0)
+   			{
+   				System.out.println("Record inserted successfully into work order info table");
+   			}
+		   /* for(int j=0;j<result_dtl.size();j++)
+			{
+		    	 Object[] DtlData = result_dtl.get(j);
+		    	 String plan_startDate = String.valueOf(DtlData[0]);
+		    	 String plan_endDate = String.valueOf(DtlData[1]);*/
+		    	 for(int k=0;k<result_maintid.size();k++)
+					{		    		
+		    		 Object[] maintidData = result_maintid.get(k);
+		    		 String maintItemId =  String.valueOf(maintidData[0]);
+		    		 String remark = String.valueOf(maintidData[1]);		    		 
+		    		 String sqlInsertWoDtl = "insert into pmms.wo_info_dtl(wo_id,maint_item_id,created_by,created_dt ,last_updated_by,last_updated_dt)values('"+wo_category+equip_id+SM_Work_Order_Number+"','"+maintItemId+"','"+ SSO +"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+		    		 if(createdEntitiesDtl > 0)
+		    			{
+		    				System.out.println(k+"Record inserted successfully into wo_info_dtl table");
+		    			}
+					}
+		    	 
+			}		    		    
+		    
+		}
+	
+	
+	public int currentMonth()
+	{
+		int currentMonthVal = 0;
+		Calendar currentMonth = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM");	
+		currentMonthVal = Integer.parseInt(dateFormat.format(currentMonth.getTime()));
+		return currentMonthVal;	 
+	}
+	public String nextMonth()
+	{
+		int nextMonthVal = 0;
+		String retMonth = "0";
+		Calendar currentMonth = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+		currentMonth.add(Calendar.MONTH, 1);
+		nextMonthVal = Integer.parseInt(dateFormat.format(currentMonth.getTime()));
+		if(nextMonthVal <10)
+			retMonth = "0"+nextMonthVal;
+		else
+			retMonth = String.valueOf(nextMonthVal);
+		return retMonth;
+	} 
+	public Date currentDate()
+	{
+		Date date2= new Date();
+		DateFormat df= new SimpleDateFormat("yyyy-MM-dd");
+		String modifiedDate =new SimpleDateFormat("yyyy-MM-dd").format(date2);
+		Date lastUpdatedDate= null;
+		try 
+		{
+			lastUpdatedDate = df.parse(modifiedDate);
+		} 
+		catch (ParseException e) {
+			
+			e.printStackTrace();
+		}	
+		return lastUpdatedDate;
+	}
+	public String nextDate()
+	{
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, 1);
+		return new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+	}
+	/*Scheduler #3 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 * * FRI")
+	public void WeekOpInsp()
+	{
+		System.out.println("Inside WeekOpInsp method of SchedulerDaoImpl");
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		String SSO = "572015863";
+		String planStartDate = NextMonday();
+		String planEnddate = NextFriday();
+		Date currentDat = currentDate();
+		String INO_Work_Order_Number; 
+		
+		
+		String nextMonth = nextMonth();
+		
+		SQLQuery query_maint_item = super.getSession().createSQLQuery("SELECT distinct(equip_id) as equip_id FROM pmms.maint_item where plan_type = 'IC' and frequency='Weekly'");		
+		List<String> result_maint_item = query_maint_item.list();
+				
+				for(int i=0;i<result_maint_item.size();i++)
+				{		
+					int upperBound = 9999;
+					int lowerBound = 0000;
+					Date daten = Calendar.getInstance().getTime();
+					SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+					String workdate = sdf.format(daten);
+					
+					int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+					INO_Work_Order_Number = workdate+number;
+				    //Object[] data = result_maint_item.get(i);
+				    String equipID = result_maint_item.get(i);	
+				    //String maintitemid = String.valueOf(data[1]);
+				    String sqlInsertINS_MAINT_CHECK  = "INSERT into pmms.ins_maint_check(maint_id,maint_type,check_status,equip_id,frequency,planned_start_dt,planned_end_dt,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','IC','"+workorderstatus+"','"+equipID+"','Weekly','"+planStartDate+"','"+planEnddate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntities = super.getSession().createSQLQuery(sqlInsertINS_MAINT_CHECK).executeUpdate();
+		    		 if(createdEntities > 0)
+		    			{
+		    				System.out.println("Record inserted successfully into ins_maint_check of pmms table");
+		    			}
+		    
+				    SQLQuery sql_equip_info = super.getSession().createSQLQuery("SELECT maint_item_id FROM pmms.maint_item where equip_id='"+equipID+"'");		   		
+					List<String> result_equip_info = sql_equip_info.list();		    
+				    for(int j=0;j<result_equip_info.size();j++)
+					{
+				    	 String maint_item_id = result_equip_info.get(j);
+				    	
+				    		 String sqlInsertWoDtl = "INSERT into pmms.ins_maint_check_dtl(maint_id,maint_item_id,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','"+maint_item_id+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+				    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+				    		 if(createdEntitiesDtl > 0)
+				    			{
+				    				System.out.println("Record inserted successfully into ins_maint_check_dtl table");
+				    			}
+					}
+				    	 
+			    }		    		    
+				    
+		    
+		}		    		    
+	/*Scheduler #4 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 * * FRI")
+	public void WeekOpTiInsp()
+	{
+		// TODO Auto-generated method stub
+		System.out.println("Inside WeekOpTiInsp method of SchedulerDaoImpl");	
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		String SSO = "572015863";
+		String planStartDate = NextMonday();
+		String planEnddate = NextFriday();
+		Date currentDat = currentDate();
+		String INO_Work_Order_Number; 
+		
+		
+		String nextMonth = nextMonth();
+		
+		SQLQuery query_maint_item = super.getSession().createSQLQuery("SELECT distinct(equip_id) as equip_id FROM pmms.maint_item where plan_type = 'MC' and frequency='Weekly'");		
+		List<String> result_maint_item = query_maint_item.list();
+				
+				for(int i=0;i<result_maint_item.size();i++)
+				{		
+					int upperBound = 9999;
+					int lowerBound = 0000;
+					Date daten = Calendar.getInstance().getTime();
+					SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+					String workdate = sdf.format(daten);
+					
+					int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+					INO_Work_Order_Number = workdate+number;
+				    //Object[] data = result_maint_item.get(i);
+				    String equipID = result_maint_item.get(i);	
+				    //String maintitemid = String.valueOf(data[1]);
+				    String sqlInsertINS_MAINT_CHECK  = "INSERT into pmms.ins_maint_check(maint_id,maint_type,check_status,equip_id,frequency,planned_start_dt,planned_end_dt,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','IC','"+workorderstatus+"','"+equipID+"','Weekly','"+planStartDate+"','"+planEnddate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntities = super.getSession().createSQLQuery(sqlInsertINS_MAINT_CHECK).executeUpdate();
+		    		 if(createdEntities > 0)
+		    			{
+		    				System.out.println("Record inserted successfully into ins_maint_check of pmms table");
+		    			}
+		    
+				    SQLQuery sql_equip_info = super.getSession().createSQLQuery("SELECT maint_item_id FROM pmms.maint_item where equip_id='"+equipID+"'");		   		
+					List<String> result_equip_info = sql_equip_info.list();		    
+				    for(int j=0;j<result_equip_info.size();j++)
+					{
+				    	 String maint_item_id = result_equip_info.get(j);
+				    	
+				    		 String sqlInsertWoDtl = "INSERT into pmms.ins_maint_check_dtl(maint_id,maint_item_id,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','"+maint_item_id+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+				    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+				    		 if(createdEntitiesDtl > 0)
+				    			{
+				    				System.out.println("Record inserted successfully into ins_maint_check_dtl table");
+				    			}
+					}
+				    	 
+			    }		    		    
+				    
+	
+		
+	}
+	public String NextFriday()
+	{
+		Calendar c= Calendar.getInstance();
+		c.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		c.add(Calendar.DAY_OF_MONTH, 7);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(c.getTime());	   
+	}
+	public String NextMonday()
+	{
+		Calendar c= Calendar.getInstance();
+		c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		c.add(Calendar.DAY_OF_MONTH, 7);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(c.getTime());	   
+	}
+	
+	/*Scheduler #5 
+	 * IC – Operator Inspection
+	   MC – Technician Maintenance
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 1/1 * *")
+	public void DailyOpInsp()
+	{
+		System.out.println("Inside DailyOpInsp method of  SchedulerDaoImpl");
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		String SSO = "572015863";
+		String planStartDate = NextMonday();
+		String planEnddate = NextFriday();
+		Date currentDat = currentDate();
+		String INO_Work_Order_Number; 
+		
+		
+		String nextMonth = nextMonth();
+		
+		SQLQuery query_maint_item = super.getSession().createSQLQuery("SELECT distinct(equip_id) as equip_id FROM pmms.maint_item where plan_type = 'IC' and frequency='Daily'");		
+		List<String> result_maint_item = query_maint_item.list();
+				
+				for(int i=0;i<result_maint_item.size();i++)
+				{		
+					int upperBound = 9999;
+					int lowerBound = 0000;
+					Date daten = Calendar.getInstance().getTime();
+					SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+					String workdate = sdf.format(daten);
+					
+					int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+					INO_Work_Order_Number = workdate+number;
+				    //Object[] data = result_maint_item.get(i);
+				    String equipID = result_maint_item.get(i);	
+				    //String maintitemid = String.valueOf(data[1]);
+				    String sqlInsertINS_MAINT_CHECK  = "INSERT into pmms.ins_maint_check(maint_id,maint_type,check_status,equip_id,frequency,planned_start_dt,planned_end_dt,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','IC','"+workorderstatus+"','"+equipID+"','Weekly','"+planStartDate+"','"+planEnddate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntities = super.getSession().createSQLQuery(sqlInsertINS_MAINT_CHECK).executeUpdate();
+		    		 if(createdEntities > 0)
+		    			{
+		    				System.out.println("Record inserted successfully into ins_maint_check of pmms table");
+		    			}
+		    
+				    SQLQuery sql_equip_info = super.getSession().createSQLQuery("SELECT maint_item_id FROM pmms.maint_item where equip_id='"+equipID+"'");		   		
+					List<String> result_equip_info = sql_equip_info.list();		    
+				    for(int j=0;j<result_equip_info.size();j++)
+					{
+				    	 String maint_item_id = result_equip_info.get(j);
+				    	
+				    		 String sqlInsertWoDtl = "INSERT into pmms.ins_maint_check_dtl(maint_id,maint_item_id,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','"+maint_item_id+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+				    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+				    		 if(createdEntitiesDtl > 0)
+				    			{
+				    				System.out.println("Record inserted successfully into ins_maint_check_dtl table");
+				    			}
+					}
+				    	 
+			    }		    		    
+				    
+	
+	}
+	/*Scheduler #6 */
+	/* IC – Operator Inspection
+	MC – Technician Maintenance
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 1/1 * *")
+	public void DailyOpTiInsp()
+	{
+		System.out.println("Inside DailyOpTiInsp method of  SchedulerDaoImpl");
+		String workorderstatus = Constants.WO_NOT_STARTED;
+		String SSO = "572015863";
+		String planStartDate = NextMonday();
+		String planEnddate = NextFriday();
+		Date currentDat = currentDate();
+		String INO_Work_Order_Number; 
+		
+		
+		String nextMonth = nextMonth();
+		
+		SQLQuery query_maint_item = super.getSession().createSQLQuery("SELECT distinct(equip_id) as equip_id FROM pmms.maint_item where plan_type = 'MC' and frequency='Daily'");		
+		List<String> result_maint_item = query_maint_item.list();
+				
+				for(int i=0;i<result_maint_item.size();i++)
+				{		
+					int upperBound = 9999;
+					int lowerBound = 0000;
+					Date daten = Calendar.getInstance().getTime();
+					SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+					String workdate = sdf.format(daten);
+					
+					int number = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+					INO_Work_Order_Number = workdate+number;
+				    //Object[] data = result_maint_item.get(i);
+				    String equipID = result_maint_item.get(i);	
+				    //String maintitemid = String.valueOf(data[1]);
+				    String sqlInsertINS_MAINT_CHECK  = "INSERT into pmms.ins_maint_check(maint_id,maint_type,check_status,equip_id,frequency,planned_start_dt,planned_end_dt,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','IC','"+workorderstatus+"','"+equipID+"','Weekly','"+planStartDate+"','"+planEnddate+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    		 int createdEntities = super.getSession().createSQLQuery(sqlInsertINS_MAINT_CHECK).executeUpdate();
+		    		 if(createdEntities > 0)
+		    			{
+		    				System.out.println("Record inserted successfully into ins_maint_check of pmms table");
+		    			}
+		    
+				    SQLQuery sql_equip_info = super.getSession().createSQLQuery("SELECT maint_item_id FROM pmms.maint_item where equip_id='"+equipID+"'");		   		
+					List<String> result_equip_info = sql_equip_info.list();		    
+				    for(int j=0;j<result_equip_info.size();j++)
+					{
+				    	 String maint_item_id = result_equip_info.get(j);
+				    	
+				    		 String sqlInsertWoDtl = "INSERT into pmms.ins_maint_check_dtl(maint_id,maint_item_id,created_by,created_dt,last_updated_by,last_updated_dt)values('"+"INO"+equipID+INO_Work_Order_Number+"','"+maint_item_id+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+				    		 int createdEntitiesDtl = super.getSession().createSQLQuery(sqlInsertWoDtl).executeUpdate();
+				    		 if(createdEntitiesDtl > 0)
+				    			{
+				    				System.out.println("Record inserted successfully into ins_maint_check_dtl table");
+				    			}
+					}
+				    	 
+			    }		    		    
+				    
+	
+	}
+	/*Scheduler #7 */
+	/* Table 1  : MEASURING_TOOL_CALIBRATION
+	 * Table 2  : MEASURING_TOOL_INFO
+		Calibration Tools batch job
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="0 0 8 25 1/1 *")
+	public void CalibrationTool()
+	{
+		System.out.println("Inside CalibrationTool method of SchedulerDaoImpl class");		
+		String SSO = "572015863";
+		String resetNxMonday = NextMonday();		
+		Date currentDat = currentDate();	
+		String nextMonth = nextMonth();
+		String hql = "UPDATE pmms.measuring_tool_calibration SET certification_dt='"+resetNxMonday+"' WHERE verification_status='NS'";
+		SQLQuery query = super.getSession().createSQLQuery(hql);
+	  
+	    int result = query.executeUpdate();
+	    if(result > 0)
+	    {
+	    	System.out.println("Reseted calibration tool from current month to next monday: " + result);
+	    }
+		SQLQuery query_calibrationtools  = super.getSession().createSQLQuery("select instrument_no,calibration_dt,status from pmms.measuring_tool_info WHERE to_char(calibration_dt,'MM') = '"+nextMonth+"' and status ='I'");		
+		List<Object[]> resultquery_calibrationtools = query_calibrationtools.list();		
+		for(int i=0;i<resultquery_calibrationtools.size();i++)
+		{					  			
+		    Object[] data = resultquery_calibrationtools.get(i);
+		    String instrument_no = String.valueOf(data[0]);	
+		    String calibration_dt = String.valueOf(data[1]);
+		    String verfStatus = String.valueOf(data[2]);	    			    	
+		    String sqlInsertMEASURING_TOOL_CALIBRATION  = "INSERT into pmms.MEASURING_TOOL_CALIBRATION(instrument_no,certification_dt,verification_status,created_by,created_dt,last_updated_by,last_updated_dt)values('"+instrument_no+"','"+calibration_dt+"','"+verfStatus+"','"+SSO+"','"+currentDat+"','"+SSO+"','"+currentDat+"')";
+		    int createdEntities = super.getSession().createSQLQuery(sqlInsertMEASURING_TOOL_CALIBRATION).executeUpdate();
+		    if(createdEntities > 0)
+		    {
+		    	System.out.println(i+"Record inserted successfully into destination table");
+		    }
+		}
+		    	 
+	}
+	
+//	@Scheduled(cron="*/11 * * * * MON-FRI")
+//	//@Scheduled(cron="${scheduling.job.cron}")
+//    public void printMessage() {
+//		 System.out.println("Method executed at every 11 seconds. Current time is :: "+ new Date());
+//    }		
+//	@Scheduled(cron="*/15 * * * * MON-FRI")
+//	//@Scheduled(cron="${scheduling.job.cron}")
+//    public void printMessage2() {
+//		 System.out.println("Method executed at every 15 seconds. Current time is :: "+ new Date());
+//    }
+
+	public static Timestamp getCurrentDate() {
+		Date today = new Date();
+		return new Timestamp(today.getTime());
+	}
+
+	public static Timestamp getCurrentDateMinusH(int hour) {
+		Date today = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today);
+		cal.add(Calendar.HOUR, -hour);
+		Date startDate = cal.getTime();
+		return new Timestamp(startDate.getTime());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="*/30 * * * * ?")
+	@Transactional
+	public void WorkOrderStatusAlert1H()
+	{
+		System.out.println("------------------> This WorkOrderStatusAlert1H");
+		Date startDate=getCurrentDateMinusH(1);
+		Date endDate=getCurrentDate();
+		System.out.println("startdate : "+startDate);
+		System.out.println("enddate : "+endDate);
+		
+		
+		Query query_pendingWoFor1H= super.getSession().createQuery("from FacilityWO where wordOrderStatus= :wordOrderStatus and createdDate between :startdate and :enddate ");		
+		query_pendingWoFor1H.setParameter("wordOrderStatus", "未开始");
+		query_pendingWoFor1H.setParameter("startdate", startDate);
+		query_pendingWoFor1H.setParameter("enddate", endDate);
+		List<FacilityWO> resultquery_pendingWo = query_pendingWoFor1H.list();
+		List<SystemConfig> resultquery_L1User=null;
+		
+		if(resultquery_pendingWo.size()>0){
+			Query query_L1User= super.getSession().createQuery("from SystemConfig");		
+			resultquery_L1User = query_L1User.list();
+			
+		}
+		
+		for (FacilityWO wo: resultquery_pendingWo){
+			System.out.println("Sending SMS...");
+			for (SystemConfig sc :resultquery_L1User){
+				String message="WO #: "+wo.getWorkOrderNumber() +" is pending for last 1 hr";
+				//SMSUtil.sendMsg(sc.getContactnumber(), message);
+				System.out.println("SMSUtil.sendMsg("+sc.getContactnumber()+","+ message+");");
+				
+			}
+		}
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Scheduled(cron="*/59 * * * * ?")
+	@Transactional
+	public void WorkOrderStatusAlert2H()
+	{
+		System.out.println("------------------> This WorkOrderStatusAlert2H");
+		Date startDate=getCurrentDateMinusH(2);
+		Date endDate=getCurrentDateMinusH(1);
+		System.out.println("startdate : "+startDate);
+		System.out.println("enddate : "+endDate);
+		
+		
+		Query query_pendingWoFor1H= super.getSession().createQuery("from FacilityWO where wordOrderStatus= :wordOrderStatus and createdDate between :startdate and :enddate ");		
+		query_pendingWoFor1H.setParameter("wordOrderStatus", "未开始");
+		query_pendingWoFor1H.setParameter("startdate", startDate);
+		query_pendingWoFor1H.setParameter("enddate", endDate);
+		List<FacilityWO> resultquery_pendingWo = query_pendingWoFor1H.list();
+		List<SystemConfig> resultquery_L1User=null;
+		
+		if(resultquery_pendingWo.size()>0){
+			Query query_L1User= super.getSession().createQuery("from SystemConfig");		
+			resultquery_L1User = query_L1User.list();
+			
+		}
+		
+		for (FacilityWO wo: resultquery_pendingWo){
+			System.out.println("Sending SMS...");
+			for (SystemConfig sc :resultquery_L1User){
+				String message="WO #: "+wo.getWorkOrderNumber() +" is pending for last 2 hr";
+				//SMSUtil.sendMsg(sc.getContactnumber(), message);
+				System.out.println("SMSUtil.sendMsg("+sc.getContactnumber()+","+ message+");");
+				
+			}
+		}
+		
+	}
+}
+
+

@@ -1,0 +1,10 @@
+---
+applications:
+- name: pmms-api-dev
+  host: pmms-api-dev
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.10
+  path: target/pmms-api.war
+  memory: 1024M
+  domain: run.aws-usw02-pr.ice.predix.io
+  services:
+  - postgres

@@ -1,0 +1,227 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/PMMS_30670_SVN/!svn/ver/1409/PMMS/pmms-api/src/main/java/com/ge/pmms/service
+END
+MainatainanceTechnicianService.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/PMMS_30670_SVN/!svn/ver/656/PMMS/pmms-api/src/main/java/com/ge/pmms/service/MainatainanceTechnicianService.java
+END
+DocumentService.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PMMS_30670_SVN/!svn/ver/766/PMMS/pmms-api/src/main/java/com/ge/pmms/service/DocumentService.java
+END
+PreventiveMaintService.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/PMMS_30670_SVN/!svn/ver/1421/PMMS/pmms-api/src/main/java/com/ge/pmms/service/PreventiveMaintService.java
+END
+FaultMaintainanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/PMMS_30670_SVN/!svn/ver/1254/PMMS/pmms-api/src/main/java/com/ge/pmms/service/FaultMaintainanceService.java
+END
+CheckCompletionRateService.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/PMMS_30670_SVN/!svn/ver/511/PMMS/pmms-api/src/main/java/com/ge/pmms/service/CheckCompletionRateService.java
+END
+EquipIssueListService.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/PMMS_30670_SVN/!svn/ver/1436/PMMS/pmms-api/src/main/java/com/ge/pmms/service/EquipIssueListService.java
+END
+EquipmentBDTimestatisticsRptService.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/PMMS_30670_SVN/!svn/ver/1115/PMMS/pmms-api/src/main/java/com/ge/pmms/service/EquipmentBDTimestatisticsRptService.java
+END
+TopNEquipmentRptService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/PMMS_30670_SVN/!svn/ver/1148/PMMS/pmms-api/src/main/java/com/ge/pmms/service/TopNEquipmentRptService.java
+END
+MeasuringToolCalibrationService.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/PMMS_30670_SVN/!svn/ver/485/PMMS/pmms-api/src/main/java/com/ge/pmms/service/MeasuringToolCalibrationService.java
+END
+RoleService.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PMMS_30670_SVN/!svn/ver/510/PMMS/pmms-api/src/main/java/com/ge/pmms/service/RoleService.java
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/PMMS_30670_SVN/!svn/ver/9/PMMS/pmms-api/src/main/java/com/ge/pmms/service/package-info.java
+END
+EquipFacilityViewService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/PMMS_30670_SVN/!svn/ver/986/PMMS/pmms-api/src/main/java/com/ge/pmms/service/EquipFacilityViewService.java
+END
+InspectionSMrdTrkHistoryService.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/PMMS_30670_SVN/!svn/ver/996/PMMS/pmms-api/src/main/java/com/ge/pmms/service/InspectionSMrdTrkHistoryService.java
+END
+MaintainceCheckService.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/PMMS_30670_SVN/!svn/ver/1094/PMMS/pmms-api/src/main/java/com/ge/pmms/service/MaintainceCheckService.java
+END
+EquipmentService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/PMMS_30670_SVN/!svn/ver/1057/PMMS/pmms-api/src/main/java/com/ge/pmms/service/EquipmentService.java
+END
+FacilityRepairService.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/PMMS_30670_SVN/!svn/ver/1409/PMMS/pmms-api/src/main/java/com/ge/pmms/service/FacilityRepairService.java
+END
+InspectionCheckService.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/PMMS_30670_SVN/!svn/ver/1091/PMMS/pmms-api/src/main/java/com/ge/pmms/service/InspectionCheckService.java
+END
+InspectionSMService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/898/PMMS/pmms-api/src/main/java/com/ge/pmms/service/InspectionSMService.java
+END
+FacilitiesDisposalService.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/PMMS_30670_SVN/!svn/ver/1141/PMMS/pmms-api/src/main/java/com/ge/pmms/service/FacilitiesDisposalService.java
+END
+ChartInfoService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/PMMS_30670_SVN/!svn/ver/908/PMMS/pmms-api/src/main/java/com/ge/pmms/service/ChartInfoService.java
+END
+EquipmentWOService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/1220/PMMS/pmms-api/src/main/java/com/ge/pmms/service/EquipmentWOService.java
+END
+SchedulerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/PMMS_30670_SVN/!svn/ver/1106/PMMS/pmms-api/src/main/java/com/ge/pmms/service/SchedulerService.java
+END
+UserService.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/PMMS_30670_SVN/!svn/ver/25/PMMS/pmms-api/src/main/java/com/ge/pmms/service/UserService.java
+END
+PictureUploadService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/717/PMMS/pmms-api/src/main/java/com/ge/pmms/service/PictureUploadService.java
+END
+InspectionSMRecordAndTrackService.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/PMMS_30670_SVN/!svn/ver/752/PMMS/pmms-api/src/main/java/com/ge/pmms/service/InspectionSMRecordAndTrackService.java
+END
+SMSchedulingService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/1230/PMMS/pmms-api/src/main/java/com/ge/pmms/service/SMSchedulingService.java
+END
+MeasuringToolService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/485/PMMS/pmms-api/src/main/java/com/ge/pmms/service/MeasuringToolService.java
+END
+FacilityMgmtService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/1427/PMMS/pmms-api/src/main/java/com/ge/pmms/service/FacilityMgmtService.java
+END
+InspectionRecordingTrackingService.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/PMMS_30670_SVN/!svn/ver/1029/PMMS/pmms-api/src/main/java/com/ge/pmms/service/InspectionRecordingTrackingService.java
+END
+OperatorWOInspService.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/PMMS_30670_SVN/!svn/ver/681/PMMS/pmms-api/src/main/java/com/ge/pmms/service/OperatorWOInspService.java
+END
+sparePartService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/PMMS_30670_SVN/!svn/ver/554/PMMS/pmms-api/src/main/java/com/ge/pmms/service/sparePartService.java
+END
+OperationLogService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/PMMS_30670_SVN/!svn/ver/965/PMMS/pmms-api/src/main/java/com/ge/pmms/service/OperationLogService.java
+END
+FacilityWorkOrderService.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/PMMS_30670_SVN/!svn/ver/1438/PMMS/pmms-api/src/main/java/com/ge/pmms/service/FacilityWorkOrderService.java
+END
+ScheduledMaintainanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/PMMS_30670_SVN/!svn/ver/784/PMMS/pmms-api/src/main/java/com/ge/pmms/service/ScheduledMaintainanceService.java
+END
+LoginService.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PMMS_30670_SVN/!svn/ver/325/PMMS/pmms-api/src/main/java/com/ge/pmms/service/LoginService.java
+END
+SystemConfigService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/PMMS_30670_SVN/!svn/ver/1354/PMMS/pmms-api/src/main/java/com/ge/pmms/service/SystemConfigService.java
+END
+MeasuringToolTransInfoService.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/PMMS_30670_SVN/!svn/ver/479/PMMS/pmms-api/src/main/java/com/ge/pmms/service/MeasuringToolTransInfoService.java
+END

@@ -1,0 +1,186 @@
+package com.ge.pmms.dao.impl;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import com.ge.pmms.dao.BasicDao;
+import com.ge.pmms.dao.FacilitiesDisposalDao;
+import com.ge.pmms.dto.CommonKeyValuePair;
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.entity.EquipmentInfo;
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.LookupMst;
+import com.ge.pmms.entity.WorkOrderMaintainance;
+
+@Repository
+public class FacilitiesDisposalDaoImpl extends BasicDao implements FacilitiesDisposalDao {
+	CommonKeyValuePair commomKeyValuePair = new CommonKeyValuePair();
+
+	@SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(FacilitiesDisposalDaoImpl.class);
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getDisposalDetails() {
+		
+		Criteria c = super.getSession().createCriteria(FaultReport.class, "faultReport");
+		
+		c.add(Restrictions.eq("faultReport.workOrderType", "FAC"));
+		c.add(Restrictions.ne("faultReport.wordOrderStatus", "CF"));
+		List<FaultReport> ls= c.list();
+		return ls;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getMaintenanceType(String Type) {
+	
+		Criteria c = super.getSession().createCriteria(LookupMst.class, "lookupMst")
+				 
+                .setProjection(Projections
+                              .projectionList().add(Projections
+                                            .alias(Projections.distinct(Projections.property("lookupMst.Key")), "key"))
+                              .add(Projections.alias(Projections.property("lookupMst.Value"), "val")))
+
+                 .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+   
+   if (StringUtils.isNotEmpty(Type)) {
+   
+          c.add(Restrictions.eq("Type", Type));
+   }
+   List<DropDownEntry> l = c.list();
+   List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(l);
+	
+	//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+	//return finalList;
+	Collections.reverse(finalList);
+	return finalList;
+ 
+         
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getIssueType(String Type) {
+		
+		Criteria c = super.getSession().createCriteria(LookupMst.class, "lookupMst")
+				 
+                .setProjection(Projections
+                              .projectionList().add(Projections
+                                            .alias(Projections.distinct(Projections.property("lookupMst.Key")), "key"))
+                              .add(Projections.alias(Projections.property("lookupMst.Value"), "val")))
+
+                 .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+   
+   if (StringUtils.isNotEmpty(Type)) {
+   
+          c.add(Restrictions.eq("Type", Type));
+   }
+   List<DropDownEntry> ls = c.list();
+   List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(ls);
+	
+	//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+	//return finalList;
+	Collections.reverse(finalList);
+	return finalList;
+  
+         
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getLocations(String Type) {
+	
+		Criteria c = super.getSession().createCriteria(LookupMst.class, "lookupMst")
+				 
+                .setProjection(Projections
+                              .projectionList().add(Projections
+                                            .alias(Projections.distinct(Projections.property("lookupMst.Key")), "key"))
+                              .add(Projections.alias(Projections.property("lookupMst.Value"), "val")))
+
+                 .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+   
+   if (StringUtils.isNotEmpty(Type)) {
+   
+          c.add(Restrictions.eq("Type", Type));
+   }
+   List<DropDownEntry> l = c.list();
+   List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(l);
+	
+	//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+	//return finalList;
+	Collections.reverse(finalList);
+	return finalList;
+  
+} 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getFactoryNames(String Type) {
+	
+		Criteria c = super.getSession().createCriteria(LookupMst.class, "lookupMst")
+				 
+                .setProjection(Projections
+                              .projectionList().add(Projections
+                                            .alias(Projections.distinct(Projections.property("lookupMst.Key")), "key"))
+                              .add(Projections.alias(Projections.property("lookupMst.Value"), "val")))
+
+                 .setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+   
+   if (StringUtils.isNotEmpty(Type)) {
+   
+          c.add(Restrictions.eq("Type", Type));
+   }
+   List<DropDownEntry> list = c.list();
+   List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(list);
+	
+	//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+	//return finalList;
+	Collections.reverse(finalList);
+	return finalList;
+   
+}
+
+	@Override
+	public void editFacility(FaultReport faultReport) {
+		EquipmentInfo equipmentInfo = (EquipmentInfo) super.getSession().createCriteria(EquipmentInfo.class)
+				.add(Restrictions.eq("equipId", faultReport.getEquipId2())).uniqueResult();
+		faultReport.setEquipmentInfo(equipmentInfo);
+		faultReport.setLastUpdatedDate( new Date());
+		
+		try {
+		super.getSession().saveOrUpdate(faultReport);
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void addFacilityInfo(WorkOrderMaintainance workOrderMaintainance) {
+		
+		FaultReport faultReport = (FaultReport) super.getSession().createCriteria(FaultReport.class)
+				.add(Restrictions.eq("workOrderNumber", workOrderMaintainance.getWorkOrderNumber1())).uniqueResult();
+		workOrderMaintainance.setFaultReport(faultReport);
+		
+		super.getSession().saveOrUpdate(workOrderMaintainance);
+	
+		
+	}
+
+
+
+
+}

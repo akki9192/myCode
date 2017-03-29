@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/PMMS_30670_SVN/!svn/ver/1411/PMMS/pmms-api/src/main/java/com/ge/pmms
+END
+Tools.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/PMMS_30670_SVN/!svn/ver/1434/PMMS/pmms-api/src/main/java/com/ge/pmms/Tools.java
+END
+SMSUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/PMMS_30670_SVN/!svn/ver/1060/PMMS/pmms-api/src/main/java/com/ge/pmms/SMSUtil.java
+END
+EmailUtilityClass.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/PMMS_30670_SVN/!svn/ver/1354/PMMS/pmms-api/src/main/java/com/ge/pmms/EmailUtilityClass.java
+END
+AppConfig.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PMMS_30670_SVN/!svn/ver/9/PMMS/pmms-api/src/main/java/com/ge/pmms/AppConfig.java
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PMMS_30670_SVN/!svn/ver/1435/PMMS/pmms-api/src/main/java/com/ge/pmms/Constants.java
+END
+Util.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/PMMS_30670_SVN/!svn/ver/263/PMMS/pmms-api/src/main/java/com/ge/pmms/Util.java
+END
+LetterUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PMMS_30670_SVN/!svn/ver/754/PMMS/pmms-api/src/main/java/com/ge/pmms/LetterUtil.java
+END

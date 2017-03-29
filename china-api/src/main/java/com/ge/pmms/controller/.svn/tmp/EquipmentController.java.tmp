@@ -1,0 +1,246 @@
+package com.ge.pmms.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.dto.Response;
+import com.ge.pmms.entity.EquipmentInfo;
+import com.ge.pmms.service.EquipmentService;
+
+
+/**
+ * Controller for start page.
+ *
+ *
+ */
+
+@Controller
+@CrossOrigin
+public class EquipmentController {
+
+	@Autowired
+	private EquipmentService equipService;
+
+	// ----------------getting all equipment Details-------------
+
+	@RequestMapping(value = "/getEquipmentDetails", method = RequestMethod.GET)
+
+	@ResponseBody
+	List<EquipmentInfo> getAllEquipDetails(@RequestParam(required = false) String equipType) {
+		List<EquipmentInfo> ls = equipService.getAllEquipDetails(equipType);
+		return ls;
+	}
+	
+
+	// -----------------Deleting the equipment-------------------
+	 @RequestMapping(value = "/deleteEquipmentInfo", method = RequestMethod.POST)
+	    @ResponseBody
+	    public Response deleteEquipmentInfo(@RequestBody String deleteEquipmentId) {
+		  if( deleteEquipmentId==null ||  deleteEquipmentId.equalsIgnoreCase(""))
+				return Response.successResponse();
+		  
+			JSONObject jsonData = new JSONObject(deleteEquipmentId);
+
+			String deleteId=(String)jsonData.get("deleteEquipmentId");
+			//Integer id=Integer.parseInt(deleteId);
+			String response="";
+			
+			if(null !=  deleteEquipmentId)
+				response = equipService.deleteEquipmentInfo(deleteId);
+			if(response.equalsIgnoreCase("SUCCESS"))
+				return Response.successResponse(response);
+			else
+			return Response.errorResponse("Fail");
+			
+	    }
+
+
+	// -----------------------Adding the Equipment--------------------
+	@RequestMapping(value = "/saveEquipmentInformation", method = RequestMethod.POST)
+	@ResponseBody
+	public Response addEquipment(@RequestBody EquipmentInfo equipInfo  ) {
+
+	equipService.addEquipmentInfo(equipInfo);
+	
+	return Response.successResponse();	
+	}
+
+	// -------------------------getting Equipment Type Details
+	
+	@RequestMapping(value = "/getEquipType")
+	@ResponseBody
+	List<DropDownEntry> getEquipType(@RequestParam(required = false) String Type) {
+		List<DropDownEntry> ls = equipService.getEquipType(Type);
+		return ls;
+	}
+
+	// -----------------------Fetching all the Equipment Name
+	
+	@RequestMapping(value = "/getDeviceName")
+	@ResponseBody
+
+	List<DropDownEntry> getEquipName(@RequestParam(required = false) String nameId) {
+		System.out.println("1");
+		List<DropDownEntry> ls = equipService.getEquipName(nameId);
+		System.out.println("end");
+		return ls;
+	}
+
+	// -----------------------Fetching all the Department name
+	
+	@RequestMapping(value = "/getDeptName")
+	@ResponseBody
+	List<DropDownEntry> getDeptName() {
+		List<DropDownEntry> ls = equipService.getDeptName();
+		return ls;
+	}
+	
+	@RequestMapping(value = "/getCategory")
+	@ResponseBody
+	List<DropDownEntry> getCategory(@RequestParam(required = false) String Type) {
+		List<DropDownEntry> ls = equipService.getCategory(Type);
+		return ls;
+	}
+	
+	@RequestMapping(value = "/getPMXMC")
+	@ResponseBody
+	List<DropDownEntry> getPMXMC(@RequestParam(required = false) String Type) {
+		List<DropDownEntry> ls = equipService.getPMXMC(Type);
+		return ls;
+	}
+	@RequestMapping(value="/getEquipmentInformationDownlaod",method=RequestMethod.GET)
+	@ResponseBody
+	public void downloadExcel(HSSFWorkbook workbook, HttpServletRequest request,HttpServletResponse response) throws IOException{
+		
+		
+		response.setContentType("application/xls");
+		response.setHeader("content-disposition","attachment;filename=Data.xls");
+		ServletOutputStream  writer = response.getOutputStream(); 
+	    HSSFSheet sheet = workbook.createSheet("Data");
+	    sheet.setDefaultColumnWidth(30);
+	     
+	    // create style for header cells
+	    CellStyle style = workbook.createCellStyle();
+	    Font font = workbook.createFont();
+	    font.setFontName("Arial");
+	    style.setFillForegroundColor(HSSFColor.BLUE.index);
+	    style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	    font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+	    font.setColor(HSSFColor.WHITE.index);    
+	    style.setFont(font);
+	     
+	    // create header row
+	    HSSFRow header = sheet.createRow(0);
+	     
+	    header.createCell(0).setCellValue("Equipment Type");
+	    header.getCell(0).setCellStyle(style);
+	     
+	    header.createCell(1).setCellValue("DeviceId");
+	    header.getCell(1).setCellStyle(style);
+	     
+	    header.createCell(2).setCellValue("AssetNo");
+	    header.getCell(2).setCellStyle(style);
+	    
+	    header.createCell(3).setCellValue("DeviceName");
+	    header.getCell(3).setCellStyle(style);
+	     
+	    header.createCell(4).setCellValue("ModelNum");
+	    header.getCell(4).setCellStyle(style);
+	    
+	    header.createCell(5).setCellValue("Supplier");
+	    header.getCell(5).setCellStyle(style);
+	    
+	    header.createCell(6).setCellValue("Power Consumption");
+	    header.getCell(6).setCellStyle(style);
+	    
+	    header.createCell(7).setCellValue("Installation Date");
+	    header.getCell(7).setCellStyle(style);
+	    
+	    header.createCell(8).setCellValue("Cost");
+	    header.getCell(8).setCellStyle(style);
+	    
+	    header.createCell(9).setCellValue("Present value");
+	    header.getCell(9).setCellStyle(style);
+	    
+	    header.createCell(10).setCellValue("Measurement");
+	    header.getCell(10).setCellStyle(style);
+	    
+	    header.createCell(11).setCellValue("Weight");
+	    header.getCell(11).setCellStyle(style);
+	    
+	    header.createCell(12).setCellValue("Use");
+	    header.getCell(12).setCellStyle(style);
+	    
+	    header.createCell(13).setCellValue("Release Date");
+	    header.getCell(13).setCellStyle(style);
+	    
+	    header.createCell(14).setCellValue("SerialNo");
+	    header.getCell(14).setCellStyle(style);
+	    
+	    header.createCell(15).setCellValue("Department Name");
+	    header.getCell(15).setCellStyle(style);
+	    
+	    header.createCell(16).setCellValue("Remark");
+	    header.getCell(16).setCellStyle(style);
+	    
+	    header.createCell(17).setCellValue("PMX-MC");
+	    header.getCell(17).setCellStyle(style);
+	    
+
+	     
+	    // create data rows
+	    int rowCount = 1;
+	    List<EquipmentInfo> lstequipmentinfo =equipService.getEquipDetailsForDwnld();
+	    for(int i=0;i<lstequipmentinfo.size();i++) {
+	        HSSFRow aRow = sheet.createRow(rowCount++);
+	        aRow.createCell(0).setCellValue(lstequipmentinfo.get(i).getEquipType());
+	        aRow.createCell(1).setCellValue(lstequipmentinfo.get(i).getEquipId());
+	        aRow.createCell(2).setCellValue(lstequipmentinfo.get(i).getAssetsID());
+	        aRow.createCell(3).setCellValue(lstequipmentinfo.get(i).getDeviceName());
+	        aRow.createCell(4).setCellValue(lstequipmentinfo.get(i).getEquipModel());
+	        aRow.createCell(5).setCellValue(lstequipmentinfo.get(i).getSource());
+	        aRow.createCell(6).setCellValue(lstequipmentinfo.get(i).getPowerConsumption());
+	      //  aRow.createCell(7).setCellValue(lstequipmentinfo.get(i).getInstallationDate());
+	      //  aRow.createCell(8).setCellValue(lstequipmentinfo.get(i).getReleaseDate());
+	        aRow.createCell(9).setCellValue(lstequipmentinfo.get(i).getOriginalPrice());
+	        aRow.createCell(10).setCellValue(lstequipmentinfo.get(i).getCurrentPrice());
+	        aRow.createCell(11).setCellValue(lstequipmentinfo.get(i).getSize());
+	        aRow.createCell(12).setCellValue(lstequipmentinfo.get(i).getWeight());
+	        aRow.createCell(13).setCellValue(lstequipmentinfo.get(i).getInuse());
+	        aRow.createCell(14).setCellValue(lstequipmentinfo.get(i).getSize());
+	        aRow.createCell(15).setCellValue(lstequipmentinfo.get(i).getFactoryNo());
+	        aRow.createCell(16).setCellValue(lstequipmentinfo.get(i).getDeptId2());
+	        aRow.createCell(17).setCellValue(lstequipmentinfo.get(i).getRemark());
+	      //  aRow.createCell(18).setCellValue(lstequipmentinfo.get(i).getPmxMc());
+	        
+	      
+	    }
+	   workbook.write(writer);
+	   writer.flush();
+	   writer.close();
+		return; 
+	}
+	
+}

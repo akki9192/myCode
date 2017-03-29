@@ -1,0 +1,20 @@
+package com.ge.pmms.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ge.pmms.entity.SystemConfig;
+import com.ge.pmms.entity.SystemParam;
+
+public interface SystemConfigDao {
+	
+	
+	List<SystemConfig> getSystemconfiguration();
+
+	void addSystemconfiguration(String jsonString);
+
+	List<SystemParam> getSystemconfigurationSelected(String type);
+
+	Map getMobileNumber(String strSysParamType);
+
+}

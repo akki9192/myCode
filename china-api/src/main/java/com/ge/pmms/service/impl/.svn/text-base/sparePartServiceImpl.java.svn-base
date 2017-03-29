@@ -1,0 +1,92 @@
+package com.ge.pmms.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ge.pmms.dao.sparePartDao;
+import com.ge.pmms.entity.sparePart;
+import com.ge.pmms.service.sparePartService;
+
+@Service("sparePartService")
+
+@Transactional
+public class sparePartServiceImpl implements sparePartService {
+	
+	@SuppressWarnings("unused")
+	private static final long serialVersionUID = 8660080660984105245L;
+
+	@SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(RoleServiceImpl.class);
+
+	
+	@Autowired
+	private sparePartDao spareDao;
+	
+	@Override
+	public List<sparePart> getSpareParts(String sparePartCategory) {
+	
+		return spareDao.getSpareParts(sparePartCategory);
+	}
+
+	@Override
+	public String removeSparePart(String deleteId) {
+		
+		return spareDao.removeSparePart(deleteId);
+	}
+
+	@Override
+	public void addSparePart(sparePart spare) {
+		spareDao.addSparePart(spare);
+		
+	}
+
+	@Override
+	public List<sparePart> getSearchedData() {
+		return spareDao.getSearchedData();
+		
+	}
+
+	@Override
+	public List<sparePart> getSafetyStock() {
+		
+		return spareDao.getSafetyStock();
+	}
+
+	@Override
+	public List<sparePart> searchSparePartWithDates(String data) {
+		
+		return spareDao.searchSparePartWithDates(data);
+	}
+
+	@Override
+	public List<sparePart> searchWithParameters(String data) {
+		return spareDao.searchWithParameters(data);
+	}
+
+	@Override
+	public List<sparePart> searchWithDropdown(String dropdownData) {
+		return spareDao.searchWithDropdown(dropdownData);
+	}
+
+	@Override
+	public List<sparePart> searchWithDatesAndFields(String facilityData) {
+		return spareDao.searchWithDatesAndFields(facilityData);
+	}
+
+	@Override
+	public List<sparePart> equipmentSearch(String equipmentData) {
+		return spareDao.equipmentSearch(equipmentData);
+		
+	}
+
+	@Override
+	public List<sparePart> facilitySearch(String facData) {
+		return spareDao.facilitySearch(facData);
+	}
+
+}

@@ -1,0 +1,150 @@
+package com.ge.pmms.controller;
+
+import java.util.List;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.dto.MaintainanceCheckBean;
+import com.ge.pmms.dto.Response;
+import com.ge.pmms.entity.MaintainanceCheckDtls;
+import com.ge.pmms.entity.Maintainancecheck;
+import com.ge.pmms.service.InspectionCheckService;
+
+@Controller
+@CrossOrigin
+public class InspectionCheckController {
+
+	@Autowired
+	private InspectionCheckService inspectionCheckService;
+
+	@RequestMapping(value = "/startInspectionCheckDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public Response startInspectionCheckDetails(@RequestBody MaintainanceCheckBean maintainanceCheckBean) {
+		
+		Maintainancecheck maintainanceCheck = new Maintainancecheck();
+		MaintainanceCheckDtls maintainanceCheckDtls = new MaintainanceCheckDtls();
+		maintainanceCheck.setId(maintainanceCheckBean.getId());
+		maintainanceCheck.setSso(maintainanceCheckBean.getSso());
+		maintainanceCheck.setMaintType(maintainanceCheckBean.getMaintType());
+		maintainanceCheck.setMaintId(maintainanceCheckBean.getMaintId());
+		maintainanceCheck.setStatus(maintainanceCheckBean.getStatus());
+		maintainanceCheck.setCreatedBy(maintainanceCheckBean.getCreatedBy());
+		maintainanceCheck.setLastUpdatedBy(maintainanceCheckBean.getSso());
+		maintainanceCheck.setEquipId(maintainanceCheckBean.getEquipId());
+		maintainanceCheck.setCreatedDt(maintainanceCheckBean.getCreatedDt());
+		String MainArrString = maintainanceCheckBean.getMainArrString();
+		
+		inspectionCheckService.startInspectionCheckDetails(maintainanceCheck, MainArrString);
+		return Response.successResponse();
+	}
+
+	@RequestMapping(value = "/closeInspectionCheckDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public Response closeInspectionCheckDetails(@RequestBody MaintainanceCheckBean maintainanceCheckBean) {
+	
+		Maintainancecheck maintainanceCheck = new Maintainancecheck();
+		MaintainanceCheckDtls maintainanceCheckDtls = new MaintainanceCheckDtls();
+		maintainanceCheck.setId(maintainanceCheckBean.getId());
+		maintainanceCheck.setSso(maintainanceCheckBean.getSso());
+		maintainanceCheck.setMaintType(maintainanceCheckBean.getMaintType());
+		maintainanceCheck.setMaintId(maintainanceCheckBean.getMaintId());
+		maintainanceCheck.setStatus(maintainanceCheckBean.getStatus());
+		maintainanceCheck.setCreatedBy(maintainanceCheckBean.getCreatedBy());
+		maintainanceCheck.setLastUpdatedBy(maintainanceCheckBean.getSso());
+		maintainanceCheck.setEquipId(maintainanceCheckBean.getEquipId());
+		maintainanceCheck.setCreatedDt(maintainanceCheckBean.getCreatedDt());
+		String MainArrString = maintainanceCheckBean.getMainArrString();
+
+		inspectionCheckService.closeMaintainanceWork(maintainanceCheck, MainArrString);
+
+		return Response.successResponse();
+	}
+	
+	
+	@RequestMapping(value = "/saveInspectionCheckDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public Response saveMaintainanceWork(@RequestBody MaintainanceCheckBean maintainanceCheckBean) {
+	
+		Maintainancecheck maintainanceCheck = new Maintainancecheck();
+		MaintainanceCheckDtls maintainanceCheckDtls = new MaintainanceCheckDtls();
+		maintainanceCheck.setId(maintainanceCheckBean.getId());
+		maintainanceCheck.setSso(maintainanceCheckBean.getSso());
+		maintainanceCheck.setMaintType(maintainanceCheckBean.getMaintType());
+		maintainanceCheck.setMaintId(maintainanceCheckBean.getMaintId());
+		maintainanceCheck.setStatus(maintainanceCheckBean.getStatus());
+		maintainanceCheck.setCreatedBy(maintainanceCheckBean.getCreatedBy());
+		maintainanceCheck.setLastUpdatedBy(maintainanceCheckBean.getSso());
+		maintainanceCheck.setEquipId(maintainanceCheckBean.getEquipId());
+		maintainanceCheck.setCreatedDt(maintainanceCheckBean.getCreatedDt());
+		String MainArrString = maintainanceCheckBean.getMainArrString();
+
+		inspectionCheckService.saveMaintainanceWork(maintainanceCheck, MainArrString);
+
+		return Response.successResponse();
+	}
+
+	@RequestMapping(value = "/getInspectionDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Maintainancecheck> getInspectionDetails(@RequestParam(required = false) String maintType, String deptId, String equipCategory) {
+		return inspectionCheckService.getInspectionDetails(maintType, deptId, equipCategory);
+
+	}
+
+	@RequestMapping(value = "/getFactoryNames", method = RequestMethod.GET)
+	@ResponseBody
+	public List<DropDownEntry> getFactoryNames(@RequestParam(required = false) String Type) {
+		return inspectionCheckService.getFactoryNames(Type);
+	}
+	
+	
+	@RequestMapping(value = "/getEquipmentCategory", method = RequestMethod.GET)
+	@ResponseBody
+	public List<DropDownEntry> getEquipmentCategory(@RequestParam(required = false) String Type) {
+		return inspectionCheckService.getEquipmentCategory(Type);
+	}
+	
+	
+	
+	@RequestMapping(value = "/getInspectionCheckInfoDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public List<MaintainanceCheckDtls> getInspectionCheckInfoDetails(@RequestParam(required = false) String maintId) {
+		return inspectionCheckService.getInspectionCheckInfoDetails(maintId);
+	}
+	
+	
+	@RequestMapping(value = "/autoEquipmentIssueCreation", method = RequestMethod.POST)
+	@ResponseBody
+	public Response autoEquipmentIssueCreation(@RequestBody String inspectAutoCreation) {
+		
+		
+		//System.out.println("In autoEquipmentIssueCreation");
+		//JSONObject jsonData = new JSONObject(inspectAutoCreation);
+		
+		/*String data=(String)jsonData.get("checkData");
+		
+		String equipmentId = equiptIssueList.getEquipmentId();
+		
+		if(null != equipmentId)
+			equiptIssueList.setEquipId(equipmentId);
+		
+		if(null ==equiptIssueList.getWoId() || null ==equiptIssueList.getEquipId() || null == equiptIssueList.getRequestorSSO()){
+			return Response.errorResponse("Mandatory fields Work Order Id, Equipment Id or Requestor SSO are empty.");
+		}
+			
+		equipIssueListService.addEquipIssueList(equiptIssueList);*/
+		
+		 return Response.successResponse("Equipment Issue list saved successfully");
+	}
+	
+	
+
+}

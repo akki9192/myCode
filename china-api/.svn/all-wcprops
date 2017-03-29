@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/PMMS_30670_SVN/!svn/ver/1411/PMMS/pmms-api
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/PMMS_30670_SVN/!svn/ver/3/PMMS/pmms-api/.classpath
+END
+.factorypath
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/PMMS_30670_SVN/!svn/ver/408/PMMS/pmms-api/.factorypath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/PMMS_30670_SVN/!svn/ver/3/PMMS/pmms-api/.project
+END
+manifest.yml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/PMMS_30670_SVN/!svn/ver/1051/PMMS/pmms-api/manifest.yml
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/PMMS_30670_SVN/!svn/ver/1346/PMMS/pmms-api/pom.xml
+END
+README.md
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/PMMS_30670_SVN/!svn/ver/3/PMMS/pmms-api/README.md
+END

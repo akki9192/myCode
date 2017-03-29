@@ -1,0 +1,448 @@
+package com.ge.pmms.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+/**
+ * User principal for reporting a fault.
+ *
+ * @author Zoya Khan
+ */
+
+@Entity
+@Table(name = "WO_INFO", schema = "PMMS")
+@DynamicInsert
+@DynamicUpdate
+@SelectBeforeUpdate
+public class FacilityWO implements Serializable {
+
+	private static final long serialVersionUID = 8L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@Column(name = "WO_ID")
+	private String workOrderNumber;
+
+	/*public String getFacilitiioequipid() {
+		return facilitiioequipid;
+	}
+
+	public void setFacilitiioequipid(String facilitiioequipid) {
+		this.facilitiioequipid = facilitiioequipid;
+	}
+
+	@Column(name = "EQUIP_ID")
+	private String facilitiioequipid;*/
+	
+	/*@Transient
+	private String equipId2;
+*/
+	@ManyToOne
+	@JoinColumn(name = "EQUIP_ID", referencedColumnName = "EQUIP_ID")
+	private EquipmentInfo equipmentInfo;
+	
+	/*@ManyToOne
+	@JoinColumn(name = "WO_ID", referencedColumnName = "WO_ID")
+	private WorkOrderMaintainance workOrderMaintainanceinfo;*/
+
+	@JsonBackReference
+	@Transient
+	private WorkOrderMaintainance latestWorkOrderMaintainance;
+
+    /*@JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+	private WorkOrderMaintainance workOrderMaintainanceList;*/
+
+	@Column(name = "WO_TYPE")
+	private String workOrderType;
+
+	@Column(name = "CREATED_BY")
+	private String creatorSSO;
+
+	@Column(name = "FAULT_DESCRIPTION")
+	private String faultDescription;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "PLAN_START_MONTH")
+	private Date planStartMonth;
+
+	@Column(name = "SHUTDOWN_FLAG")
+	private String shutdownFlag;
+
+	@Column(name = "SAFETY_INVOLVED")
+	private String safetyInvolved;
+
+	@Column(name = "WO_STATUS")
+	private String wordOrderStatus;
+
+	@Column(name = "PLAN_ID")
+	private String planId;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@CreationTimestamp @Temporal(TemporalType.TIMESTAMP) @Column(name = "CREATED_DATE")
+	private Date createdDate;
+
+	@Column(name = "LAST_UPDATED_BY")
+	private String updaterSSO;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@UpdateTimestamp @Temporal(TemporalType.TIMESTAMP) @Column(name = "LAST_UPDATED_DATE")
+	private Date lastUpdatedDate;
+
+	@Column(name = "SMS_FLAG")
+	private String smsFlag;
+
+	@Column(name = "MAINT_TYPE")
+	private String maintType;
+
+	/*@Column(name = "widseq")
+	private Integer widsequence;*/
+	
+	@Column(name = "fac_sn")
+    private String facilityNumber;
+    
+    @Column(name = "fac_area")
+    private String facilityArea;
+    
+    @Column(name = "fac_category")
+    private String facilityCategory;
+    
+    @Column(name = "fac_name")
+    private String facilityName;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "MAINT_START_DT")
+    private Date maintStartDate;
+    
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "MAINT_END_DT")
+    private Date maintEndDate;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "PLAN_START_DT")
+    private Date planStartDate;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "PLAN_END_DT")
+    private Date planEndDate;
+ 
+
+	public String getFacilityNumber() {
+		return facilityNumber;
+	}
+
+	public void setFacilityNumber(String facilityNumber) {
+		this.facilityNumber = facilityNumber;
+	}
+
+	public String getFacilityArea() {
+		return facilityArea;
+	}
+
+	public void setFacilityArea(String facilityArea) {
+		this.facilityArea = facilityArea;
+	}
+
+	public String getFacilityCategory() {
+		return facilityCategory;
+	}
+
+	public void setFacilityCategory(String facilityCategory) {
+		this.facilityCategory = facilityCategory;
+	}
+
+	public String getFacilityName() {
+		return facilityName;
+	}
+
+	public void setFacilityName(String facilityName) {
+		this.facilityName = facilityName;
+	}
+
+	public Date getMaintStartDate() {
+		return maintStartDate;
+	}
+
+	public void setMaintStartDate(Date maintStartDate) {
+		this.maintStartDate = maintStartDate;
+	}
+
+	public Date getMaintEndDate() {
+		return maintEndDate;
+	}
+
+	public void setMaintEndDate(Date maintEndDate) {
+		this.maintEndDate = maintEndDate;
+	}
+
+	public Date getPlanStartDate() {
+		return planStartDate;
+	}
+
+	public void setPlanStartDate(Date planStartDate) {
+		this.planStartDate = planStartDate;
+	}
+
+	public Date getPlanEndDate() {
+		return planEndDate;
+	}
+
+	public void setPlanEndDate(Date planEndDate) {
+		this.planEndDate = planEndDate;
+	}
+
+	/*public Integer getWidsequence() {
+		return widsequence;
+	}
+
+	public void setWidsequence(Integer widsequence) {
+		this.widsequence = widsequence;
+	}*/
+
+	public String getMaintType() {
+		return maintType;
+	}
+
+	public void setMaintType(String maintType) {
+		this.maintType = maintType;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getWorkOrderNumber() {
+		return workOrderNumber;
+	}
+
+	public void setWorkOrderNumber(String workOrderNumber) {
+		this.workOrderNumber = workOrderNumber;
+	}
+
+	public void setEquipmentInfo(EquipmentInfo equipmentInfo) {
+		this.equipmentInfo = equipmentInfo;
+	}
+
+	public String getWorkOrderType() {
+		return workOrderType;
+	}
+
+	public void setWorkOrderType(String workOrderType) {
+		this.workOrderType = workOrderType;
+	}
+
+	public String getCreatorSSO() {
+		return creatorSSO;
+	}
+
+	public void setCreatorSSO(String creatorSSO) {
+		this.creatorSSO = creatorSSO;
+	}
+
+	public String getFaultDescription() {
+		return faultDescription;
+	}
+
+	public void setFaultDescription(String faultDescription) {
+		this.faultDescription = faultDescription;
+	}
+
+	public Date getPlanStartMonth() {
+		return planStartMonth;
+	}
+
+	public void setPlanStartMonth(Date planStartMonth) {
+		this.planStartMonth = planStartMonth;
+	}
+
+	
+
+
+	public String getShutdownFlag() {
+		return shutdownFlag;
+	}
+
+	public void setShutdownFlag(String shutdownFlag) {
+		this.shutdownFlag = shutdownFlag;
+	}
+
+	public String getSafetyInvolved() {
+		return safetyInvolved;
+	}
+
+	public void setSafetyInvolved(String safetyInvolved) {
+		this.safetyInvolved = safetyInvolved;
+	}
+
+	public String getWordOrderStatus() {
+		return wordOrderStatus;
+	}
+
+	public void setWordOrderStatus(String wordOrderStatus) {
+		this.wordOrderStatus = wordOrderStatus;
+	}
+
+	public String getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(String planId) {
+		this.planId = planId;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdaterSSO() {
+		return updaterSSO;
+	}
+
+	public void setUpdaterSSO(String updaterSSO) {
+		this.updaterSSO = updaterSSO;
+	}
+
+	public Date getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.lastUpdatedDate = lastUpdatedDate;
+	}
+
+	public String getSmsFlag() {
+		return smsFlag;
+	}
+
+	public void setSmsFlag(String smsFlag) {
+		this.smsFlag = smsFlag;
+	}
+
+	public WorkOrderMaintainance getLatestWorkOrderMaintainance() {
+		return latestWorkOrderMaintainance;
+	}
+
+	public void setLatestWorkOrderMaintainance(WorkOrderMaintainance latestWorkOrderMaintainance) {
+		this.latestWorkOrderMaintainance = latestWorkOrderMaintainance;
+	}
+
+	/*public List<WorkOrderMaintainance> getWorkOrderMaintainanceList() {
+		return workOrderMaintainanceList;
+	}
+
+	public void setWorkOrderMaintainanceList(List<WorkOrderMaintainance> workOrderMaintainanceList) {
+		this.workOrderMaintainanceList = workOrderMaintainanceList;
+	}*/
+
+	/*public String getEquipId2() {
+		return equipId2 == null ? this.equipmentInfo.getEquipId() : equipId2;
+	}
+
+	public void setEquipId2(String equipId2) {
+		this.equipId2 = equipId2;
+	}*/
+
+	public EquipmentInfo getEquipmentInfo() {
+		return equipmentInfo;
+	}
+
+	public FacilityWO() {
+		super();
+
+	}
+
+	public FacilityWO(Integer id, String workOrderNumber,/*WorkOrderMaintainance workOrderMaintainanceinfo,*/ EquipmentInfo equipmentInfo, String workOrderType,
+			String creatorSSO, String faultDescription, Date planStartMonth, String shutdownFlag,
+			String safetyInvolved, String wordOrderStatus, String planId, Date createdDate, String updaterSSO,
+			Date lastUpdatedDate, String smsFlag, String maintType, String facilityArea, String facilityNumber,String facilityName,String facilityCategory) {
+		super();
+		this.id = id;
+		this.workOrderNumber = workOrderNumber;		
+		this.equipmentInfo = equipmentInfo;
+		//this.workOrderMaintainanceinfo=workOrderMaintainanceinfo;
+		this.workOrderType = workOrderType;
+		this.creatorSSO = creatorSSO;
+		this.faultDescription = faultDescription;
+		this.planStartMonth = planStartMonth;
+		this.shutdownFlag = shutdownFlag;
+		this.safetyInvolved = safetyInvolved;
+		this.wordOrderStatus = wordOrderStatus;
+		this.planId = planId;
+		this.createdDate = createdDate;
+		this.updaterSSO = updaterSSO;
+		this.lastUpdatedDate = lastUpdatedDate;
+		this.smsFlag = smsFlag;
+		this.maintType = maintType;
+		this.facilityArea = facilityArea;
+		this.facilityNumber = facilityNumber;
+		this.facilityName = facilityName;
+		this.facilityCategory = facilityCategory;
+	}
+
+	/*public WorkOrderMaintainance getWorkOrderMaintainanceinfo() {
+		return workOrderMaintainanceinfo;
+	}
+
+	public void setWorkOrderMaintainanceinfo(WorkOrderMaintainance workOrderMaintainanceinfo) {
+		this.workOrderMaintainanceinfo = workOrderMaintainanceinfo;
+	}
+*/
+	@Override
+	public boolean equals(Object target) {
+		if (target == null || !(target instanceof FacilityWO)) {
+			return false;
+		}
+		return this.id == ((FacilityWO) target).id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
+	}
+
+	@Override
+	public String toString() {
+		return "FaultReport [id=" + id + ", workOrderNumber=" + workOrderNumber /*+ ", equipId2=" + equipId2*/
+				+ ", equipmentInfo=" + equipmentInfo + ", workOrderType=" + workOrderType + ", creatorSSO=" + creatorSSO
+				+ ", faultDescription=" + faultDescription + ", planStartMonth=" + planStartMonth + ", shutdownFlag="
+				+ shutdownFlag + ", safetyInvolved=" + safetyInvolved + ", wordOrderStatus=" + wordOrderStatus
+				+ ", planId=" + planId + ", createdDate=" + createdDate + ", updaterSSO=" + updaterSSO
+				+ ", lastUpdatedDate=" + lastUpdatedDate + ", smsFlag=" + smsFlag + ", maintType=" + maintType
+				+ /*", widsequence=" + widsequence + */ ",facilityArea=" + facilityArea +",facilityNumber=" + facilityNumber
+				+ ", facilityCategory=" + facilityCategory +", facilityName=" +facilityName +"]";
+	}
+
+}

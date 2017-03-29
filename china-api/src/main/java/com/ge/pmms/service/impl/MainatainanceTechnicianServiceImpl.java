@@ -1,0 +1,70 @@
+package com.ge.pmms.service.impl;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.ge.pmms.entity.MaintainanceCheckDtls;
+import com.ge.pmms.dao.MainatainanceTechnicianDao;
+import com.ge.pmms.dto.Response;
+import com.ge.pmms.entity.Maintainancecheck;
+import com.ge.pmms.service.MainatainanceTechnicianService;
+
+@Service("MainatainanceTechnicianService")
+
+@Transactional
+
+
+public class MainatainanceTechnicianServiceImpl implements MainatainanceTechnicianService{
+	@SuppressWarnings("unused")
+	private static final long serialVersionUID = 8660080660984105245L;
+
+	@SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(MainatainanceTechnicianServiceImpl.class);
+
+	@Autowired
+	
+	private MainatainanceTechnicianDao maintainanceTechnicianDao;
+	
+	@Override
+	public List<Maintainancecheck> searchListtWithDates(String data) {
+		
+		return maintainanceTechnicianDao.searchListtWithDates(data);
+	}
+
+	@Override
+	public List<Maintainancecheck> getMaintainanceCheck() {
+	
+		return maintainanceTechnicianDao.getMaintainanceCheck();
+	}
+
+	@Override
+	public List<Maintainancecheck> searchHistoryListtWithDates(String data) {
+	
+		return maintainanceTechnicianDao.searchHistoryListtWithDates(data);
+	}
+
+	@Override
+	public List<Maintainancecheck> getMaintainanceCheckHistory(String status) {
+		// TODO Auto-generated method stub
+		return maintainanceTechnicianDao.getMaintainanceCheckHistory(status);
+	}
+
+	@Override
+	public List<MaintainanceCheckDtls> getMaintainanceTechCheckDtls(String maintId) {
+		
+		return maintainanceTechnicianDao.getMaintainanceTechCheckDtls(maintId);
+	}
+
+	@Override
+	public void updateStatus(Maintainancecheck maintainancecheck) {
+		
+		maintainanceTechnicianDao.updateStatus(maintainancecheck);
+		Response.successResponse();
+	}
+
+	
+}

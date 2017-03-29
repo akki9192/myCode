@@ -1,0 +1,84 @@
+package com.ge.pmms.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
+
+@Entity
+@Table(name = "v_equip_and_category", schema = "pmms")
+@DynamicInsert
+@DynamicUpdate
+@SelectBeforeUpdate
+public class ViewCategoryDetail implements Serializable {
+
+	private static final long serialVersionUID = -6568764877783810450L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int ID;
+
+	@Column(name = "equip_category_id") // device id
+	private int equipCatId;
+
+	@Column(name = "equip_category_name")
+	private String equipCatName;
+
+	@Column(name = "equip_name_id")
+	private String equipNameId;
+
+	@Column(name = "equip_name")
+	private String equipName;
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
+	}
+
+	public int getEquipCatId() {
+		return equipCatId;
+	}
+
+	public void setEquipCatId(int equipCatId) {
+		this.equipCatId = equipCatId;
+	}
+
+	public String getEquipCatName() {
+		return equipCatName;
+	}
+
+	public void setEquipCatName(String equipCatName) {
+		this.equipCatName = equipCatName;
+	}
+
+	public String getEquipNameId() {
+		return equipNameId;
+	}
+
+	public void setEquipNameId(String equipNameId) {
+		this.equipNameId = equipNameId;
+	}
+
+	public String getEquipName() {
+		return equipName;
+	}
+
+	public void setEquipName(String equipName) {
+		this.equipName = equipName;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+}

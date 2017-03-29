@@ -1,0 +1,326 @@
+package com.ge.pmms.dao.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import com.ge.pmms.Constants;
+import com.ge.pmms.SMSUtil;
+import com.ge.pmms.dao.BasicDao;
+import com.ge.pmms.dao.FaultMaintainanceDao;
+import com.ge.pmms.dto.CommonKeyValuePair;
+import com.ge.pmms.dto.DropDownEntry;
+import com.ge.pmms.entity.DepartmantInfo;
+import com.ge.pmms.entity.EquipmentInfo;
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.LookupMst;
+import com.ge.pmms.entity.WorkOrderMaintainance;
+
+/**
+ * User Data Access Object Implementation.
+ *
+ * @author Zoya Khan
+ */
+@Repository
+public class FaultMaintainanceDaoImpl extends BasicDao implements FaultMaintainanceDao {
+
+	CommonKeyValuePair commomKeyValuePair = new CommonKeyValuePair();
+	
+	SystemConfigDaoImpl configDaoImpl = new SystemConfigDaoImpl() ;
+	
+	@SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(FaultMaintainanceDaoImpl.class);
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getFaultDetails(String workOrderType,String deptId, String equipType) {
+		Criteria c = super.getSession().createCriteria(FaultReport.class, "faultReport");
+		c.add(Restrictions.ne("faultReport.wordOrderStatus", Constants.WO_CONFIRM));
+		c.createAlias("faultReport.equipmentInfo", "equipmentInfo");
+<<<<<<< .mine
+		/*if(deptId.equals("0") || equipType.equals("0"))
+=======
+		if(deptId.equals("0")&& equipType.equals("0"))
+>>>>>>> .r1062
+		{
+			c.add(Restrictions.eq("workOrderType", workOrderType));
+			//c.add(Restrictions.isNotNull("EQUIP_ID"));
+			List<FaultReport> l = c.list();
+			return l;
+			
+		}		*/
+       /* if(equipType.equals("1"))
+        {
+               c.add(Restrictions.eq("equipmentInfo.equipType", equipType));
+               //c.add(Restrictions.isNotNull("EQUIP_ID"));
+               List<FaultReport> l = c.list();
+               return l;
+               
+        }*/
+
+		if (StringUtils.isNotEmpty(deptId) && !deptId.equals("0")) {
+
+			c.createAlias("equipmentInfo.deptInfo", "deptInfo");
+			c.add(Restrictions.eq("deptInfo.deptId", deptId));
+		}
+
+		if (StringUtils.isNotEmpty(equipType) && !equipType.equals("0")) {
+
+			c.add(Restrictions.eq("equipmentInfo.equipType", equipType));
+
+		}
+		c.add(Restrictions.eq("workOrderType", workOrderType));
+		//c.add(Restrictions.isNotNull("EQUIP_ID"));
+		List<FaultReport> l = c.list();
+		return l;
+
+	}
+
+	@Override
+	public void addFaultReport(FaultReport faultReport ,HashMap hmMobileList) {
+		EquipmentInfo equipmentInfo = (EquipmentInfo) super.getSession().createCriteria(EquipmentInfo.class)
+				.add(Restrictions.eq("equipId", faultReport.getEquipId2())).uniqueResult();
+
+		faultReport.setEquipmentInfo(equipmentInfo);
+		/*faultReport.setFacilitiioequipid(faultReport.getEquipId2());*/
+		faultReport.setWorkOrderType("EQ");
+		faultReport.setMaintType("BM");
+		faultReport.setWordOrderStatus(Constants.WO_NOT_STARTED);
+
+		if(StringUtils.isNotEmpty(faultReport.getSafetyInvolved()))
+		{
+			faultReport.setSafetyInvolved("Y");
+		}
+		else
+		{
+			faultReport.setSafetyInvolved("N");
+		}
+
+		if(StringUtils.isNotEmpty(faultReport.getShutdownFlag()))
+		{
+
+			faultReport.setShutdownFlag("Y");
+		}
+		else
+		{
+		
+			faultReport.setShutdownFlag("N");
+		}
+	
+
+Date date = Calendar.getInstance().getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyykkmmss");
+		String workdate = sdf.format(date);
+		String equipid6char = equipmentInfo.getEquipId();
+		equipid6char = equipid6char.substring(0, 6);
+		String workordernumber = "BM" + equipid6char + workdate;
+		faultReport.setWorkOrderNumber(workordernumber);
+		super.getSession().saveOrUpdate(faultReport);
+		getSession().evict(faultReport);
+		faultReport = (FaultReport) super.getSession().createCriteria(FaultReport.class)
+				.add(Restrictions.eq("workOrderNumber", workordernumber)).uniqueResult();
+		System.out.println(faultReport.toString());
+		int sequenceid = faultReport.getWidsequence();
+		workordernumber = "BM" + equipid6char + workdate + sequenceid;
+		faultReport.setWorkOrderNumber(workordernumber);
+
+		
+		/*try {
+	
+			
+			Iterator<Entry<String,String>> mobileListKeys = hmMobileList.entrySet().iterator();
+			while (mobileListKeys.hasNext()) {
+				Map.Entry<String,String> mobileListValues = (Map.Entry<String,String>) mobileListKeys.next();
+				System.out.println("Mobile Number: " + mobileListValues.getValue());
+				SMSUtil.sendMsg(mobileListValues.getValue(), "Workorder has been created with number: " + workordernumber);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		
+		super.getSession().saveOrUpdate(faultReport);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<FaultReport> getFaultMaintainanceDetails(String workOrderType,String deptId, String equipType) {
+		Criteria c = super.getSession().createCriteria(WorkOrderMaintainance.class, "workOrderMaintainance")
+				.add(Property.forName("id").eq(getMaxIdSubCriteria()));
+		c.createAlias("workOrderMaintainance.faultReport", "faultReport");
+		c.createAlias("faultReport.equipmentInfo", "equipmentInfo");
+		c.add(Restrictions.ne("faultReport.wordOrderStatus", Constants.WO_CONFIRM));
+		if (StringUtils.isNotEmpty(deptId)) {
+					
+			c.createAlias("equipmentInfo.deptInfo", "deptInfo");
+			c.add(Restrictions.eq("deptInfo.deptId", deptId));
+			
+		}
+		/*else if(StringUtils.equals(deptId, "1"))
+		{
+			c.createAlias("workOrderMaintainance.faultReport", "faultReport");
+			c.createAlias("faultReport.equipmentInfo", "equipmentInfo");
+			c.createAlias("equipmentInfo.deptInfo", "deptInfo");
+			c.add(Restrictions.eq("deptInfo.deptId", deptId));
+		}*/
+		else if (StringUtils.isNotEmpty(equipType)) {
+		
+			c.add(Restrictions.eq("equipmentInfo.equipType", equipType));
+		}
+
+		
+ 		List<WorkOrderMaintainance> workOrderMaintainanceList = c.list();
+		Map<String, WorkOrderMaintainance> maintMap = new HashMap<String, WorkOrderMaintainance>();
+		for (WorkOrderMaintainance workOrderMaintainance : workOrderMaintainanceList) {
+			maintMap.put(workOrderMaintainance.getWorkOrderNumber(), workOrderMaintainance);
+		}
+         
+		List<FaultReport> faultReports = getFaultDetails(workOrderType,deptId, equipType);
+		for (FaultReport faultReport : faultReports) {
+			faultReport.setLatestWorkOrderMaintainance(maintMap.get(faultReport.getWorkOrderNumber()));
+		}
+		return faultReports;
+
+	}
+
+	private DetachedCriteria getMaxIdSubCriteria() {
+		return DetachedCriteria.forClass(WorkOrderMaintainance.class, "workOrderMaintainance1")
+				.setProjection(Projections.max("id"))
+				.add(Property.forName("workOrderMaintainance.faultReport.workOrderNumber")
+						.eqProperty("workOrderMaintainance1.faultReport.workOrderNumber"));
+	}
+
+	@Override
+	public void editWorkOrderMaintainance(FaultReport faultReport) {
+
+		EquipmentInfo equipmentInfo = (EquipmentInfo) super.getSession().createCriteria(EquipmentInfo.class)
+				.add(Restrictions.eq("equipId", faultReport.getEquipId2())).uniqueResult();
+		faultReport.setEquipmentInfo(equipmentInfo);
+
+		super.getSession().saveOrUpdate(faultReport);
+
+	}
+
+	@Override
+	public void addWorkOrderMaintainanceInfo(WorkOrderMaintainance workOrderMaintainance) {
+
+		FaultReport faultReport = (FaultReport) super.getSession().createCriteria(FaultReport.class)
+				.add(Restrictions.eq("workOrderNumber", workOrderMaintainance.getWorkOrderNumber1())).uniqueResult();
+		workOrderMaintainance.setFaultReport(faultReport);
+		
+		super.getSession().saveOrUpdate(workOrderMaintainance);
+		
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getDepartmentNames() {
+		
+		/*HashMap<String, String> hmap = new HashMap<String, String>();
+		hmap.put("", "All");*/
+		Criteria c = super.getSession().createCriteria(DepartmantInfo.class, "departmantInfo")
+
+				.setProjection(Projections
+						.projectionList().add(Projections
+								.alias(Projections.distinct(Projections.property("departmantInfo.deptId")), "key"))
+						.add(Projections.alias(Projections.property("departmantInfo.deptName"), "val")))
+
+				.setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+		List<DropDownEntry> l = c.list();
+		/*for (Object value : hmap.values()) {
+		    if (value instanceof DropDownEntry) {
+		        l.add((DropDownEntry) value);
+		    }
+		}*/
+		/*DropDownEntry dropDownEntry = new DropDownEntry();
+		dropDownEntry.setKey("0");
+		dropDownEntry.setVal("--全部 Select --");
+		l.add(dropDownEntry);*/
+		
+		List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(l);
+		
+		//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+		//return finalList;
+		Collections.reverse(finalList);
+		return finalList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<EquipmentInfo> isValidEquipId(String equipId) {
+		Criteria c = super.getSession().createCriteria(EquipmentInfo.class, "equipmentInfo");
+
+		if (StringUtils.isNotEmpty(equipId)) {
+
+			c.add(Restrictions.eq("equipId", equipId));
+
+		}
+
+		List<EquipmentInfo> l = c.list();
+		return l;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DropDownEntry> getEquipment(String Type) {
+		
+		Criteria c = super.getSession().createCriteria(LookupMst.class, "lookupMst")
+
+				.setProjection(Projections.projectionList()
+						.add(Projections.alias(Projections.distinct(Projections.property("lookupMst.Key")), "key"))
+						.add(Projections.alias(Projections.property("lookupMst.Value"), "val")))
+
+				.setResultTransformer(Transformers.aliasToBean(DropDownEntry.class)).setCacheable(true);
+
+		if (StringUtils.isNotEmpty(Type)) {
+
+			c.add(Restrictions.eq("Type", Type));
+		}	
+		List<DropDownEntry> l = c.list();
+		List<DropDownEntry> finalList = commomKeyValuePair.addDefaultSelect(l);
+		
+		//List<DropDownEntry> finalList= CommonUtil.addSelect(l);
+		//return finalList;
+		Collections.reverse(finalList);
+		return finalList;
+	
+	}
+	
+	@Override
+	public void updateStatus(String data) {
+		System.out.println("dao Impl");
+		JSONObject formData = new JSONObject(data);
+		String updaterSSO = formData.getString("editUpdaterSso");
+		String workOrderId =  formData.getString("editworkOrderId");
+		String workOrderStatus =  formData.getString("btnflag");		
+		int id=Integer.parseInt(formData.getString("uniqId"));
+		
+		FaultReport faultReport = (FaultReport) super.getSession().createCriteria(FaultReport.class)
+				.add(Restrictions.eq("id", id)).uniqueResult();
+		faultReport.setUpdaterSSO(updaterSSO);
+		faultReport.setWordOrderStatus(workOrderStatus);		
+		super.getSession().saveOrUpdate(faultReport);
+		
+		// TODO Auto-generated method stub
+
+	}
+
+}

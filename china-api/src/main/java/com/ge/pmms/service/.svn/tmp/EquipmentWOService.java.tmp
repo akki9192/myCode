@@ -1,0 +1,49 @@
+package com.ge.pmms.service;
+
+import java.util.List;
+
+import com.ge.pmms.dto.DropDownEntry;
+<<<<<<< .mine
+=======
+import com.ge.pmms.dto.RouteCauseBean;
+import com.ge.pmms.entity.EquipmentInfo;
+>>>>>>> .r1062
+import com.ge.pmms.entity.FaultReport;
+import com.ge.pmms.entity.FiveWhyDetails;
+import com.ge.pmms.entity.MaintenanceReportDetail;
+import com.ge.pmms.entity.MaintenanceReportHdr;
+import com.ge.pmms.entity.RouteCauseHeader;
+import com.ge.pmms.entity.SIHistoryWO;
+
+public interface EquipmentWOService {
+	
+	List<FaultReport> getEquipmentWODetails();
+	
+	List<FaultReport> getClosedWODetails(String wordOrderStatus);
+	
+	List<FaultReport> getOutageWODetails(String wordOrderStatus);
+	
+	/*void addFiveWHYDetails(FiveWhyHDR fivewhy);*/
+	
+	//void addFiveWHYDetails(FiveWhyDetails details);
+	
+	List<DropDownEntry> getDepartmentNames();
+	
+	public void addSIHistoryWOInfo(SIHistoryWO siHistoryWO);
+
+	public void addMaintReportInfo(MaintenanceReportHdr maintenanceReportHdr);
+	
+	List<MaintenanceReportHdr> getMeasurementPlanDetails();
+	
+	public void addMaintInfo(MaintenanceReportDetail maintenanceReportDetail);
+	
+	List<MaintenanceReportDetail> getMaintReportDetails();
+		
+	List<RouteCauseHeader> getTrackingDetails();
+	
+	public void addRouteCauseInf(RouteCauseBean routeCauseBean);
+	
+	public void editRouteCauseInf(RouteCauseHeader routeCauseHeader);
+	
+	String deleteRouteCauseInfo(String deleteId);
+}
